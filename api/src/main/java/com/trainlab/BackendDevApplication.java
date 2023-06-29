@@ -1,13 +1,13 @@
-package com.trainlab.java_dev;
+package com.trainlab;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
-public class JavaDevApplication {
+@SpringBootApplication(scanBasePackages = "com.trainlab")
+public class BackendDevApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(JavaDevApplication.class, args);
+        SpringApplication.run(BackendDevApplication.class, args);
         System.out.println("Hello world!");
     }
 
