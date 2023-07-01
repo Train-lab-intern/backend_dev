@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @AllArgsConstructor
 @Controller
 public class TestController {
-    @GetMapping("/")
+    @GetMapping("/hello")
     public ResponseEntity<String> testHello(){
         return ResponseEntity.ok("Hello world!");
     }

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.5</version>
+        <version>3.0.8</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -24,12 +24,9 @@
     <properties>
         <java.version>17</java.version>
         <hikariCP.version>5.0.1</hikariCP.version>
-<!--        <jaxb-api.version>2.3.1</jaxb-api.version>-->
         <lombok.version>1.18.26</lombok.version>
         <slf4j-api.version>2.0.6</slf4j-api.version>
         <postgresql.version>42.5.4</postgresql.version>
-        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.0.4</springdoc-openapi-starter-webmvc-ui.version>
     </properties>
 
@@ -99,13 +96,6 @@
             <scope>provided</scope>
         </dependency>
 
-<!--        &lt;!&ndash; JAXB API &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>javax.xml.bind</groupId>-->
-<!--            <artifactId>jaxb-api</artifactId>-->
-<!--            <version>${jaxb-api.version}</version>-->
-<!--        </dependency>-->
-
         <!-- PostgresSQL Driver -->
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -120,19 +110,6 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
             <version>${lombok.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok-mapstruct-binding</artifactId>
-            <version>${lombok-mapstruct-binding.version}</version>
-        </dependency>
-
-        <!-- MapStruct -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
         </dependency>
 
         <dependency>
@@ -154,37 +131,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <!-- Build Configuration -->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok-mapstruct-binding</artifactId>
-                            <version>${lombok-mapstruct-binding.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
