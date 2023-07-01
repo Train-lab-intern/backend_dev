@@ -1,0 +1,8 @@
+FROM openjdk:17
+RUN apt-get update && apt-get install -y \
+    postgresql \
+    git
+COPY target/*.jar backend_dev.jar
+WORKDIR /backend_dev
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "backend_dev.jar"]
