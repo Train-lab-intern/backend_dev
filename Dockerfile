@@ -1,27 +1,27 @@
-# Образ для сборки проекта
+# Image to build the project
 FROM maven:3.8.4-openjdk-17 AS builder
 
-# Копирование исходного кода
+# Copy source code
 COPY api /backend_dev/api
 COPY common /backend_dev/common
 COPY pom.xml /backend_dev/pom.xml
 
-# Сборка проекта Maven
+# Building the Maven project
 WORKDIR /backend_dev
 RUN mvn clean package -DskipTests
 
-# Образ для модуля api
+# Image for api module
 FROM openjdk:17 AS api
 COPY --from=builder /backend_dev/api/target/*.jar /backend_dev/api.jar
 WORKDIR /backend_dev
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "api.jar"]
 
-# Образ для модуля common
+# Image for common module
 FROM openjdk:17 AS common
 COPY --from=builder /backend_dev/common/target/*.jar /backend_dev/common.jar
 
-# Образ для объединения модулей
+# Image for combining modules
 FROM openjdk:17
 COPY --from=api /backend_dev /backend_dev
 COPY --from=common /backend_dev /backend_dev
