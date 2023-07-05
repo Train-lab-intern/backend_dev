@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    hikari:
+      jdbc-url: jdbc:postgresql://localhost:5432/postgres
+      maximum-pool-size: 20
+      driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: development
+    password: dev
+    driver-class-name: org.postgresql.Driver
+#  flyway:
+#    enabled: true
+#    baseline-on-migrate: true
+#    baseline-description: Flyway Scripts
+#    locations: classpath:/db.migration
+#    user: ${spring.datasource.username}
+#    password: ${spring.datasource.password}
+#    url: ${spring.datasource.url}
+#    default-schema: public
+#    validate-on-migrate: false
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        ddl-auto: validate
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        format_sql: false
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
