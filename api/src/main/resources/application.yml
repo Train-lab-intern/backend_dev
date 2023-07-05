@@ -1,23 +1,23 @@
 spring:
   datasource:
     hikari:
-      jdbc-url: jdbc:postgresql://localhost:5432/postgres
+      jdbc-url: jdbc:postgresql://tldb-test-do-user-7651996-0.b.db.ondigitalocean.com:25060/postgres?ssl=true&sslmode=require&sslcert=classpath:/ssl/ca-certificate.crt
       maximum-pool-size: 20
       driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: development
-    password: dev
+    url: jdbc:postgresql://tldb-test-do-user-7651996-0.b.db.ondigitalocean.com:25060/postgres?ssl=true&sslmode=require&sslcert=classpath:/ssl/ca-certificate.crt
+    username: doadmin
+    password: AVNS_U3ZPhA1L6ysAq507vy-
     driver-class-name: org.postgresql.Driver
-#  flyway:
-#    enabled: true
-#    baseline-on-migrate: true
-#    baseline-description: Flyway Scripts
-#    locations: classpath:/db.migration
-#    user: ${spring.datasource.username}
-#    password: ${spring.datasource.password}
-#    url: ${spring.datasource.url}
-#    default-schema: public
-#    validate-on-migrate: false
+    flyway:
+      enabled: true
+      baseline-on-migrate: true
+      baseline-description: Flyway Scripts
+      locations: classpath:/db.migration
+      user: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+      url: ${spring.datasource.url}
+      default-schema: public
+      validate-on-migrate: false
   jpa:
     show-sql: true
     properties:
