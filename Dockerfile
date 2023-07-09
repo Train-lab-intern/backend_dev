@@ -13,9 +13,9 @@ RUN mvn clean package -DskipTests
 # Image for api module
 FROM openjdk:17 AS api
 COPY --from=builder /backend_dev/api/target/*.jar /backend_dev/api.jar
-WORKDIR /backend_dev
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "api.jar"]
+#WORKDIR /backend_dev
+#EXPOSE 8080
+#ENTRYPOINT ["java", "-jar", "api.jar"]
 
 # Image for common module
 FROM openjdk:17 AS common

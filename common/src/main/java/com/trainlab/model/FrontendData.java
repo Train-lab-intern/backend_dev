@@ -31,7 +31,7 @@ public class FrontendData {
 
     @NotNull
     @Column(name = "front_id", nullable = false)
-    private Double frontId;
+    private Float frontId;
 
     @NotNull
     @Column(name = "text", nullable = false)
