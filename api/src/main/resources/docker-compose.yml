@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: trainlab
+      POSTGRES_PASSWORD: AVNS_tuu6r5V-pTo-Xxixa5h
+      POSTGRES_DB: trainlab
+    ports:
+      - "5432:25060"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ../../../..
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

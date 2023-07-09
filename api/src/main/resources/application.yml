@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    hikari:
+      jdbc-url: jdbc:postgresql://tldb-postgresql-fra1-48017-do-user-14346310-0.b.db.ondigitalocean.com:25060/trainlab?ssl=true&sslmode=require&sslcert=classpath:/ssl/ca-certificate.crt
+      maximum-pool-size: 22
+      idle-timeout: 300000
+      pool-name: SpringBootHikariCP
+      driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://tldb-postgresql-fra1-48017-do-user-14346310-0.b.db.ondigitalocean.com:25060/trainlab?ssl=true&sslmode=require&sslcert=classpath:/ssl/ca-certificate.crt
+    username: trainlab
+    password: AVNS_tuu6r5V-pTo-Xxixa5h
+    driver-class-name: org.postgresql.Driver
+    name: trainlab
+  flyway:
+      enabled: true
+      baseline-on-migrate: true
+      baseline-description: Flyway Scripts
+      locations: classpath:/db.migration
+      user: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+      url: ${spring.datasource.url}
+      default-schema: public
+      validate-on-migrate: false
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        ddl-auto: validate
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        format_sql: false
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
