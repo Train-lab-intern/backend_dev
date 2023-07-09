@@ -1,4 +1,10 @@
-CREATE TABLE test(
-    id    SERIAL PRIMARY KEY,
-    hello TEXT
+create table public.test
+(
+    id    serial
+        primary key
+        unique,
+    hello varchar
 );
+
+alter table public.test
+    owner to trainlab;
