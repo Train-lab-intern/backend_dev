@@ -29,7 +29,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-config/database.yml
+
 
 ### VS Code ###
 .vscode/
+
+# .gitignore
+database.yml
