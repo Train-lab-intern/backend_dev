@@ -1,14 +1,14 @@
 spring:
   datasource:
     hikari:
-      jdbc-url: jdbc:postgresql://tldb-postgresql-fra1-48017-do-user-14346310-0.b.db.ondigitalocean.com:25060/trainlab?ssl=true&sslmode=require&sslcert=classpath:/ssl/ca-certificate.crt
-      maximum-pool-size: 22
-      idle-timeout: 300000
+      jdbc-url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      maximum-pool-size: 5
+      idle-timeout: 30000
       pool-name: SpringBootHikariCP
       driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://tldb-postgresql-fra1-48017-do-user-14346310-0.b.db.ondigitalocean.com:25060/trainlab?ssl=true&sslmode=require&sslcert=classpath:/ssl/ca-certificate.crt
-    username: trainlab
-    password: AVNS_tuu6r5V-pTo-Xxixa5h
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     name: trainlab
   flyway:
