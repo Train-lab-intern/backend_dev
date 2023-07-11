@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/front")
 @RequiredArgsConstructor
@@ -19,9 +21,15 @@ public class FrontendDataController {
 
     @GetMapping("/{frontId}")
     public ResponseEntity<FrontendData> getTextByFrontId(@PathVariable float frontId) {
-
         FrontendData frontendData = frontendDataRepository.findByFrontId(frontId);
 
         return new ResponseEntity<>(frontendData, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FrontendData>> getAllFrontendData() {
+        List<FrontendData> frontendDataList = frontendDataRepository.findAll();
+
+        return new ResponseEntity<>(frontendDataList, HttpStatus.OK);
     }
 }
