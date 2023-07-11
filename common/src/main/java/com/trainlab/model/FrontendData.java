@@ -35,7 +35,7 @@ public class FrontendData {
 
     @NotNull
     @Column(name = "text", nullable = false)
-    private String test;
+    private String text;
 
     @JsonIgnore
     @NotNull

@@ -2,7 +2,7 @@ spring:
   datasource:
     hikari:
       jdbc-url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-      maximum-pool-size: 5
+      maximum-pool-size: 3
       idle-timeout: 30000
       pool-name: SpringBootHikariCP
       driver-class-name: org.postgresql.Driver
