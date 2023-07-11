@@ -9,5 +9,6 @@ import java.util.List;
 public interface FrontendDataRepository extends JpaRepository<FrontendData, Integer> {
     FrontendData findByFrontId(float frontId);
 
+    @Query(value = "SELECT * FROM frontend_data WHERE front_id LIKE '1%'", nativeQuery = true)
     List<FrontendData> findMainPageData();
 }
