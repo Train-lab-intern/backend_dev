@@ -56,4 +56,19 @@ public class FrontendDataController {
         }
         return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
     }
+
+    @GetMapping("/pages/{range}")
+    public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int range) {
+        List<FrontendData> mainPageDataList = frontendDataRepository.findDataByRange(range);
+
+        if (mainPageDataList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Map<String, String> mainPageDataMap = new HashMap<>();
+        for (FrontendData data : mainPageDataList) {
+            mainPageDataMap.put(Float.toString(data.getFrontId()), data.getText());
+        }
+        return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
+    }
 }
