@@ -19,16 +19,14 @@ public class FrontendDataController {
     private final FrontendDataRepository frontendDataRepository;
 
     @GetMapping("/main-page")
-    public ResponseEntity<FrontendData> getMainPageData() {
+    public ResponseEntity<List<FrontendData>> getMainPageData() {
         List<FrontendData> mainPageDataList = frontendDataRepository.findMainPageData();
 
         if (mainPageDataList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        FrontendData mainPageData = mainPageDataList.get(0);
-
-        return new ResponseEntity<>(mainPageData, HttpStatus.OK);
+        return new ResponseEntity<>(mainPageDataList, HttpStatus.OK);
     }
 
     @GetMapping
