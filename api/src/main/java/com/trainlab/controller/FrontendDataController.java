@@ -5,7 +5,6 @@ import com.trainlab.repository.FrontendDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,15 +42,15 @@ public class FrontendDataController {
     }
 
     @GetMapping("/pages/{range}")
-    public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int range) {
-        List<FrontendData> mainPageDataList = frontendDataRepository.findDataByRange(range);
+    public ResponseEntity<Map<String, String>> getOnePageData(@PathVariable int range) {
+        List<FrontendData> onePageDataList = frontendDataRepository.findDataByRange(range, range + 1);
 
-        if (mainPageDataList.isEmpty()) {
+        if (onePageDataList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Map<String, String> mainPageDataMap = new HashMap<>();
-        for (FrontendData data : mainPageDataList) {
+        for (FrontendData data : onePageDataList) {
             mainPageDataMap.put(Float.toString(data.getFrontId()), data.getText());
         }
 
