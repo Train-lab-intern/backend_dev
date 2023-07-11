@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,6 +39,21 @@ public class FrontendDataController {
             }
         }
 
+        return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
+    }
+
+    @GetMapping("/main-pages")
+    public ResponseEntity<Map<String, String>> getMainPageDataNew() {
+        List<FrontendData> frontendDataList = frontendDataRepository.findAll();
+        if (frontendDataList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Map<String, String> mainPageDataMap = new HashMap<>();
+        for (FrontendData data : frontendDataList) {
+            String frontId = String.valueOf(data.getFrontId());
+            String text = data.getText();
+            mainPageDataMap.put(frontId, text);
+        }
         return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
     }
 }
