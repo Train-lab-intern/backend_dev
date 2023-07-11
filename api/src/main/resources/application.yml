@@ -2,7 +2,7 @@ spring:
   datasource:
     hikari:
       jdbc-url: jdbc:postgresql://localhost:5432/postgres
-      maximum-pool-size: 20
+      maximum-pool-size: 3
       driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
     username: development
