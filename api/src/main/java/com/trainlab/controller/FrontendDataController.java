@@ -41,6 +41,21 @@ public class FrontendDataController {
         return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
     }
 
+    @GetMapping("/main-pages")
+    public ResponseEntity<Map<String, String>> getMainPageDataNew() {
+        List<FrontendData> frontendDataList = frontendDataRepository.findAll();
+        if (frontendDataList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Map<String, String> mainPageDataMap = new HashMap<>();
+        for (FrontendData data : frontendDataList) {
+            String frontId = String.valueOf(data.getFrontId());
+            String text = data.getText();
+            mainPageDataMap.put(frontId, text);
+        }
+        return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
+    }
+
     @GetMapping("/pages/{range}")
     public ResponseEntity<Map<String, String>> getOnePageData(@PathVariable int range) {
         List<FrontendData> onePageDataList = frontendDataRepository.findDataByRange(range, range + 1);
@@ -53,7 +68,6 @@ public class FrontendDataController {
         for (FrontendData data : onePageDataList) {
             mainPageDataMap.put(Float.toString(data.getFrontId()), data.getText());
         }
-
         return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
     }
 }
