@@ -30,3 +30,7 @@ spring:
         format_sql: false
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+server:
+  servlet:
+    encoding:
+      charset: utf-8
