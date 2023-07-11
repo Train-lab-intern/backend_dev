@@ -40,11 +40,4 @@ public class FrontendDataController {
 
         return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
     }
-
-    @GetMapping
-    public ResponseEntity<List<FrontendData>> getAllFrontendData() {
-        List<FrontendData> frontendDataList = frontendDataRepository.findAll();
-
-        return new ResponseEntity<>(frontendDataList, HttpStatus.OK);
-    }
 }
