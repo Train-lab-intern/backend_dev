@@ -18,9 +18,9 @@ public class FrontendDataController {
     private final FrontendDataRepository frontendDataRepository;
 
     @GetMapping("/{frontId}")
-    public ResponseEntity<String> getTextByFrontId(@PathVariable float frontId) {
+    public ResponseEntity<FrontendData> getTextByFrontId(@PathVariable float frontId) {
 
-        String frontendData = frontendDataRepository.findTextByFrontId(frontId);
+        FrontendData frontendData = frontendDataRepository.findByFrontId(frontId);
 
         return new ResponseEntity<>(frontendData, HttpStatus.OK);
     }

@@ -24,11 +24,13 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Entity
 public class FrontendData {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @JsonIgnore
     @NotNull
     @Column(name = "front_id", nullable = false)
     private Float frontId;
