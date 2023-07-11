@@ -2,8 +2,8 @@ spring:
   datasource:
     hikari:
       jdbc-url: jdbc:postgresql://tldb-postgresql-fra1-48017-do-user-14346310-0.b.db.ondigitalocean.com:25060/trainlab?ssl=true&sslmode=require&sslcert=classpath:/ssl/ca-certificate.crt
-      maximum-pool-size: 22
-      idle-timeout: 300000
+      maximum-pool-size: 5
+      idle-timeout: 30000
       pool-name: SpringBootHikariCP
       driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://tldb-postgresql-fra1-48017-do-user-14346310-0.b.db.ondigitalocean.com:25060/trainlab?ssl=true&sslmode=require&sslcert=classpath:/ssl/ca-certificate.crt
