@@ -11,9 +11,7 @@ import java.util.Optional;
 
 @Cacheable("users")
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByIdPass(Long idPass);
-
-    @Query(value = "SELECT * FROM users WHERE email LIKE %:email%", nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE email LIKE '%:email%'", nativeQuery = true)
     List<User> findUsersByEmail(@Param("email") String email);
 
     Optional<User> findByAuthenticationInfoEmail(String username);

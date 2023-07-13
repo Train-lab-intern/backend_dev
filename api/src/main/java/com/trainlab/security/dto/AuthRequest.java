@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class AuthRequest {
 
     @Schema(example = "svetapiven93@gmail.com", type = "string", description = "User Login")
-    private String login;
+    private String username;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW", type = "string", description = "User password")
     private String userPassword;

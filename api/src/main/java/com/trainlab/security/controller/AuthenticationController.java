@@ -34,17 +34,17 @@ public class AuthenticationController {
 
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getLogin(),
+                        request.getUsername(),
                         request.getUserPassword() + jwtConfiguration.getPasswordSalt()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authenticate);
 
-        String token = tokenProvider.generateToken(userDetailsService.loadUserByUsername(request.getLogin()));
+        String token = tokenProvider.generateToken(userDetailsService.loadUserByUsername(request.getUsername()));
 
         return ResponseEntity.ok(
                 AuthResponse.builder()
-                        .login(request.getLogin())
+                        .login(request.getUsername())
                         .token(token)
                         .build()
         );

@@ -1,4 +1,4 @@
-package com.trainlab.security.controller;
+package com.trainlab.security.config;
 
 import com.trainlab.security.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
@@ -56,19 +56,12 @@ public class WebSecurityConfiguration {
                 .requestMatchers("/v3/api-docs/**", "/v2/api-docs", "/configuration/ui/**", "/swagger-resources/**",
                         "/configuration/security/**", "/swagger-ui/**", "/swagger-ui.html#", "/webjars/**"
                 ).permitAll()
-/*                .requestMatchers(HttpMethod.GET, "/rest/airlines/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/rest/airports/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/rest/document-types/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/rest/flight-statuses/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/rest/plane-types/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/rest/ticket-class/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/rest/ticket-statuses/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/rest/flights/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/rest/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/rest/**").hasRole("ADMIN")
                 .requestMatchers("/rest/auth").permitAll()
-                .requestMatchers("/rest/**").hasAnyRole("ADMIN", "USER", "MODERATOR")*/
+                .requestMatchers("/rest/**").hasAnyRole("ADMIN", "USER", "MODERATOR")
                 .anyRequest().authenticated();
 
         return http.build();
