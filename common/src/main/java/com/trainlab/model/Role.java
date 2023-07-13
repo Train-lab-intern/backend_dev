@@ -32,8 +32,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Cacheable("roles")
-@Table(name = "roles")
+//@Cacheable("roles")
+@Table(name = "roles", schema = "public")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,11 +59,4 @@ public class Role {
     @Column
     @JsonIgnore
     private boolean isDeleted;
-
-    @JsonIgnore
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private Set<User> users = Collections.emptySet();
 }

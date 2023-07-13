@@ -5,15 +5,21 @@ import com.trainlab.model.Role;
 import com.trainlab.model.User;
 import com.trainlab.repository.RoleRepository;
 import com.trainlab.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -26,26 +32,23 @@ public class UserDetailsProvider implements UserDetailsService {
     private final RoleRepository roleRepository;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByAuthenticationInfoEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User does not exist with this email"));
 
-        Optional<User> searchResult = userRepository.findByAuthenticationInfoEmail(email);
+        Set<GrantedAuthority> authorities = user.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                .collect(Collectors.toSet());
 
-        if (searchResult.isPresent()) {
-            User user = searchResult.get();
-            AuthenticationInfo authenticationInfo = user.getAuthenticationInfo();
-            Integer roleId = user.getRoleId().getId();
-            Role role = roleRepository.findById(roleId).orElseThrow(() -> new UsernameNotFoundException("Role not found"));
+        log.info("Fetching user by username: " + email);
+        log.info("User role: " + user.getRoles().stream().findFirst().map(Role::getRoleName).orElse(null));
 
-            log.info("Fetching user by username: " + email);
-            log.info("User role: " + role.getRoleName());
-
-            return new org.springframework.security.core.userdetails.User(
-                    authenticationInfo.getEmail(),
-                    authenticationInfo.getUserPassword(),
-                    AuthorityUtils.createAuthorityList(role.getRoleName())
-            );
-        } else {
-            throw new UsernameNotFoundException("No user found with email: " + email);
-        }
+        return new org.springframework.security.core.userdetails.User(
+                email,
+                user.getAuthenticationInfo().getUserPassword(),
+                authorities
+        );
     }
 }

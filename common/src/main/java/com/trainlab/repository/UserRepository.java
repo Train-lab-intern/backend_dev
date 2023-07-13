@@ -9,9 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-@Cacheable("users")
+//@Cacheable("users")
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query(value = "SELECT * FROM users WHERE email LIKE '%:email%'", nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE email LIKE %:email%", nativeQuery = true)
     List<User> findUsersByEmail(@Param("email") String email);
 
     Optional<User> findByAuthenticationInfoEmail(String username);
