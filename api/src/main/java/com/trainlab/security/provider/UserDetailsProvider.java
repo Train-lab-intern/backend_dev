@@ -7,7 +7,7 @@ import com.trainlab.repository.RoleRepository;
 import com.trainlab.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,9 +23,8 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class UserDetailsProvider implements UserDetailsService {
-
-    private static final Logger log = Logger.getLogger(UserDetailsProvider.class);
 
     private final UserRepository userRepository;
 

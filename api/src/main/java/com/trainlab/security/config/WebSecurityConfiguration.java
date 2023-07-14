@@ -61,7 +61,7 @@ public class WebSecurityConfiguration {
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/rest/**").permitAll()
-                .requestMatchers("/rest/**").hasAnyRole("ADMIN", "USER", "MODERATOR")
+//                .requestMatchers("/rest/**").hasAnyRole("ADMIN", "USER", "MODERATOR")
                 .anyRequest().authenticated();
 
         return http.build();
