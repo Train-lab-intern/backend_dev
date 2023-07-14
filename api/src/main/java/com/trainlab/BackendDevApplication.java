@@ -2,10 +2,11 @@ package com.trainlab;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication(scanBasePackages = "com.trainlab")
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableWebMvc
 
 public class BackendDevApplication {

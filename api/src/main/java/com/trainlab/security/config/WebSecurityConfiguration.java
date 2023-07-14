@@ -56,12 +56,12 @@ public class WebSecurityConfiguration {
                 .requestMatchers("/v3/api-docs/**", "/v2/api-docs", "/configuration/ui/**", "/swagger-resources/**",
                         "/configuration/security/**", "/swagger-ui/**", "/swagger-ui.html#", "/webjars/**"
                 ).permitAll()
-                .requestMatchers(HttpMethod.GET, "/rest/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/front/main-page").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/rest/**").permitAll()
-//                .requestMatchers("/rest/**").hasAnyRole("ADMIN", "USER", "MODERATOR")
+                .requestMatchers("/rest/auth").permitAll()
+                .requestMatchers(HttpMethod.POST,"/rest/auth").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();

@@ -1,15 +1,12 @@
 package com.trainlab.security.provider;
 
-import com.trainlab.model.AuthenticationInfo;
 import com.trainlab.model.Role;
 import com.trainlab.model.User;
-import com.trainlab.repository.RoleRepository;
 import com.trainlab.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,8 +23,6 @@ import java.util.stream.Collectors;
 public class UserDetailsProvider implements UserDetailsService {
 
     private final UserRepository userRepository;
-
-    private final RoleRepository roleRepository;
 
     @Override
     @Transactional
