@@ -13,7 +13,6 @@ public interface UserMapper {
     @Mapping(target = "username", source = "username")
     @Mapping(target = "authenticationInfo.email", source = "email")
     @Mapping(target = "authenticationInfo.userPassword", source = "password")
-    @Mapping(target = "roles.id", source = "idRole", defaultValue = "2")
     @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
     User toEntity(UserRequest userRequest);

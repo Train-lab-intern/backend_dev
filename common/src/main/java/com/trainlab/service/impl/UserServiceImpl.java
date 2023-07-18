@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
+import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -35,16 +35,18 @@ public class UserServiceImpl implements UserService {
 
         Role userRole = null;
         try {
-            userRole = roleRepository.findByRoleName("USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
+            userRole = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
         } catch (EntityNotFoundException e) {
             log.error("This role doesn't exist. " + e.getMessage());
         }
         if (userRole != null) {
+            if (user.getRoles() == null) {
+                user.setRoles(new HashSet<>());
+            }
             user.getRoles().add(userRole);
         }
 
         userRepository.save(user);
-
 
         return user;
 

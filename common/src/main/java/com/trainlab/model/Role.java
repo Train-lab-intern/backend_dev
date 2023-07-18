@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -39,15 +40,15 @@ public class Role {
     @NotNull
     @Column
     @JsonIgnore
-    private Timestamp created;
+    private Timestamp created = Timestamp.valueOf(LocalDateTime.now());
 
     @NotNull
     @Column
     @JsonIgnore
-    private Timestamp changed;
+    private Timestamp changed = Timestamp.valueOf(LocalDateTime.now());
 
     @NotNull
     @Column
     @JsonIgnore
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 }
