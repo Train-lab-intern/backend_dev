@@ -5,13 +5,19 @@ import com.trainlab.model.Session;
 import com.trainlab.repository.FrontendDataRepository;
 import com.trainlab.service.SessionService;
 import com.trainlab.util.RandomValuesGenerator;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -30,9 +36,19 @@ public class FrontendDataController {
     private final RandomValuesGenerator randomValuesGenerator;
 
     @GetMapping("/main-page")
-    public ResponseEntity<Map<String, String>> getMainPageData() {
+    public ResponseEntity<Map<String, String>> getMainPageData(HttpServletRequest request) {
 
         String sessionToken = randomValuesGenerator.uuidGenerator();
+        String sessionId = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("JSESSIONID")) {
+                    sessionId = cookie.getValue();
+                    break;
+                }
+            }
+        }
         sessionService.createSessionForUnauthenticatedUser(sessionToken);
 
         List<String> mainPageDataList = frontendDataRepository.findMainPageData();
@@ -55,7 +71,22 @@ public class FrontendDataController {
     }
 
     @GetMapping("/pages/{range}")
-    public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int range) {
+    public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int range, HttpServletRequest request) {
+        String sessionToken = randomValuesGenerator.uuidGenerator();
+
+        //String sessionId = request.getSession().getId();
+
+        String sessionId = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("JSESSIONID")) {
+                    sessionId = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        sessionService.createSessionForUnauthenticatedUser(sessionToken);
 
         List<FrontendData> mainPageDataList = frontendDataRepository.findDataByRange(range);
 

@@ -3,8 +3,10 @@ package com.trainlab.service.impl;
 import com.trainlab.dto.request.UserRequest;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.Role;
+import com.trainlab.model.Session;
 import com.trainlab.model.User;
 import com.trainlab.repository.RoleRepository;
+import com.trainlab.repository.SessionRepository;
 import com.trainlab.repository.UserRepository;
 import com.trainlab.service.UserService;
 import com.trainlab.utils.PasswordEncode;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 
 @Service
@@ -24,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncode passwordEncode;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final SessionRepository sessionRepository;
 
     @Override
     @Transactional
@@ -48,6 +52,14 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
+//        Session session = Session.builder()
+//                .userId(user.getId())
+//                .sessionToken(sessionToken)
+//                .created(new Timestamp(System.currentTimeMillis()))
+//                .changed(new Timestamp(System.currentTimeMillis()))
+//                .build();
+//
+//        sessionRepository.save(session);
         return user;
 
 //        try {

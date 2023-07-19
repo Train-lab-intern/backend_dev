@@ -37,12 +37,16 @@ public class Session {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id")
     private Long userId;
 
     @NotNull
     @Column(name = "session_token", nullable = false, length = 256)
     private String sessionToken;
+
+    //@NotNull
+    @Column(name = "session_id", length = 256)
+    private String sessionId;
 
     @JsonIgnore
     @NotNull
