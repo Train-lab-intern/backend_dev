@@ -37,7 +37,6 @@ public class Session {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
@@ -65,4 +64,5 @@ public class Session {
     @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<User> users = Collections.emptySet();
+
 }

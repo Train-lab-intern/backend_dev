@@ -56,7 +56,7 @@ public class WebSecurityConfiguration {
                 .requestMatchers("/v3/api-docs/**", "/v2/api-docs", "/configuration/ui/**", "/swagger-resources/**",
                         "/configuration/security/**", "/swagger-ui/**", "/swagger-ui.html#", "/webjars/**"
                 ).permitAll()
-                .requestMatchers(HttpMethod.GET, "/front/main-page").hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/front/main-page").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
