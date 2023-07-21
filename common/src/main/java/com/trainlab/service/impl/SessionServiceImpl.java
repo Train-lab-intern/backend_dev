@@ -21,15 +21,21 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public void createSessionForUnauthenticatedUser(String sessionToken) {
-        Session session = new Session();
-        session.setSessionToken(sessionToken);
-        session.setUserId(null);
-        //session.setSessionId(sessionId);
-        session.setCreated(Timestamp.valueOf(LocalDateTime.now()));
-        session.setChanged(Timestamp.valueOf(LocalDateTime.now()));
+//        Session session = new Session();
+//        session.setUserId(null);
+//        session.setSessionToken(sessionToken);
+//        session.setCreated(Timestamp.valueOf(LocalDateTime.now()));
+//        session.setChanged(Timestamp.valueOf(LocalDateTime.now()));
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String sessionId = request.getSession().getId();
-        session.setSessionId(sessionId);
+
+        Session session = Session.builder()
+                .userId(null) // Здесь можно указать нужное значение userId
+                .sessionToken(sessionToken)
+                .sessionId(sessionId)
+                .created(Timestamp.valueOf(LocalDateTime.now()))
+                .changed(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
 
         sessionRepository.save(session);
     }

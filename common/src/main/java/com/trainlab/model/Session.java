@@ -61,12 +61,12 @@ public class Session {
     @JsonIgnore
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
-
-    @JsonIgnore
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @OneToMany(mappedBy = "id", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private Set<User> users = Collections.emptySet();
+//
+//    @JsonIgnore
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @OneToMany(mappedBy = "session", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+//    @JsonManagedReference
+//    private Set<User> users = Collections.emptySet();
 
 }
