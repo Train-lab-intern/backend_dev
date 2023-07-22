@@ -30,7 +30,16 @@ spring:
         format_sql: false
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: svetapiven93@gmail.com
+    password: udcvpwwpbqqtnktx
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
 ---
 
   config:

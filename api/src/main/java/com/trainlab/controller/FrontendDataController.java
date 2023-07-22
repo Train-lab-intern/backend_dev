@@ -2,12 +2,15 @@ package com.trainlab.controller;
 
 import com.trainlab.model.FrontendData;
 import com.trainlab.model.Session;
+import com.trainlab.model.User;
 import com.trainlab.repository.FrontendDataRepository;
 import com.trainlab.service.SessionService;
 import com.trainlab.util.RandomValuesGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,9 +34,10 @@ public class FrontendDataController {
 
     @GetMapping("/main-page")
     public ResponseEntity<Map<String, String>> getMainPageData() {
+        Long userId = getUserIdFromContext();
 
         String sessionToken = randomValuesGenerator.uuidGenerator();
-        sessionService.createSessionForUnauthenticatedUser(sessionToken);
+        sessionService.createSessionForUser(sessionToken, userId);
 
         List<String> mainPageDataList = frontendDataRepository.findMainPageData();
 
@@ -57,8 +61,9 @@ public class FrontendDataController {
     @GetMapping("/pages/{range}")
     public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int range) {
 
+        Long userId = getUserIdFromContext();
         String sessionToken = randomValuesGenerator.uuidGenerator();
-        sessionService.createSessionForUnauthenticatedUser(sessionToken);
+        sessionService.createSessionForUser(sessionToken, userId);
 
         List<FrontendData> mainPageDataList = frontendDataRepository.findDataByRange(range);
 
@@ -72,5 +77,14 @@ public class FrontendDataController {
         }
 
         return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
+    }
+
+    private Long getUserIdFromContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return ((User) authentication.getPrincipal()).getId();
+        } else {
+            return null;
+        }
     }
 }

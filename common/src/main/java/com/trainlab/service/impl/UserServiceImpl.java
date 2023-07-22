@@ -8,26 +8,36 @@ import com.trainlab.model.User;
 import com.trainlab.repository.RoleRepository;
 import com.trainlab.repository.SessionRepository;
 import com.trainlab.repository.UserRepository;
+import com.trainlab.service.EmailService;
+import com.trainlab.service.SessionService;
 import com.trainlab.service.UserService;
 import com.trainlab.utils.PasswordEncode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
+
     private final UserMapper userMapper;
     private final PasswordEncode passwordEncode;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final SessionRepository sessionRepository;
+    private final EmailService emailService;
+
+    @Value("${DB_HOST}")
+    private String dbHost;
 
     @Override
     @Transactional
@@ -37,63 +47,23 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncode.encodePassword(user.getAuthenticationInfo().getUserPassword());
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
 
-        Role userRole = null;
-        try {
-            userRole = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
-        } catch (EntityNotFoundException e) {
-            log.error("This role doesn't exist. " + e.getMessage());
+        Role userRole = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>());
         }
-        if (userRole != null) {
-            if (user.getRoles() == null) {
-                user.setRoles(new HashSet<>());
-            }
-            user.getRoles().add(userRole);
-        }
+        user.getRoles().add(userRole);
 
         userRepository.save(user);
 
-//        Session session = Session.builder()
-//                .userId(user.getId())
-//                .sessionToken(sessionToken)
-//                .created(new Timestamp(System.currentTimeMillis()))
-//                .changed(new Timestamp(System.currentTimeMillis()))
-//                .build();
-//
-//        sessionRepository.save(session);
+        String toAddress = user.getAuthenticationInfo().getEmail();
+        String subject = "Подтверждение регистрации";
+
+        String encodedEmail = URLEncoder.encode(toAddress, StandardCharsets.UTF_8);
+        String message = "Спасибо за регистрацию! Пожалуйста, перейдите по ссылке ниже, чтобы завершить регистрацию:\n" +
+                "http://" + dbHost + "/complete-registration?userEmail=" + encodedEmail +
+                "\nС наилучшими пожеланиями,\nКоманда Trainlab";
+        emailService.sendRegistrationConfirmationEmail(toAddress, subject, message);
+
         return user;
-
-//        try {
-//            user = userMapper.toEntity(userRequest);
-//        } catch (ForbiddenChangeException e) {
-//            log.error("Wrong mapping for entity. " + e.getMessage());
-//            throw new ForbiddenChangeException(e.getMessage());
-//        }
-//
-//        Role userRole = null;
-//        try {
-//            userRole = roleRepository.findByRoleName("USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
-//        } catch (EntityNotFoundException e) {
-//            logger.error("This role doesn't exist. " + e.getMessage());
-//        }
-//        if (userRole != null) {
-//            user.getRoles().add(userRole);
-//        }
-//
-//        String encodedPassword = passwordEncode.encodePassword(user.getAuthenticationInfo().getPassword());
-//        user.getAuthenticationInfo().setPassword(encodedPassword);
-//
-//        userRepository.save(user);
-//
-//        try {
-//            UserBalance userBalance = new UserBalance();
-//            userBalance.setUser(user);
-//            userBalance.setBalance(BigDecimal.ZERO);
-//            userBalanceRepository.save(userBalance);
-//        } catch (EntityNotFoundException e) {
-//            logger.error("User balance wasn't added. " + e.getMessage());
-//            throw new EntityNotFoundException(e.getMessage());
-//        }
-//        return user;
     }
-
 }
