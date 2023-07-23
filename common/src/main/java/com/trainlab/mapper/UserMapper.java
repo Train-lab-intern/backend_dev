@@ -1,7 +1,7 @@
 package com.trainlab.mapper;
 
 import com.trainlab.dto.request.UserRequest;
-import com.trainlab.model.TrainlabUser;
+import com.trainlab.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -15,7 +15,7 @@ public interface UserMapper {
     @Mapping(target = "authenticationInfo.userPassword", source = "password")
     @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    TrainlabUser toEntity(UserRequest userRequest);
+    User toEntity(UserRequest userRequest);
 
 //    UserDto toDto(User user);
 //

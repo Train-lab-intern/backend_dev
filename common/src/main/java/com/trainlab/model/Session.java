@@ -60,12 +60,4 @@ public class Session {
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
-//    @JsonIgnore
-//    @EqualsAndHashCode.Exclude
-//    @ToString.Exclude
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JsonBackReference
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
-
 }

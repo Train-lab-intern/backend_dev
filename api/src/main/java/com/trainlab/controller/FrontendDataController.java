@@ -1,7 +1,7 @@
 package com.trainlab.controller;
 
 import com.trainlab.model.FrontendData;
-import com.trainlab.model.TrainlabUser;
+import com.trainlab.model.User;
 import com.trainlab.repository.FrontendDataRepository;
 import com.trainlab.service.SessionService;
 import com.trainlab.util.RandomValuesGenerator;
@@ -79,7 +79,12 @@ public class FrontendDataController {
     private Long getUserIdFromContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            return ((TrainlabUser) authentication.getPrincipal()).getId();
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof User) {
+                return ((User) principal).getId();
+            } else {
+                return null;
+            }
         } else {
             return null;
         }

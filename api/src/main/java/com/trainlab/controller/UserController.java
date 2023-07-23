@@ -1,7 +1,7 @@
 package com.trainlab.controller;
 
 import com.trainlab.dto.request.UserRequest;
-import com.trainlab.model.TrainlabUser;
+import com.trainlab.model.User;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,7 +36,7 @@ public class UserController {
                             description = "User created",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = TrainlabUser.class)
+                                    schema = @Schema(implementation = User.class)
                             )
                     ),
                     @ApiResponse(
@@ -55,9 +55,9 @@ public class UserController {
 //}
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @PostMapping("/register")
-    public ResponseEntity<TrainlabUser> registerUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserRequest userRequest) {
-        TrainlabUser createdTrainlabUser = userService.create(userRequest);
-        return new ResponseEntity<>(createdTrainlabUser, HttpStatus.CREATED);
+    public ResponseEntity<User> registerUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserRequest userRequest) {
+        User createdUser = userService.create(userRequest);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @Operation(

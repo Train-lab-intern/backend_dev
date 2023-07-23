@@ -1,7 +1,7 @@
 package com.trainlab.security.provider;
 
 import com.trainlab.model.Role;
-import com.trainlab.model.TrainlabUser;
+import com.trainlab.model.User;
 import com.trainlab.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,20 +27,20 @@ public class UserDetailsProvider implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        TrainlabUser trainlabUser = userRepository.findByAuthenticationInfoEmail(email)
+        User user = userRepository.findByAuthenticationInfoEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User does not exist with this email"));
 
-        Set<GrantedAuthority> authorities = trainlabUser.getRoles()
+        Set<GrantedAuthority> authorities = user.getRoles()
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .collect(Collectors.toSet());
 
         log.info("Fetching user by username: " + email);
-        log.info("User role: " + trainlabUser.getRoles().stream().findFirst().map(Role::getRoleName).orElse(null));
+        log.info("User role: " + user.getRoles().stream().findFirst().map(Role::getRoleName).orElse(null));
 
         return new org.springframework.security.core.userdetails.User(
                 email,
-                trainlabUser.getAuthenticationInfo().getUserPassword(),
+                user.getAuthenticationInfo().getUserPassword(),
                 authorities
         );
     }

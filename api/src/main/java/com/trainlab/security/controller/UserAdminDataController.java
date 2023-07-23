@@ -1,6 +1,6 @@
 package com.trainlab.security.controller;
 import com.trainlab.model.AuthenticationInfo;
-import com.trainlab.model.TrainlabUser;
+import com.trainlab.model.User;
 import com.trainlab.repository.UserRepository;
 import com.trainlab.security.config.JwtConfiguration;
 import lombok.RequiredArgsConstructor;
@@ -27,17 +27,17 @@ public class UserAdminDataController {
     @PutMapping("/passwords")
     public ResponseEntity<Object> updateUsersPasswords() {
 
-        List<TrainlabUser> all = userRepository.findAll();
+        List<User> all = userRepository.findAll();
 
-        for (TrainlabUser trainlabUser : all) {
-            AuthenticationInfo authenticationInfo = trainlabUser.getAuthenticationInfo();
+        for (User user : all) {
+            AuthenticationInfo authenticationInfo = user.getAuthenticationInfo();
 
             String password = authenticationInfo.getUserPassword() + configuration.getPasswordSalt();
             String encodedPassword = encoder.encode(password);
 
             authenticationInfo.setUserPassword(encodedPassword);
-            trainlabUser.setAuthenticationInfo(authenticationInfo);
-            userRepository.save(trainlabUser);
+            user.setAuthenticationInfo(authenticationInfo);
+            userRepository.save(user);
         }
 
         return new ResponseEntity<>(all.size(), HttpStatus.OK);

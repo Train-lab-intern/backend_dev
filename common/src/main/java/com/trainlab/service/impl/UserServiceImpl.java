@@ -3,7 +3,7 @@ package com.trainlab.service.impl;
 import com.trainlab.dto.request.UserRequest;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.Role;
-import com.trainlab.model.TrainlabUser;
+import com.trainlab.model.User;
 import com.trainlab.repository.RoleRepository;
 import com.trainlab.repository.UserRepository;
 import com.trainlab.service.EmailService;
@@ -35,21 +35,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public TrainlabUser create(UserRequest userRequest) {
-        TrainlabUser trainlabUser = userMapper.toEntity(userRequest);
+    public User create(UserRequest userRequest) {
+        User user = userMapper.toEntity(userRequest);
 
-        String encodedPassword = passwordEncode.encodePassword(trainlabUser.getAuthenticationInfo().getUserPassword());
-        trainlabUser.getAuthenticationInfo().setUserPassword(encodedPassword);
+        String encodedPassword = passwordEncode.encodePassword(user.getAuthenticationInfo().getUserPassword());
+        user.getAuthenticationInfo().setUserPassword(encodedPassword);
 
         Role userRole = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
-        if (trainlabUser.getRoles() == null) {
-            trainlabUser.setRoles(new HashSet<>());
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>());
         }
-        trainlabUser.getRoles().add(userRole);
+        user.getRoles().add(userRole);
 
-        userRepository.save(trainlabUser);
+        userRepository.save(user);
 
-        String toAddress = trainlabUser.getAuthenticationInfo().getEmail();
+        String toAddress = user.getAuthenticationInfo().getEmail();
         String subject = "Подтверждение регистрации";
 
         String encodedEmail = URLEncoder.encode(toAddress, StandardCharsets.UTF_8);
@@ -59,18 +59,18 @@ public class UserServiceImpl implements UserService {
                 "\nС наилучшими пожеланиями,\nКоманда Trainlab";
         emailService.sendRegistrationConfirmationEmail(toAddress, subject, message);
 
-        return trainlabUser;
+        return user;
     }
 
     @Override
     public void activateUser(String userEmail) {
-        TrainlabUser trainlabUser = userRepository.findByAuthenticationInfoEmail(userEmail)
+        User user = userRepository.findByAuthenticationInfoEmail(userEmail)
                 .orElseThrow(() -> new EntityNotFoundException("Пользователь с таким email не найден"));
 
-        if (!trainlabUser.isActive()) {
+        if (!user.isActive()) {
 
-            trainlabUser.setActive(true);
-            userRepository.save(trainlabUser);
+            user.setActive(true);
+            userRepository.save(user);
 
             log.info("Пользователь с email " + userEmail + " успешно активирован!");
         } else {
