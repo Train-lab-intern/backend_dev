@@ -6,4 +6,5 @@ import com.trainlab.model.User;
 public interface UserService {
     User create(UserRequest userRequest);
 
+    void activateUser(String userEmail);
 }

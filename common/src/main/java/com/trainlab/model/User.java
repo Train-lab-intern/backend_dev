@@ -1,6 +1,5 @@
 package com.trainlab.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
@@ -15,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -26,7 +24,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -56,6 +53,10 @@ public class User {
     })
     private AuthenticationInfo authenticationInfo;
 
+    @Column
+    @JsonIgnore
+    private boolean active;
+
     @NotNull
     @Column
     @JsonIgnore
@@ -84,6 +85,7 @@ public class User {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonManagedReference
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "userId", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     private Set<Session> sessions = new HashSet<>();
+
 }

@@ -1,7 +1,6 @@
 package com.trainlab.service.impl;
 
 import com.trainlab.model.Session;
-import com.trainlab.model.User;
 import com.trainlab.repository.SessionRepository;
 import com.trainlab.repository.UserRepository;
 import com.trainlab.service.SessionService;
@@ -28,14 +27,14 @@ public class SessionServiceImpl implements SessionService {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String sessionId = request.getSession().getId();
 
-        User user = userRepository.findById(userId).orElse(null);
-
-        if (user == null) {
-            return;
-        }
+//        User user = userRepository.findById(userId).orElse(null);
+//
+//        if (user == null) {
+//            return;
+//        }
 
         Session session = Session.builder()
-                .user(user)
+                .userId(userId)
                 .sessionToken(sessionToken)
                 .sessionId(sessionId)
                 .created(Timestamp.valueOf(LocalDateTime.now()))

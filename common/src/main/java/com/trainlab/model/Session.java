@@ -2,8 +2,6 @@ package com.trainlab.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,8 +21,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.Set;
 
 @Setter
 @Getter
@@ -40,8 +35,8 @@ public class Session {
     @Column(name = "id", nullable = false)
     private Long id;
 
-//    @Column(name = "user_id")
-//    private Long userId;
+    @Column(name = "user_id")
+    private Long userId;
 
     @NotNull
     @Column(name = "session_token", nullable = false, length = 256)
@@ -65,12 +60,12 @@ public class Session {
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
-    @JsonIgnore
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+//    @JsonIgnore
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonBackReference
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User user;
 
 }

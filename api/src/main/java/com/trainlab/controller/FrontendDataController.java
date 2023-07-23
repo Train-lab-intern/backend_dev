@@ -1,7 +1,6 @@
 package com.trainlab.controller;
 
 import com.trainlab.model.FrontendData;
-import com.trainlab.model.Session;
 import com.trainlab.model.User;
 import com.trainlab.repository.FrontendDataRepository;
 import com.trainlab.service.SessionService;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
