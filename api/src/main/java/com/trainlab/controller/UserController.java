@@ -1,7 +1,7 @@
 package com.trainlab.controller;
 
 import com.trainlab.dto.request.UserRequest;
-import com.trainlab.model.User;
+import com.trainlab.model.TrainlabUser;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,9 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,7 +36,7 @@ public class UserController {
                             description = "User created",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = User.class)
+                                    schema = @Schema(implementation = TrainlabUser.class)
                             )
                     ),
                     @ApiResponse(
@@ -43,11 +45,42 @@ public class UserController {
                     )
             }
     )
+//    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+//    @PostMapping
+//    public ResponseEntity<User> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserRequest userRequest) {
+//
+//        User createdUser = userService.create(userRequest);
+//        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+//    }
+//}
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserRequest userRequest) {
+    @PostMapping("/register")
+    public ResponseEntity<TrainlabUser> registerUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserRequest userRequest) {
+        TrainlabUser createdTrainlabUser = userService.create(userRequest);
+        return new ResponseEntity<>(createdTrainlabUser, HttpStatus.CREATED);
+    }
 
-        User createdUser = userService.create(userRequest);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    @Operation(
+            summary = "Complete Registration",
+            description = "Completes the user registration process",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "OK",
+                            description = "Registration completed successfully"
+                    ),
+                    @ApiResponse(
+                            responseCode = "BAD_REQUEST",
+                            description = "Error occurred during registration completion"
+                    )
+            }
+    )
+    @GetMapping("/complete-registration")
+    public ResponseEntity<String> completeRegistration(@RequestParam("userEmail") String userEmail) {
+        try {
+            userService.activateUser(userEmail);
+            return ResponseEntity.ok("Registration completed successfully!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Error occurred during registration completion: " + e.getMessage());
+        }
     }
 }

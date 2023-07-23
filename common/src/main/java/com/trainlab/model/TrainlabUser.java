@@ -37,7 +37,7 @@ import java.util.Set;
 @Entity
 //@Cacheable("users")
 @Table(name = "users", schema = "public")
-public class User {
+public class TrainlabUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

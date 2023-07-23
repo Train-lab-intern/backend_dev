@@ -27,12 +27,6 @@ public class SessionServiceImpl implements SessionService {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String sessionId = request.getSession().getId();
 
-//        User user = userRepository.findById(userId).orElse(null);
-//
-//        if (user == null) {
-//            return;
-//        }
-
         Session session = Session.builder()
                 .userId(userId)
                 .sessionToken(sessionToken)
