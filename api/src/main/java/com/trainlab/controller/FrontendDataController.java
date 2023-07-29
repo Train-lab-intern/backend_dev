@@ -63,3 +63,4 @@ public class FrontendDataController {
         return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
     }
 }
+
