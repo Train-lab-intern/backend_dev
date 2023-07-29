@@ -35,14 +35,11 @@ public class Session {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
-
     @NotNull
     @Column(name = "session_token", nullable = false, length = 256)
     private String sessionToken;
 
-    //@NotNull
+    @NotNull
     @Column(name = "session_id", length = 256)
     private String sessionId;
 
@@ -59,5 +56,11 @@ public class Session {
     @JsonIgnore
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

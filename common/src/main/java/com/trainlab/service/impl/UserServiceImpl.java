@@ -8,7 +8,7 @@ import com.trainlab.repository.RoleRepository;
 import com.trainlab.repository.UserRepository;
 import com.trainlab.service.EmailService;
 import com.trainlab.service.UserService;
-import com.trainlab.utils.PasswordEncode;
+import com.trainlab.util.PasswordEncode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

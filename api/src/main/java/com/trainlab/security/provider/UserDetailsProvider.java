@@ -27,16 +27,13 @@ public class UserDetailsProvider implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByAuthenticationInfoEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User does not exist with this email"));
+        com.trainlab.model.User user = userRepository.findByAuthenticationInfoEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         Set<GrantedAuthority> authorities = user.getRoles()
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .collect(Collectors.toSet());
-
-        log.info("Fetching user by username: " + email);
-        log.info("User role: " + user.getRoles().stream().findFirst().map(Role::getRoleName).orElse(null));
 
         return new org.springframework.security.core.userdetails.User(
                 email,

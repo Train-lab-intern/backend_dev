@@ -85,7 +85,7 @@ public class User {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonManagedReference
-    @OneToMany(mappedBy = "userId", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     private Set<Session> sessions = new HashSet<>();
 
 }

@@ -1,4 +1,4 @@
-package com.trainlab.utils;
+package com.trainlab.util;
 
 import com.trainlab.configuration.JwtConfigurationProvider;
 import lombok.RequiredArgsConstructor;
