@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -26,10 +27,20 @@ public class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
 
     @Override
-    public void createSession(String sessionToken, Long userId) {
+    public void createSession(String sessionToken, Principal principal) {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String sessionId = request.getSession().getId();
+
+        Long userId = null;
+
+        if (principal != null) {
+            Optional<User> userOptional = userRepository.findByAuthenticationInfoEmail(principal.getName());
+
+            if (userOptional.isPresent()) {
+                userId = userOptional.get().getId();
+            }
+        }
 
         Session session = Session.builder()
                 .sessionToken(sessionToken)

@@ -36,18 +36,8 @@ public class FrontendDataController {
     @GetMapping("/pages/{range}")
     public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int range, Principal principal) {
 
-        Long userId = null;
-
-        if (principal != null) {
-            Optional<User> userOptional = userRepository.findByAuthenticationInfoEmail(principal.getName());
-
-            if (userOptional.isPresent()) {
-                userId = userOptional.get().getId();
-            }
-        }
-
         String sessionToken = randomValuesGenerator.uuidGenerator();
-        sessionService.createSession(sessionToken, userId);
+        sessionService.createSession(sessionToken, principal);
 
         List<FrontendData> mainPageDataList = frontendDataRepository.findDataByRange(range);
 

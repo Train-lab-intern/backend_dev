@@ -1,5 +1,6 @@
 package com.trainlab.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,12 +36,12 @@ public class Session {
     private Long id;
 
     @NotNull
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
-
-    @NotNull
     @Column(name = "session_token", nullable = false, length = 256)
     private String sessionToken;
+
+    @NotNull
+    @Column(name = "session_id", length = 256)
+    private String sessionId;
 
     @JsonIgnore
     @NotNull
@@ -56,10 +57,10 @@ public class Session {
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
-    @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id")
     private User user;
+
 }
