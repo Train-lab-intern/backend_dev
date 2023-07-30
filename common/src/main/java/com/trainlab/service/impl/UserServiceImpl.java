@@ -12,6 +12,7 @@ import com.trainlab.util.PasswordEncode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +31,8 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final EmailService emailService;
 
-//    @Value("${DB_HOST}")
-//    private String dbHost;
+    @Value("${DB_HOST}")
+    private String dbHost;
 
     @Override
     @Transactional
@@ -54,8 +55,8 @@ public class UserServiceImpl implements UserService {
 
         String encodedEmail = URLEncoder.encode(toAddress, StandardCharsets.UTF_8);
         String message = "Спасибо за регистрацию! Пожалуйста, перейдите по ссылке ниже, чтобы завершить регистрацию:\n" +
-                "http://localhost:8080/rest/users/complete-registration?userEmail=" + encodedEmail +
-//                "http://" + dbHost + "/rest/complete-registration?userEmail=" + encodedEmail +
+   //             "http://localhost:8080/rest/users/complete-registration?userEmail=" + encodedEmail +
+                "http://" + dbHost + "/rest/users/complete-registration?userEmail=" + encodedEmail +
                 "\nС наилучшими пожеланиями,\nКоманда Trainlab";
         emailService.sendRegistrationConfirmationEmail(toAddress, subject, message);
 
