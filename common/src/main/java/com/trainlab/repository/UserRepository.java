@@ -8,7 +8,6 @@ import java.util.Optional;
 
 //@Cacheable("users")
 public interface UserRepository extends JpaRepository<User, Long> {
-
     Optional<User> findByAuthenticationInfoEmail(String email);
 
     List<User> findAllByIsDeletedFalseOrderById();
