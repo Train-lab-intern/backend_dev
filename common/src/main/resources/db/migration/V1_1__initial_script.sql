@@ -73,3 +73,23 @@ create table roles
 
 alter table roles
     owner to trainlab;
+
+create table public.sessions
+(
+    id            bigserial
+        primary key
+        unique,
+    user_id       bigint
+        constraint sessions_users_id_fk
+            references public.users,
+    session_token varchar(256)               not null
+        unique,
+    created       timestamp(6) default now() not null,
+    changed       timestamp(6)               not null,
+    is_deleted    boolean      default false not null,
+    session_id    varchar
+);
+
+alter table public.sessions
+    owner to trainlab;
+
