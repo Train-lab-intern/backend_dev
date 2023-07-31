@@ -32,9 +32,6 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final EmailService emailService;
 
-    @Value("${DB_HOST}")
-    private String dbHost;
-
     @Override
     @Transactional
     public User create(UserRequest userRequest) {
@@ -100,8 +97,7 @@ public class UserServiceImpl implements UserService {
         String emailSubject = "Подтверждение регистрации";
         String encodedEmail = URLEncoder.encode(toAddress, StandardCharsets.UTF_8);
         String message = "Спасибо за регистрацию! Пожалуйста, перейдите по ссылке ниже, чтобы завершить регистрацию:\n" +
-                //             "http://localhost:8080/api/v1/users/complete-registration?userEmail=" + encodedEmail +
-                "https://" + dbHost + "/api/v1/users/complete-registration?userEmail=" + encodedEmail +
+                "https://test.app.it-roast.com/api/v1/users/complete-registration?userEmail=" + encodedEmail +
                 "\nС наилучшими пожеланиями,\nКоманда Trainlab";
         emailService.sendRegistrationConfirmationEmail(toAddress, emailSubject, message);
     }
