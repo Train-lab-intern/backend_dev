@@ -1,80 +1,4 @@
-create table public.test
-(
-    id    serial
-        primary key
-        unique,
-    hello varchar
-);
-
-alter table public.test
-    owner to trainlab;
-
-create table frontend_data
-(
-    id         serial
-        primary key
-        unique,
-    front_id   real                       not null,
-    text       varchar                    not null,
-    created    timestamp(6) default now() not null,
-    changed    timestamp(6)               not null,
-    is_deleted boolean      default false not null
-);
-
-create index frontend_data_created_index
-    on frontend_data (created desc);
-
-create index frontend_data_front_id_index
-    on frontend_data (front_id);
-
-alter table frontend_data
-    add unique (front_id);
-
-
-
-create table users
-(
-    id         bigint                     not null
-        constraint users_pk
-            primary key
-        constraint users_sessions_user_id_fk
-            references sessions (user_id),
-    username   varchar(256)               not null,
-    email      varchar(256)               not null,
-    password   varchar(256)               not null,
-    role_id    integer
-        constraint users_roles_id_fk
-            references roles,
-    created    timestamp(6) default now() not null,
-    changed    timestamp(6)               not null,
-    is_deleted boolean      default false not null
-);
-
-alter table users
-    owner to trainlab;
-
-create unique index users_email_uindex
-    on users (email);
-
-create unique index users_username_uindex
-    on users (username);
-
-
-create table roles
-(
-    id         integer      not null
-        constraint roles_pk
-            primary key,
-    role_name  varchar(256) not null,
-    created    timestamp(6) not null,
-    changed    timestamp(6) not null,
-    is_deleted boolean
-);
-
-alter table roles
-    owner to trainlab;
-
-create table public.sessions
+create table if not exists public.sessions
 (
     id            bigserial
         primary key
@@ -93,3 +17,81 @@ create table public.sessions
 alter table public.sessions
     owner to trainlab;
 
+create table if not exists public.users
+(
+    id            bigserial
+        constraint users_pk
+            primary key
+        unique,
+    username      varchar(256),
+    email         varchar(256)               not null
+        unique,
+    user_password varchar(256)               not null,
+    created       timestamp(6) default now() not null,
+    changed       timestamp(6)               not null,
+    is_deleted    boolean      default false not null,
+    active        boolean      default false
+);
+
+alter table public.users
+    owner to trainlab;
+
+create unique index users_email_uindex
+    on public.users (email);
+
+create unique index users_username_uindex
+    on public.users (username);
+
+create table if not exists public.roles
+(
+    id         serial
+        constraint roles_pk
+            primary key
+        unique,
+    role_name  varchar(256) not null,
+    created    timestamp(6) not null,
+    changed    timestamp(6) not null,
+    is_deleted boolean
+);
+
+alter table public.roles
+    owner to trainlab;
+
+create index roles_changed_id_index
+    on public.roles (changed asc, id desc);
+
+create table if not exists public.users_roles
+(
+    id         bigserial
+        primary key
+        unique,
+    user_id    bigint                     not null,
+    role_id    integer,
+    created    timestamp(6) default now() not null,
+    changed    timestamp(6) default now() not null,
+    is_deleted boolean      default false not null
+);
+
+alter table public.users_roles
+    owner to trainlab;
+
+create table public.frontend_data
+(
+    id         serial
+        primary key,
+    front_id   real                       not null
+        unique,
+    text       varchar                    not null,
+    created    timestamp(6) default now() not null,
+    changed    timestamp(6)               not null,
+    is_deleted boolean      default false not null
+);
+
+alter table public.frontend_data
+    owner to trainlab;
+
+create index frontend_data_created_index
+    on public.frontend_data (created desc);
+
+create index frontend_data_front_id_index
+    on public.frontend_data (front_id);
