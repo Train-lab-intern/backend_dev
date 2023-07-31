@@ -20,7 +20,7 @@ spring:
       password: ${spring.datasource.password}
       url: ${spring.datasource.url}
       default-schema: public
-      validate-on-migrate: false
+      validate-on-migrate: true
   jpa:
     show-sql: true
     properties:

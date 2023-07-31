@@ -1,4 +1,22 @@
 
+insert into public.users (id, username, email, user_password, created, changed, is_deleted, active)
+values  (38, 'Alex', 'a.piatrovich@gmail.com', '$2a$06$7cSGpOF1L/FTEhJHOcT.pOL4H/2lK.x7k9/vfhzLY4xnHXnSc.ZS6', '2023-07-31 20:13:32.993918', '2023-07-31 20:13:32.994918', false, false),
+        (37, 'svetaPiven', 'sveta.piven.trainlab@gmail.com', '$2a$06$nMJIPCe4p8VF8lseOlI6o.zlIg8oIhVycn8FbOCqllBlTTcuYqmX6', '2023-07-31 20:06:36.489535', '2023-07-31 20:06:36.489535', false, true),
+        (34, 'sveta', 'svetapiven@icloud.com', '$2a$06$x20wBDW4GFHvr58uZjs6Q.RDup.4HJU9poN4qVL/WQsSNNMNb61km', '2023-07-29 22:05:22.999120', '2023-07-29 22:05:22.999120', false, true),
+        (33, 'vit', 'ferondos@gmail.com', '$2a$06$NX45lobdIcB4LvgxCgQ31OtSa23LWsbTSyu./WZGtG9VSWF05O6jO', '2023-07-28 22:47:58.202589', '2023-07-28 22:47:58.202589', false, true),
+        (29, 'katekomleva', 'komlevakate99@gmail.com', '$2a$06$75n/n3zxYHxAC/zxzWtKjOu0kypC7LTuruWFIVP3usxh0UM2qzp..', '2023-07-24 10:57:24.706957', '2023-07-24 10:57:24.706957', false, true),
+        (13, 'p_vit', 'm@gmail.com', '1234', '2023-07-19 23:13:12.000000', '2023-07-19 23:13:12.000000', false, true),
+        (11, 'AnyaSmith', 'anyasmith12@gmail.com', '$2a$06$zTrxCg15eaub8KjvUUdI..fQQwQO1VAjJZ56gLNDY4plRkWCj5nX2', '2023-07-18 10:57:22.274266', '2023-07-18 10:57:22.274266', false, false),
+        (10, 'SergayS', 'sergays11@gmail.com', '$2a$06$CPnBmfO1IuMfileriHhDJ.1A5nKqUdkNwT6qVTSai6wvIX/a/UA76', '2023-07-18 10:53:47.940085', '2023-07-18 10:53:47.940085', false, false),
+        (7, 'stasystar', 'stasy56@gmail.com', '$2a$06$l1thHrZs5TrrziyZRdndDum76JqCyGHaevPUjHCw.z8zFa66U0d1q', '2023-07-17 21:28:24.716532', '2023-07-17 21:28:24.716532', false, false),
+        (6, 'Sasha', 'sasha99@gmail.com', '$2a$06$Cdp7.nQ2eVKJayyKC2EMpetHNt5KtolXm2dLl98TCnLWBEj4RDJn.', '2023-07-17 21:22:43.395060', '2023-07-17 21:22:43.395060', false, false),
+        (5, 'RomaRR', 'rromar1@gmail.com', '$2a$06$dYPXnAYJ21W2Vv8G.8yTQOOUVRFna0NmN9BvPX29YVPEbtzmVHdp6', '2023-07-17 20:00:00.000000', '2023-07-17 20:00:02.000000', false, false),
+        (4, 'VladaVlada', 'vlada123@gmail.com', '$2a$06$jUesL04zIgidgaQWTExzt.wRbNOTCbAvWu7m70XF.poeAWcR81SI.', '2023-07-14 20:14:04.000000', '2023-07-14 20:14:06.000000', false, false),
+        (3, 'test', 'test@mail.com', '$2a$06$L1ofHuH30FajzZuOp2DNv.XQ9ZdD9jXV2E0/6vTxUWpf8rSCkniTC', '2023-07-14 12:45:08.204897', '2023-07-14 15:44:55.000000', false, false),
+        (2, 'svetaPiv', 'sveta54@gmail.com', '$2a$06$.jLmbqQazr.vcxpaf8t3New3K4BW9wfqLopQHAMFEeFJcIQr30nWG', '2023-07-13 16:31:17.000000', '2023-07-13 16:31:19.000000', false, false),
+        (1, 'kateUpdated1', 'kateUpdated@gmail.com', '$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC', '2023-07-13 16:28:08.000000', '2023-07-31 15:32:53.462876', false, false);
+
+
 insert into public.sessions (id, user_id, session_token, created, changed, is_deleted, session_id)
 values  (162, 37, '8b65ed2b-3661-45d4-b3cf-24e2a38fbfc0', '2023-07-31 20:14:25.005277', '2023-07-31 20:14:25.006255', false, '9E658A8454F8063ADFC41F492CC0B98A'),
         (161, null, '301e655c-560f-4e45-9cf5-f4ae1197fafc', '2023-07-30 16:08:21.601823', '2023-07-30 16:08:21.601823', false, '1D0D20DC0A474C995198439249B038D8'),
@@ -92,23 +110,7 @@ values  (162, 37, '8b65ed2b-3661-45d4-b3cf-24e2a38fbfc0', '2023-07-31 20:14:25.0
         (11, null, '85c3dace-174e-4ac6-82ea-ea7ae4296e80', '2023-07-19 20:10:48.989391', '2023-07-19 20:10:48.989391', false, null),
         (10, null, '6df5a457-a9a4-466f-9aad-3dfb2bd37bfc', '2023-07-19 19:41:48.935386', '2023-07-19 19:41:48.935386', false, null),
         (7, null, '87704807-1251-4cdf-b2c9-294aabfd12a5', '2023-07-19 19:24:04.853160', '2023-07-19 19:24:04.853160', false, null);
-]
-insert into public.users (id, username, email, user_password, created, changed, is_deleted, active)
-values  (38, 'Alex', 'a.piatrovich@gmail.com', '$2a$06$7cSGpOF1L/FTEhJHOcT.pOL4H/2lK.x7k9/vfhzLY4xnHXnSc.ZS6', '2023-07-31 20:13:32.993918', '2023-07-31 20:13:32.994918', false, false),
-        (37, 'svetaPiven', 'sveta.piven.trainlab@gmail.com', '$2a$06$nMJIPCe4p8VF8lseOlI6o.zlIg8oIhVycn8FbOCqllBlTTcuYqmX6', '2023-07-31 20:06:36.489535', '2023-07-31 20:06:36.489535', false, true),
-        (34, 'sveta', 'svetapiven@icloud.com', '$2a$06$x20wBDW4GFHvr58uZjs6Q.RDup.4HJU9poN4qVL/WQsSNNMNb61km', '2023-07-29 22:05:22.999120', '2023-07-29 22:05:22.999120', false, true),
-        (33, 'vit', 'ferondos@gmail.com', '$2a$06$NX45lobdIcB4LvgxCgQ31OtSa23LWsbTSyu./WZGtG9VSWF05O6jO', '2023-07-28 22:47:58.202589', '2023-07-28 22:47:58.202589', false, true),
-        (29, 'katekomleva', 'komlevakate99@gmail.com', '$2a$06$75n/n3zxYHxAC/zxzWtKjOu0kypC7LTuruWFIVP3usxh0UM2qzp..', '2023-07-24 10:57:24.706957', '2023-07-24 10:57:24.706957', false, true),
-        (13, 'p_vit', 'm@gmail.com', '1234', '2023-07-19 23:13:12.000000', '2023-07-19 23:13:12.000000', false, true),
-        (11, 'AnyaSmith', 'anyasmith12@gmail.com', '$2a$06$zTrxCg15eaub8KjvUUdI..fQQwQO1VAjJZ56gLNDY4plRkWCj5nX2', '2023-07-18 10:57:22.274266', '2023-07-18 10:57:22.274266', false, false),
-        (10, 'SergayS', 'sergays11@gmail.com', '$2a$06$CPnBmfO1IuMfileriHhDJ.1A5nKqUdkNwT6qVTSai6wvIX/a/UA76', '2023-07-18 10:53:47.940085', '2023-07-18 10:53:47.940085', false, false),
-        (7, 'stasystar', 'stasy56@gmail.com', '$2a$06$l1thHrZs5TrrziyZRdndDum76JqCyGHaevPUjHCw.z8zFa66U0d1q', '2023-07-17 21:28:24.716532', '2023-07-17 21:28:24.716532', false, false),
-        (6, 'Sasha', 'sasha99@gmail.com', '$2a$06$Cdp7.nQ2eVKJayyKC2EMpetHNt5KtolXm2dLl98TCnLWBEj4RDJn.', '2023-07-17 21:22:43.395060', '2023-07-17 21:22:43.395060', false, false),
-        (5, 'RomaRR', 'rromar1@gmail.com', '$2a$06$dYPXnAYJ21W2Vv8G.8yTQOOUVRFna0NmN9BvPX29YVPEbtzmVHdp6', '2023-07-17 20:00:00.000000', '2023-07-17 20:00:02.000000', false, false),
-        (4, 'VladaVlada', 'vlada123@gmail.com', '$2a$06$jUesL04zIgidgaQWTExzt.wRbNOTCbAvWu7m70XF.poeAWcR81SI.', '2023-07-14 20:14:04.000000', '2023-07-14 20:14:06.000000', false, false),
-        (3, 'test', 'test@mail.com', '$2a$06$L1ofHuH30FajzZuOp2DNv.XQ9ZdD9jXV2E0/6vTxUWpf8rSCkniTC', '2023-07-14 12:45:08.204897', '2023-07-14 15:44:55.000000', false, false),
-        (2, 'svetaPiv', 'sveta54@gmail.com', '$2a$06$.jLmbqQazr.vcxpaf8t3New3K4BW9wfqLopQHAMFEeFJcIQr30nWG', '2023-07-13 16:31:17.000000', '2023-07-13 16:31:19.000000', false, false),
-        (1, 'kateUpdated1', 'kateUpdated@gmail.com', '$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC', '2023-07-13 16:28:08.000000', '2023-07-31 15:32:53.462876', false, false);
+
 
 insert into public.roles (id, role_name, created, changed, is_deleted)
 values  (1, 'ROLE_ADMIN', '2023-07-13 16:33:07.000000', '2023-07-13 16:33:11.000000', false),
