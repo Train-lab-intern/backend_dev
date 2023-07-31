@@ -1,4 +1,3 @@
-
 create table if not exists public.users
 (
     id            bigserial
