@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,44 +39,71 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User create(UserRequest userRequest) {
         User user = userMapper.toEntity(userRequest);
+        setEncodedPassword(user);
+        setDefaultRole(user);
+        userRepository.save(user);
+        buildEmailMessage(user);
+        return user;
+    }
 
+    private void setEncodedPassword(User user) {
         String encodedPassword = passwordEncode.encodePassword(user.getAuthenticationInfo().getUserPassword());
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
-
-        Role userRole = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
-        if (user.getRoles() == null) {
-            user.setRoles(new HashSet<>());
-        }
-        user.getRoles().add(userRole);
-
-        userRepository.save(user);
-
-        String toAddress = user.getAuthenticationInfo().getEmail();
-        String subject = "Подтверждение регистрации";
-
-        String encodedEmail = URLEncoder.encode(toAddress, StandardCharsets.UTF_8);
-        String message = "Спасибо за регистрацию! Пожалуйста, перейдите по ссылке ниже, чтобы завершить регистрацию:\n" +
-   //             "http://localhost:8080/rest/users/complete-registration?userEmail=" + encodedEmail +
-                "http://" + dbHost + "/rest/users/complete-registration?userEmail=" + encodedEmail +
-                "\nС наилучшими пожеланиями,\nКоманда Trainlab";
-        emailService.sendRegistrationConfirmationEmail(toAddress, subject, message);
-
-        return user;
     }
 
     @Override
     public void activateUser(String userEmail) {
         User user = userRepository.findByAuthenticationInfoEmail(userEmail)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь с таким email не найден"));
-
+                .orElseThrow(() -> new EntityNotFoundException("User with email not found"));
         if (!user.isActive()) {
-
             user.setActive(true);
             userRepository.save(user);
-
-            log.info("Пользователь с email " + userEmail + " успешно активирован!");
+            log.info("User with email " + userEmail + " activate successfully!");
         } else {
-            throw new IllegalStateException("Пользователь с email " + userEmail + " уже активирован.");
+            throw new IllegalStateException("User with email " + userEmail + " is yet activate.");
         }
     }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
+    @Override
+    public List<User> findAll() {
+        List<User> users = userRepository.findAllByIsDeletedFalseOrderById();
+        if (users == null) {
+            throw new EntityNotFoundException("Users not found");
+        }
+        return users;
+    }
+
+    @Override
+    @Transactional
+    public User update(UserRequest userRequest, Long id) {
+        User user = findById(id);
+        User updated = userMapper.partialUpdateToEntity(userRequest, user);
+        setEncodedPassword(updated);
+        return userRepository.saveAndFlush(updated);
+    }
+
+    private void setDefaultRole(User user) {
+        Role userRole = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>());
+        }
+        user.getRoles().add(userRole);
+    }
+
+    private void buildEmailMessage(User user) {
+        String toAddress = user.getAuthenticationInfo().getEmail();
+        String emailSubject = "Подтверждение регистрации";
+        String encodedEmail = URLEncoder.encode(toAddress, StandardCharsets.UTF_8);
+        String message = "Спасибо за регистрацию! Пожалуйста, перейдите по ссылке ниже, чтобы завершить регистрацию:\n" +
+                //             "http://localhost:8080/api/v1/users/complete-registration?userEmail=" + encodedEmail +
+                "https://" + dbHost + "/api/v1/users/complete-registration?userEmail=" + encodedEmail +
+                "\nС наилучшими пожеланиями,\nКоманда Trainlab";
+        emailService.sendRegistrationConfirmationEmail(toAddress, emailSubject, message);
+    }
+
 }

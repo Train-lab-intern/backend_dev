@@ -60,10 +60,10 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/rest/**").permitAll()
-                .requestMatchers("/rest/users").permitAll()
-                .requestMatchers("/rest/users/complete-registration").permitAll()
-                .requestMatchers(HttpMethod.POST,"/rest/auth").permitAll()
+                .requestMatchers("/api/v1/**").permitAll()
+                .requestMatchers("/api/v1/users").permitAll()
+                .requestMatchers("/api/v1/users/complete-registration").permitAll()
+                .requestMatchers(HttpMethod.POST,"/api/v1/auth").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();
