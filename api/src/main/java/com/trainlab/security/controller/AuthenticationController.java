@@ -1,5 +1,8 @@
 package com.trainlab.security.controller;
 
+import com.trainlab.exception.ActivationException;
+import com.trainlab.exception.ObjectNotFoundException;
+import com.trainlab.repository.UserRepository;
 import com.trainlab.security.config.JwtConfiguration;
 import com.trainlab.security.dto.AuthRequest;
 import com.trainlab.security.dto.AuthResponse;
@@ -28,9 +31,15 @@ public class AuthenticationController {
     private final UserDetailsService userDetailsService;
 
     private final JwtConfiguration jwtConfiguration;
+    private final UserRepository userRepository;
 
     @PostMapping("/auth")
     public ResponseEntity<AuthResponse> loginUser(@RequestBody AuthRequest request) {
+        String userEmail = request.getUserEmail();
+        if (!(userRepository.findByAuthenticationInfoEmail(userEmail)
+                .orElseThrow(() -> new ObjectNotFoundException("This user doesn't exist")).isActive())) {
+            throw new ActivationException("User not activated");
+        }
 
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

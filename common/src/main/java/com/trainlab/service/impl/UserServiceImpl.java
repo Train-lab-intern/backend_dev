@@ -1,6 +1,9 @@
 package com.trainlab.service.impl;
 
-import com.trainlab.dto.request.UserRequest;
+import com.trainlab.dto.request.UserCreateRequest;
+import com.trainlab.dto.request.UserUpdateRequest;
+import com.trainlab.exception.AccessControlViolated;
+import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.Role;
 import com.trainlab.model.User;
@@ -9,23 +12,25 @@ import com.trainlab.repository.UserRepository;
 import com.trainlab.service.EmailService;
 import com.trainlab.service.UserService;
 import com.trainlab.util.PasswordEncode;
+import com.trainlab.util.RandomValuesGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-
+    private final RandomValuesGenerator generator;
     private final UserMapper userMapper;
     private final PasswordEncode passwordEncode;
     private final UserRepository userRepository;
@@ -34,8 +39,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User create(UserRequest userRequest) {
-        User user = userMapper.toEntity(userRequest);
+    public User create(UserCreateRequest userCreateRequest) {
+        User user = userMapper.toEntity(userCreateRequest);
         setEncodedPassword(user);
         setDefaultRole(user);
         userRepository.save(user);
@@ -62,8 +67,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public User findById(Long id, Principal principal) {
+        Long userId = null;
+
+        if (principal != null) {
+            Optional<User> userOptional = userRepository.findByAuthenticationInfoEmail(principal.getName());
+
+            if (userOptional.isPresent()) {
+                userId = userOptional.get().getId();
+            }
+        }
+
+        User user;
+        if (Objects.equals(id, userId)) {
+            user = userCheck(userId);
+        } else {
+            throw new AccessControlViolated("You have no right for this operation");
+        }
+        return user;
     }
 
     @Override
@@ -77,11 +98,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User update(UserRequest userRequest, Long id) {
-        User user = findById(id);
-        User updated = userMapper.partialUpdateToEntity(userRequest, user);
+    public User update(UserUpdateRequest userUpdateRequest, Long id, Principal principal) {
+        User user = findById(id, principal);
+        User updated = userMapper.partialUpdateToEntity(userUpdateRequest, user);
         setEncodedPassword(updated);
-        return userRepository.saveAndFlush(updated);
+        return userRepository.save(updated);
+    }
+
+    public void changePassword(UserUpdateRequest userUpdateRequest, Long id){
+        User user = userCheck(id);
+        String emailSubject = "Вы забыли пароль";
+        String toAddress = userUpdateRequest.getEmail();
+        String newPassword = generator.generateRandomPassword(8);
+        String encodedPassword = passwordEncode.encodePassword(newPassword);
+        String message = "Вы захотели изменить пароль, потому что старый забыли.\n" +
+                "Вот ваш новый пароль, пожалуйста, не забывайте!\n" + newPassword +
+                "\nС наилучшими пожеланиями,\nКоманда Trainlab";
+        user.getAuthenticationInfo().setUserPassword(encodedPassword);
+        userRepository.save(user);
+        emailService.sendRegistrationConfirmationEmail(toAddress, emailSubject, message);
     }
 
     private void setDefaultRole(User user) {
@@ -101,4 +136,12 @@ public class UserServiceImpl implements UserService {
         emailService.sendRegistrationConfirmationEmail(toAddress, emailSubject, message);
     }
 
+    private User userCheck(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User could not be found"));
+        if (user.isDeleted()) {
+            log.error("User is deleted (isDeleted = true)");
+            throw new IllegalRequestException("User is deleted");
+        }
+        return user;
+    }
 }

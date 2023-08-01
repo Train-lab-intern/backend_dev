@@ -16,7 +16,6 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {})
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@NotNull()
 @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?!.*[а-яА-Я]).{8,}$")
 @ReportAsSingleViolation
 public @interface ValidPassword {
