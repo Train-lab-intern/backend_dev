@@ -17,14 +17,14 @@ public class UserRequest {
     private String username;
 
     @NotNull(message = "User email must not be null")
-    @Size(message = "User email must be between 10 and 30 characters", min = 8, max = 256)
+    @Size(message = "User email must be between 8 and 256 characters", min = 8, max = 256)
     @Email(message = "Invalid email address")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
             type = "string", description = "User email")
     private String email;
 
     @NotNull(message = "User password must not be null")
-    @Size(message = "User password must be between 8 and 200 characters", min = 8, max = 256)
+    @Size(message = "User password must be between 8 and 256 characters", min = 8, max = 256)
     @ValidPassword
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
             type = "string", description = "User password")
