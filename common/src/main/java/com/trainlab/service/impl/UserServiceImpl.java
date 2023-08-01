@@ -95,9 +95,8 @@ public class UserServiceImpl implements UserService {
     private void buildEmailMessage(User user) {
         String toAddress = user.getAuthenticationInfo().getEmail();
         String emailSubject = "Подтверждение регистрации";
-        String encodedEmail = URLEncoder.encode(toAddress, StandardCharsets.UTF_8);
         String message = "Спасибо за регистрацию! Пожалуйста, перейдите по ссылке ниже, чтобы завершить регистрацию:\n" +
-                "https://test.app.it-roast.com/api/v1/users/complete-registration?userEmail=" + encodedEmail +
+                "https://test.app.it-roast.com/api/v1/users/complete-registration?userEmail=" + toAddress +
                 "\nС наилучшими пожеланиями,\nКоманда Trainlab";
         emailService.sendRegistrationConfirmationEmail(toAddress, emailSubject, message);
     }
