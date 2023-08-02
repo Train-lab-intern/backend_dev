@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -59,6 +61,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User with email not found"));
         if (!user.isActive()) {
             user.setActive(true);
+            user.setChanged(Timestamp.valueOf(LocalDateTime.now()));
             userRepository.save(user);
             log.info("User with email " + userEmail + " activate successfully!");
         } else {
