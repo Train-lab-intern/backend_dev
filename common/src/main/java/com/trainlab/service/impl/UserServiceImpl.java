@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -108,7 +107,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(updated);
     }
 
-    public void changePassword(UserUpdateRequest userUpdateRequest, Long id){
+    public void changePassword(UserUpdateRequest userUpdateRequest, Long id) {
         User user = userCheck(id);
         String emailSubject = "Вы забыли пароль";
         String toAddress = userUpdateRequest.getEmail();
