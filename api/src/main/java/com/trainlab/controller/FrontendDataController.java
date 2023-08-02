@@ -34,10 +34,7 @@ public class FrontendDataController {
     private final RandomValuesGenerator randomValuesGenerator;
 
     @GetMapping("/pages/{range}")
-    public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int range, Principal principal) {
-
-        String sessionToken = randomValuesGenerator.uuidGenerator();
-        sessionService.createSession(sessionToken, principal);
+    public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int range) {
 
         List<FrontendData> mainPageDataList = frontendDataRepository.findDataByRange(range);
 

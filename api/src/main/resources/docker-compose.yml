@@ -12,6 +12,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  flyway:
+    image: flyway/flyway
+    command: migrate
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - FLYWAY_USER=${DB_USERNAME}
+      - FLYWAY_PASSWORD=${DB_PASSWORD}
+      - FLYWAY_LOCATIONS=/common/src/main/resources/db/migration
+
   api:
     build:
       context: ../../../..
