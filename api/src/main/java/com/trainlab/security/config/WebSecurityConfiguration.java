@@ -62,6 +62,7 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/v1/**").permitAll()
                 .requestMatchers("/api/v1/users").permitAll()
+                .requestMatchers("/api/v1/roles").permitAll()
                 .requestMatchers("/api/v1/users/complete-registration").permitAll()
                 .requestMatchers(HttpMethod.POST,"/api/v1/auth").permitAll()
                 .anyRequest().authenticated();
