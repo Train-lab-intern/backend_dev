@@ -23,7 +23,7 @@ create unique index users_email_uindex
 create unique index users_username_uindex
     on public.users (username);
 
-create table if not exists public.sessions
+create table public.sessions
 (
     id            bigserial
         primary key
@@ -36,7 +36,8 @@ create table if not exists public.sessions
     created       timestamp(6) default now() not null,
     changed       timestamp(6)               not null,
     is_deleted    boolean      default false not null,
-    session_id    varchar
+    session_id    varchar,
+    ip_address    varchar
 );
 
 alter table public.sessions
