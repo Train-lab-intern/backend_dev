@@ -78,7 +78,7 @@ public class RoleController {
     }
 
     @Operation(
-            summary = "Spring Data Update role",
+            summary = "Spring Data Update role ",
             description = "Updating based user role on given id and request body",
             responses = {
                     @ApiResponse(
