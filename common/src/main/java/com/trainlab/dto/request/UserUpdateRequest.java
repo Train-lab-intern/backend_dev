@@ -25,7 +25,7 @@ public class UserUpdateRequest {
     private String email;
 
     @Size(message = "User password must be between 8 and 256 characters", min = 8, max = 256)
-    @ValidPassword
+    //@ValidPassword
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
             type = "string", description = "User password")
     private String password;

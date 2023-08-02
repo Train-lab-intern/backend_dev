@@ -43,6 +43,9 @@ public class Session {
     @Column(name = "session_id", length = 256)
     private String sessionId;
 
+    @Column(name = "ip_address", length = 256)
+    private String ipAddress;
+
     @JsonIgnore
     @NotNull
     @Column

@@ -25,7 +25,7 @@ public class UserCreateRequest {
 
     @NotNull(message = "User password must not be null")
     @Size(message = "User password must be between 8 and 256 characters", min = 8, max = 256)
-    @ValidPassword
+    //@ValidPassword
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
             type = "string", description = "User password")
     private String password;
