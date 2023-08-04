@@ -59,6 +59,9 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/front/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/api/v1/**").permitAll()
+                .requestMatchers("/api/v1/users").permitAll()
+                .requestMatchers("/api/v1/roles").permitAll()
                 .requestMatchers("/api/v1/users/register").permitAll()
                 .requestMatchers("/api/v1/users/complete-registration").permitAll()
                 .requestMatchers(HttpMethod.POST,"/api/v1/auth").permitAll()
@@ -66,7 +69,6 @@ public class WebSecurityConfiguration {
                 .requestMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/v1/admin/users/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated();
-
         return http.build();
     }
 }

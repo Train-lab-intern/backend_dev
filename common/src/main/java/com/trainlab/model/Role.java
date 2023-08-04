@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,8 @@ public class Role {
 
     @Size(max = 256)
     @NotNull
-    @Column(name = "role_name", nullable = false, length = 256)
+    @NotEmpty
+    @Column(name = "role_name", unique = true, nullable = false, length = 256)
     private String roleName;
 
     @NotNull
