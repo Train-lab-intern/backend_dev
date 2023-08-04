@@ -10,7 +10,7 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
-    name: trainlab
+    name: ${DB_NAME}
   flyway:
       enabled: true
       baseline-on-migrate: true
@@ -33,8 +33,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: svetapiven93@gmail.com
-    password: udcvpwwpbqqtnktx
+    username: it.roast.trainlab@gmail.com
+    password: ${GMAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -43,6 +43,10 @@ spring:
 ---
 
   config:
-    secret: "secret"
-    expiration: "600000"
-    passwordSalt: "cd022728-f6e1-11ed-b67e-0242ac120002"
+    secret: ${SECRET}
+    expiration: ${EXPIRATION}
+    passwordSalt: ${SALT}
+
+  logging:
+    level:
+      root: OFF

@@ -31,6 +31,7 @@ public class SessionServiceImpl implements SessionService {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String sessionId = request.getSession().getId();
+        String ipAddress = request.getRemoteAddr();
 
         Long userId = null;
 
@@ -45,6 +46,7 @@ public class SessionServiceImpl implements SessionService {
         Session session = Session.builder()
                 .sessionToken(sessionToken)
                 .sessionId(sessionId)
+                .ipAddress(ipAddress)
                 .created(Timestamp.valueOf(LocalDateTime.now()))
                 .changed(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
