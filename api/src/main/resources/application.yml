@@ -15,12 +15,12 @@ spring:
       enabled: true
       baseline-on-migrate: true
       baseline-description: Flyway Scripts
-      locations: classpath:/db.migration
+#      locations: classpath:/db.migration
       user: ${spring.datasource.username}
       password: ${spring.datasource.password}
       url: ${spring.datasource.url}
       default-schema: public
-      validate-on-migrate: false
+      validate-on-migrate: true
   jpa:
     show-sql: true
     properties:
