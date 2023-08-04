@@ -10,7 +10,7 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
-    name: trainlab
+    name: ${DB_NAME}
   flyway:
       enabled: true
       baseline-on-migrate: true
@@ -20,7 +20,7 @@ spring:
       password: ${spring.datasource.password}
       url: ${spring.datasource.url}
       default-schema: public
-      validate-on-migrate: true
+      validate-on-migrate: false
   jpa:
     show-sql: true
     properties:
@@ -46,3 +46,7 @@ spring:
     secret: ${SECRET}
     expiration: ${EXPIRATION}
     passwordSalt: ${SALT}
+
+  logging:
+    level:
+      root: OFF
