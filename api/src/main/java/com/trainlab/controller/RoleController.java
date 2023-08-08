@@ -29,6 +29,7 @@ import java.util.List;
 @RequestMapping("api/v1/roles")
 @RequiredArgsConstructor
 public class RoleController {
+
     private final RoleService roleService;
 
     @Operation(
