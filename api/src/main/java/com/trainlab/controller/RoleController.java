@@ -95,7 +95,7 @@ public class RoleController {
             }
     )
     @PutMapping("/{id}")
-    public ResponseEntity<Role> updateRole(@PathVariable("id") Long id,
+    public ResponseEntity<Role> updateRole(@PathVariable("id") Integer id,
                                            @Valid @RequestBody RoleRequest roleRequest) {
         Role updatedRole = roleService.update(roleRequest, id);
         return new ResponseEntity<>(updatedRole, HttpStatus.OK);
@@ -119,7 +119,7 @@ public class RoleController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<Role> receiveRoleById(@PathVariable Long id) {
+    public ResponseEntity<Role> receiveRoleById(@PathVariable Integer id) {
         Role role = roleService.receiveById(id);
         return new ResponseEntity<>(role, HttpStatus.OK);
     }

@@ -12,12 +12,12 @@ public interface RoleService {
     @Transactional
     Role create(RoleRequest roleRequest);
 
-    Role receiveById(Long id);
+    Role receiveById(Integer id);
 
     Role receiveByRoleName(String roleName);
 
     List<Role> findAll();
 
     @Transactional
-    Role update(RoleRequest roleRequest, Long id);
+    Role update(RoleRequest roleRequest, Integer id);
 }
