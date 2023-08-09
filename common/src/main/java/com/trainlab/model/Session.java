@@ -28,6 +28,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
+@EqualsAndHashCode
 @Table(name = "sessions")
 public class Session {
     @Id

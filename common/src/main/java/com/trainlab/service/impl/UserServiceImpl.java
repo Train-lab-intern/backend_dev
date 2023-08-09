@@ -2,7 +2,6 @@ package com.trainlab.service.impl;
 
 import com.trainlab.dto.request.UserRequest;
 import com.trainlab.mapper.UserMapper;
-import com.trainlab.model.Role;
 import com.trainlab.model.User;
 import com.trainlab.repository.RoleRepository;
 import com.trainlab.repository.UserRepository;
@@ -39,16 +38,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User create(UserRequest userRequest) {
         User user = userMapper.toEntity(userRequest);
-        setEncodedPassword(user);
+        encodePassword(user);
         setDefaultRole(user);
         userRepository.save(user);
         buildEmailMessage(user);
         return user;
-    }
-
-    private void setEncodedPassword(User user) {
-        String encodedPassword = passwordEncode.encodePassword(user.getAuthenticationInfo().getUserPassword());
-        user.getAuthenticationInfo().setUserPassword(encodedPassword);
     }
 
     @Override
@@ -83,16 +77,21 @@ public class UserServiceImpl implements UserService {
     public User update(UserRequest userRequest, Long id) {
         User user = findById(id);
         User updated = userMapper.partialUpdateToEntity(userRequest, user);
-        setEncodedPassword(updated);
+        encodePassword(updated);
         return userRepository.saveAndFlush(updated);
     }
 
+    private void encodePassword(User user) {
+        String encodedPassword = passwordEncode.encodePassword(user.getAuthenticationInfo().getUserPassword());
+        user.getAuthenticationInfo().setUserPassword(encodedPassword);
+    }
+
     private void setDefaultRole(User user) {
-        Role userRole = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
         if (user.getRoles() == null) {
             user.setRoles(new HashSet<>());
         }
-        user.getRoles().add(userRole);
+        roleRepository.findByRoleName("ROLE_USER").map(role -> user.getRoles().add(role))
+                .orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
     }
 
     private void buildEmailMessage(User user) {

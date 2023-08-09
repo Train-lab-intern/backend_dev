@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:tc:postgresql:9:6:8:///trainlab-test
+    username: trainlab
+    password: trainlab
+  #  flyway:
+  #      enabled: true
+  #      baseline-on-migrate: true
+  #      baseline-description: Flyway Scripts
+  #      locations: classpath:/db.migration
+  #      user: ${spring.datasource.username}
+  #      password: ${spring.datasource.password}
+  #      url: ${spring.datasource.url}
+  #      default-schema: public
+  #      validate-on-migrate: false
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        ddl-auto: validate
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        show_sql: true
+        format_sql: true
+    #    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  h2:
+    console:
+      enabled: true
