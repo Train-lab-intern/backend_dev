@@ -1,6 +1,6 @@
 package com.trainlab.service.impl;
 
-import com.trainlab.dto.request.RoleRequest;
+import com.trainlab.dto.RoleRequestDto;
 import com.trainlab.exception.ObjectIsExistException;
 import com.trainlab.mapper.RoleMapper;
 import com.trainlab.model.Role;
@@ -25,18 +25,21 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> findAll() {
         List<Role> roles = roleRepository.findAll();
+
         if (roles.isEmpty()) {
             throw new EntityNotFoundException("Roles not found");
         }
+
         return roles;
     }
 
     @Override
     @Transactional
-    public Role create(RoleRequest roleRequest) {
-        if (roleRepository.existsByRoleName(roleRequest.getRoleName()))
+    public Role create(RoleRequestDto roleRequestDto) {
+        if (roleRepository.existsByRoleName(roleRequestDto.getRoleName()))
             throw new ObjectIsExistException("The same role already exists");
-        Role role = roleMapper.toEntity(roleRequest);
+
+        Role role = roleMapper.toEntity(roleRequestDto);
         return roleRepository.saveAndFlush(role);
     }
 
@@ -52,11 +55,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional
-    public Role update(RoleRequest roleRequest, Integer id) {
+    public Role update(RoleRequestDto roleRequestDto, Integer id) {
         Optional<Role> role = roleRepository.findById(id);
-        if (roleRepository.existsByRoleName(roleRequest.getRoleName()))
+
+        if (roleRepository.existsByRoleName(roleRequestDto.getRoleName()))
             throw new ObjectIsExistException("The same role already exists");
-        Role updated = roleMapper.partialUpdateToEntity(roleRequest, role.orElseThrow(() -> new EntityNotFoundException("Role not found")));
+
+        Role updated = roleMapper.partialUpdateToEntity(roleRequestDto, role.orElseThrow(() -> new EntityNotFoundException("Role not found")));
         return roleRepository.saveAndFlush(updated);
     }
 

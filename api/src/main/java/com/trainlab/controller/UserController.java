@@ -1,7 +1,7 @@
 package com.trainlab.controller;
 
-import com.trainlab.dto.request.UserCreateRequest;
-import com.trainlab.dto.request.UserUpdateRequest;
+import com.trainlab.dto.UserCreateRequestDto;
+import com.trainlab.dto.UserUpdateRequestDto;
 import com.trainlab.model.User;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,14 +14,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -55,18 +52,10 @@ public class UserController {
                     )
             }
     )
-//    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-//    @PostMapping
-//    public ResponseEntity<User> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserRequest userRequest) {
-//
-//        User createdUser = userService.create(userRequest);
-//        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-//    }
-//}
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserCreateRequest userCreateRequest) {
-        User createdUser = userService.create(userCreateRequest);
+    public ResponseEntity<User> registerUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserCreateRequestDto userCreateRequestDto) {
+        User createdUser = userService.create(userCreateRequestDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
@@ -134,8 +123,8 @@ public class UserController {
     )
     @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id,
-                                           @Valid @RequestBody UserUpdateRequest userUpdateRequest, Principal principal) {
-        User updatedUser = userService.update(userUpdateRequest, id, principal);
+                                           @Valid @RequestBody UserUpdateRequestDto userUpdateRequestDto, Principal principal) {
+        User updatedUser = userService.update(userUpdateRequestDto, id, principal);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
@@ -164,8 +153,8 @@ public class UserController {
 
     @PatchMapping("/change-password/{id}")
     public ResponseEntity<String> forgotPassword(@PathVariable("id") Long id,
-                                                 @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
-        userService.changePassword(userUpdateRequest, id);
+                                                 @Valid @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
+        userService.changePassword(userUpdateRequestDto, id);
         return new ResponseEntity<>("You changed password", HttpStatus.OK);
     }
 }

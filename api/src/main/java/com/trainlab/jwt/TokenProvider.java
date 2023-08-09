@@ -1,7 +1,7 @@
-package com.trainlab.security.jwt;
+package com.trainlab.jwt;
 
-import com.trainlab.security.config.JwtConfiguration;
-import com.trainlab.security.provider.UserDetailsProvider;
+import com.trainlab.configuration.JwtConfiguration;
+import com.trainlab.service.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,7 +14,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -33,7 +38,7 @@ public class TokenProvider {
 
     private final JwtConfiguration jwtConfiguration;
 
-    private final UserDetailsProvider userDetailsProvider;
+    private final CustomUserDetailsService userDetailsService;
 
     private String generateToken(Map<String, Object> claims) {
 
@@ -123,7 +128,7 @@ public class TokenProvider {
 
         Claims claims = Jwts.parser().setSigningKey(jwtConfiguration.getSecret()).parseClaimsJws(token).getBody();
         String username = claims.getSubject();
-        UserDetails userDetails = userDetailsProvider.loadUserByUsername(username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         log.info("User details: " + userDetails);
 
