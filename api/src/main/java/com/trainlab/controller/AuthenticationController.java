@@ -53,7 +53,7 @@ public class AuthenticationController {
                 AuthResponseDto.builder()
                         .userEmail(request.getUserEmail())
                         .token(token)
-                        .user(userService.findByEmail(userEmail))
+                        .user(userByEmail)
                         .build()
         );
     }

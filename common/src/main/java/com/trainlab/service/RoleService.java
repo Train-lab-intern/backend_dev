@@ -9,9 +9,9 @@ public interface RoleService {
 
     Role create(RoleRequestDto roleRequestDto);
 
-    Role getById(Integer id);
+    Role findById(Integer id);
 
-    Role getByRoleName(String roleName);
+    Role findByRoleName(String roleName);
 
     List<Role> findAll();
 

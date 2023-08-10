@@ -118,7 +118,7 @@ public class RoleController {
     )
     @GetMapping("/{id}")
     public ResponseEntity<Role> findRoleById(@PathVariable Integer id) {
-        Role role = roleService.getById(id);
+        Role role = roleService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(role);
     }
 
@@ -141,7 +141,7 @@ public class RoleController {
     )
     @GetMapping("/")
     public ResponseEntity<Role> findRoleByRoleName(@Valid @RequestBody RoleRequestDto roleRequestDto) {
-        Role role = roleService.getByRoleName(roleRequestDto.getRoleName());
+        Role role = roleService.findByRoleName(roleRequestDto.getRoleName());
         return ResponseEntity.status(HttpStatus.OK).body(role);
     }
 

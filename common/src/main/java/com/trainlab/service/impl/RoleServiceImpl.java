@@ -43,12 +43,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role getById(Integer id) {
+    public Role findById(Integer id) {
         return roleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Role not found"));
     }
 
     @Override
-    public Role getByRoleName(String roleName) {
+    public Role findByRoleName(String roleName) {
         return roleRepository.findByRoleName(roleName).orElseThrow(() -> new EntityNotFoundException("Role not found"));
     }
 
