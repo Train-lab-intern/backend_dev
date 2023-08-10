@@ -69,6 +69,7 @@ public class UserControllerImpl implements UserController{
     @GetMapping
     public ResponseEntity<List<UserFindAllResponseDto>> getAllUsers() {
         List<User> users = userService.findAll();
+
         List<UserFindAllResponseDto> usersDto = users.stream()
                 .map(userMapper::toFindAllDto)
                 .toList();
@@ -109,6 +110,7 @@ public class UserControllerImpl implements UserController{
     public ResponseEntity<String> forgotPassword(@PathVariable("id") Long id,
                                                  @Valid @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
         userService.changePassword(userUpdateRequestDto, id);
+
         return ResponseEntity.ok("You changed password");
     }
 }
