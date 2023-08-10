@@ -35,7 +35,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-//@Cacheable("users")
 @Table(name = "users", schema = "public")
 public class User {
     @Id
@@ -54,22 +53,18 @@ public class User {
     private AuthenticationInfo authenticationInfo;
 
     @Column
-    @JsonIgnore
     private boolean active;
 
     @NotNull
     @Column
-    @JsonIgnore
     private Timestamp created;
 
     @NotNull
     @Column
-    @JsonIgnore
     private Timestamp changed;
 
     @NotNull
     @Column(name = "is_deleted")
-    @JsonIgnore
     private boolean isDeleted = false;
 
     @EqualsAndHashCode.Exclude
@@ -81,10 +76,8 @@ public class User {
     )
     private Set<Role> roles;
 
-    @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     private Set<Session> sessions = new HashSet<>();
 
