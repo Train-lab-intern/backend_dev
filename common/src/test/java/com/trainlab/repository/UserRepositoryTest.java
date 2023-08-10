@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @SpringJUnitConfig(TestApplication.class)
-@TestPropertySource(properties = {"spring.jpa.hibernate.ddl-auto=create-drop", "spring.profiles.active=test"})
+@TestPropertySource(properties = {"spring.profiles.active=test"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserRepositoryTest {
     @Autowired
@@ -37,8 +37,8 @@ class UserRepositoryTest {
                 .id(1L)
                 .username("testName1")
                 .authenticationInfo(authenticationInfo1)
-                .created(Timestamp.valueOf("2023-07-13 16:28:08.000000"))
-                .changed(Timestamp.valueOf("2023-07-31 15:32:53.462876"))
+                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
+                .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
                 .active(false)
                 .isDeleted(false)
                 .build();
@@ -51,12 +51,26 @@ class UserRepositoryTest {
                 .id(2L)
                 .username("testName2")
                 .authenticationInfo(authenticationInfo2)
-                .created(Timestamp.valueOf("2023-07-13 16:28:08.000000"))
-                .changed(Timestamp.valueOf("2023-07-31 15:32:53.462876"))
+                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
+                .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
                 .active(false)
                 .isDeleted(false)
                 .build();
         userRepository.save(user2);
+        AuthenticationInfo authenticationInfo3 = AuthenticationInfo.builder()
+                .email("test3@gmail.com")
+                .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
+                .build();
+        User user3 = User.builder()
+                .id(3L)
+                .username("testName3")
+                .authenticationInfo(authenticationInfo3)
+                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
+                .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
+                .active(false)
+                .isDeleted(true)
+                .build();
+        userRepository.save(user3);
     }
 
     @AfterAll
@@ -75,8 +89,8 @@ class UserRepositoryTest {
                 .id(1L)
                 .username("testName1")
                 .authenticationInfo(authenticationInfo)
-                .created(Timestamp.valueOf("2023-07-13 16:28:08.000000"))
-                .changed(Timestamp.valueOf("2023-07-31 15:32:53.462876"))
+                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
+                .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
                 .active(false)
                 .isDeleted(false)
                 .build();
@@ -85,7 +99,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindAllByIsDeletedFalseOrderById() {
+    void testFindAllByIsDeletedFalseOrderById_should_return_IsDeletedFalse() {
         AuthenticationInfo authenticationInfo1 = AuthenticationInfo.builder()
                 .email("test1@gmail.com")
                 .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
@@ -94,12 +108,11 @@ class UserRepositoryTest {
                 .id(1L)
                 .username("testName1")
                 .authenticationInfo(authenticationInfo1)
-                .created(Timestamp.valueOf("2023-07-13 16:28:08.000000"))
-                .changed(Timestamp.valueOf("2023-07-31 15:32:53.462876"))
+                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
+                .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
                 .active(false)
                 .isDeleted(false)
                 .build();
-        userRepository.save(user1);
         AuthenticationInfo authenticationInfo2 = AuthenticationInfo.builder()
                 .email("test2@gmail.com")
                 .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
@@ -108,8 +121,43 @@ class UserRepositoryTest {
                 .id(2L)
                 .username("testName2")
                 .authenticationInfo(authenticationInfo2)
-                .created(Timestamp.valueOf("2023-07-13 16:28:08.000000"))
-                .changed(Timestamp.valueOf("2023-07-31 15:32:53.462876"))
+                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
+                .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
+                .active(false)
+                .isDeleted(false)
+                .build();
+        List<User> expected = new ArrayList<>();
+        expected.add(user1);
+        expected.add(user2);
+        List<User> actual = userRepository.findAllByIsDeletedFalseOrderById();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testFindAllByIsDeletedFalseOrderById_should_return_IsDeletedTrue() {
+        AuthenticationInfo authenticationInfo1 = AuthenticationInfo.builder()
+                .email("test1@gmail.com")
+                .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
+                .build();
+        User user1 = User.builder()
+                .id(1L)
+                .username("testName1")
+                .authenticationInfo(authenticationInfo1)
+                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
+                .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
+                .active(false)
+                .isDeleted(false)
+                .build();
+        AuthenticationInfo authenticationInfo2 = AuthenticationInfo.builder()
+                .email("test2@gmail.com")
+                .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
+                .build();
+        User user2 = User.builder()
+                .id(2L)
+                .username("testName2")
+                .authenticationInfo(authenticationInfo2)
+                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
+                .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
                 .active(false)
                 .isDeleted(false)
                 .build();

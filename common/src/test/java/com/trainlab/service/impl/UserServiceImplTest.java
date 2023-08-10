@@ -64,16 +64,16 @@ class UserServiceImplTest {
                 .id(1L)
                 .username(userName)
                 .authenticationInfo(authenticationInfo)
-//                .created(Timestamp.valueOf("2023-07-13 16:28:08.000000"))
-                .changed(Timestamp.valueOf("2023-07-31 15:32:53.462876"))
+                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
+                .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
                 .active(false)
                 .isDeleted(false)
                 .build();
         Role role = Role.builder()
                 .id(1)
                 .roleName("ROLE_USER")
-//                .created(Timestamp.valueOf("2023-07-13 16:28:08.000000"))
-                .changed(Timestamp.valueOf("2023-07-13 16:28:08.000000"))
+                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
+                .changed(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .isDeleted(false)
                 .build();
         String emailSubject = "Подтверждение регистрации";
@@ -91,19 +91,4 @@ class UserServiceImplTest {
         assertEquals(expected, actual);
     }
 
-    @Test
-    void activateUser() {
-    }
-
-    @Test
-    void findById() {
-    }
-
-    @Test
-    void findAll() {
-    }
-
-    @Test
-    void update() {
-    }
 }

@@ -14,14 +14,14 @@ public interface UserMapper {
     @Mapping(target = "username", source = "username")
     @Mapping(target = "authenticationInfo.email", source = "email")
     @Mapping(target = "authenticationInfo.userPassword", source = "password")
-    @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
+    @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))")
+    @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))")
     User toEntity(UserRequest userRequest);
 
     @Mapping(target = "username", source = "username")
     @Mapping(target = "authenticationInfo.email", source = "email")
     @Mapping(target = "authenticationInfo.userPassword", source = "password")
-    @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
+    @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))")
     User partialUpdateToEntity(UserRequest userRequest, @MappingTarget User user);
 
 }
