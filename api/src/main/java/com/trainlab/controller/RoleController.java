@@ -13,8 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,11 +48,10 @@ public class RoleController {
                     )
             }
     )
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @PostMapping("/")
     public ResponseEntity<Role> createRole(@Valid @RequestBody @Parameter(description = "Role data", required = true) RoleRequestDto roleRequestDto) {
         Role createdRole = roleService.create(roleRequestDto);
-        return new ResponseEntity<>(createdRole, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
     }
 
     @Operation(
@@ -73,9 +70,9 @@ public class RoleController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<Role>> receiveAll() {
+    public ResponseEntity<List<Role>> findAll() {
         List<Role> roles = roleService.findAll();
-        return new ResponseEntity<>(roles, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(roles);
     }
 
     @Operation(
@@ -99,7 +96,7 @@ public class RoleController {
     public ResponseEntity<Role> updateRole(@PathVariable("id") Integer id,
                                            @Valid @RequestBody RoleRequestDto roleRequestDto) {
         Role updatedRole = roleService.update(roleRequestDto, id);
-        return new ResponseEntity<>(updatedRole, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedRole);
     }
 
     @Operation(
@@ -120,9 +117,9 @@ public class RoleController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<Role> receiveRoleById(@PathVariable Integer id) {
-        Role role = roleService.receiveById(id);
-        return new ResponseEntity<>(role, HttpStatus.OK);
+    public ResponseEntity<Role> findRoleById(@PathVariable Integer id) {
+        Role role = roleService.getById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(role);
     }
 
     @Operation(
@@ -143,9 +140,9 @@ public class RoleController {
             }
     )
     @GetMapping("/")
-    public ResponseEntity<Role> receiveRoleByRoleName(@Valid @RequestBody RoleRequestDto roleRequestDto) {
-        Role role = roleService.receiveByRoleName(roleRequestDto.getRoleName());
-        return new ResponseEntity<>(role, HttpStatus.OK);
+    public ResponseEntity<Role> findRoleByRoleName(@Valid @RequestBody RoleRequestDto roleRequestDto) {
+        Role role = roleService.getByRoleName(roleRequestDto.getRoleName());
+        return ResponseEntity.status(HttpStatus.OK).body(role);
     }
 
 }

@@ -5,6 +5,7 @@ import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.dto.AuthResponseDto;
 import com.trainlab.exception.ActivationException;
 import com.trainlab.jwt.TokenProvider;
+import com.trainlab.model.User;
 import com.trainlab.service.CustomUserDetailsService;
 import com.trainlab.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,9 @@ public class AuthenticationController {
     @PostMapping("/auth")
     public ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request) {
         String userEmail = request.getUserEmail();
-        if (!(userService.findByEmail(userEmail).isActive())) {
+        User userByEmail = userService.findByEmail(userEmail);
+
+        if (!(userByEmail.isActive())) {
             throw new ActivationException("User not activated");
         }
 

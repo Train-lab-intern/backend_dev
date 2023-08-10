@@ -1,7 +1,7 @@
 package com.trainlab.controller;
 
-import com.trainlab.dto.UserCreateRequestDto;
-import com.trainlab.dto.UserUpdateRequestDto;
+import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.User;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,8 +14,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,11 +50,10 @@ public class UserController {
                     )
             }
     )
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserCreateRequestDto userCreateRequestDto) {
-        User createdUser = userService.create(userCreateRequestDto);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    public ResponseEntity<User> registerUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserCreateDto userCreateDto) {
+        User createdUser = userService.create(userCreateDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @Operation(
@@ -101,7 +98,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.findAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
     @Operation(
@@ -123,9 +120,9 @@ public class UserController {
     )
     @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id,
-                                           @Valid @RequestBody UserUpdateRequestDto userUpdateRequestDto, Principal principal) {
-        User updatedUser = userService.update(userUpdateRequestDto, id, principal);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+                                           @Valid @RequestBody UserUpdateDto userUpdateDto, Principal principal) {
+        User updatedUser = userService.update(userUpdateDto, id, principal);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
     }
 
     @Operation(
@@ -146,15 +143,15 @@ public class UserController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<User> receiveUserById(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<User> findUserById(@PathVariable Long id, Principal principal) {
         User user = userService.findById(id, principal);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
     @PatchMapping("/change-password/{id}")
     public ResponseEntity<String> forgotPassword(@PathVariable("id") Long id,
-                                                 @Valid @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
-        userService.changePassword(userUpdateRequestDto, id);
-        return new ResponseEntity<>("You changed password", HttpStatus.OK);
+                                                 @Valid @RequestBody UserUpdateDto userUpdateDto) {
+        userService.changePassword(userUpdateDto, id);
+        return ResponseEntity.status(HttpStatus.OK).body("You changed password");
     }
 }

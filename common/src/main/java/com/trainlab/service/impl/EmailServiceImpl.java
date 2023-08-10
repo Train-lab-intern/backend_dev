@@ -13,6 +13,13 @@ public class EmailServiceImpl implements EmailService {
     public final JavaMailSender emailSender;
     private final SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
+    public void sendEmail(String address, String subject, String message){
+        simpleMailMessage.setTo(address);
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setText(message);
+        emailSender.send(simpleMailMessage);
+    }
+
     @Override
     public void sendRegistrationConfirmationEmail(String toAddress) {
         String emailSubject = "Подтверждение регистрации";
@@ -20,10 +27,7 @@ public class EmailServiceImpl implements EmailService {
                 "https://test.app.it-roast.com/api/v1/users/complete-registration?userEmail=" + toAddress +
                 "\nС наилучшими пожеланиями,\nКоманда Trainlab";
 
-        simpleMailMessage.setTo(toAddress);
-        simpleMailMessage.setSubject(emailSubject);
-        simpleMailMessage.setText(message);
-        emailSender.send(simpleMailMessage);
+        sendEmail(toAddress, emailSubject, message);
     }
 
     @Override
@@ -33,9 +37,6 @@ public class EmailServiceImpl implements EmailService {
                 "Вот ваш новый пароль, пожалуйста, не забывайте!\n" + newPassword +
                 "\nС наилучшими пожеланиями,\nКоманда Trainlab";
 
-        simpleMailMessage.setTo(toAddress);
-        simpleMailMessage.setSubject(emailSubject);
-        simpleMailMessage.setText(message);
-        emailSender.send(simpleMailMessage);
+        sendEmail(toAddress, emailSubject, message);
     }
 }

@@ -34,7 +34,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional
     public Role create(RoleRequestDto roleRequestDto) {
         if (roleRepository.existsByRoleName(roleRequestDto.getRoleName()))
             throw new ObjectIsExistException("The same role already exists");
@@ -44,17 +43,16 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role receiveById(Integer id) {
+    public Role getById(Integer id) {
         return roleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Role not found"));
     }
 
     @Override
-    public Role receiveByRoleName(String roleName) {
+    public Role getByRoleName(String roleName) {
         return roleRepository.findByRoleName(roleName).orElseThrow(() -> new EntityNotFoundException("Role not found"));
     }
 
     @Override
-    @Transactional
     public Role update(RoleRequestDto roleRequestDto, Integer id) {
         Optional<Role> role = roleRepository.findById(id);
 

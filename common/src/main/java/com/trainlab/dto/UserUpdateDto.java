@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @Validated
 @Schema(description = "User Request")
-public class UserUpdateRequestDto {
+public class UserUpdateDto {
 
     @Schema(example = "SvetaPiven", type = "string", description = "Username")
     private String username;
