@@ -1,6 +1,6 @@
-package com.trainlab.security.config;
+package com.trainlab.configuration;
 
-import com.trainlab.security.filter.JwtTokenFilter;
+import com.trainlab.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,16 +57,18 @@ public class WebSecurityConfiguration {
                         "/configuration/security/**", "/swagger-ui/**", "/swagger-ui.html#", "/webjars/**"
                 ).permitAll()
                 .requestMatchers(HttpMethod.GET, "/front/**").permitAll()
-                .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/v1/**").permitAll()
                 .requestMatchers("/api/v1/users").permitAll()
                 .requestMatchers("/api/v1/roles").permitAll()
+                .requestMatchers("/api/v1/users/register").permitAll()
                 .requestMatchers("/api/v1/users/complete-registration").permitAll()
-                .requestMatchers(HttpMethod.POST,"/api/v1/auth").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
+                .requestMatchers("/api/v1/users/change-password/**").permitAll()
+                .requestMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/api/v1/admin/users/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated();
-
         return http.build();
     }
 }

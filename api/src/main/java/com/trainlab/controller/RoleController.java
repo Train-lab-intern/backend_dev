@@ -1,6 +1,6 @@
 package com.trainlab.controller;
 
-import com.trainlab.dto.request.RoleRequest;
+import com.trainlab.dto.RoleRequestDto;
 import com.trainlab.model.Role;
 import com.trainlab.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,8 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +27,7 @@ import java.util.List;
 @RequestMapping("api/v1/roles")
 @RequiredArgsConstructor
 public class RoleController {
+
     private final RoleService roleService;
 
     @Operation(
@@ -49,11 +48,10 @@ public class RoleController {
                     )
             }
     )
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    @PostMapping("/create")
-    public ResponseEntity<Role> createRole(@Valid @RequestBody @Parameter(description = "Role data", required = true) RoleRequest roleRequest) {
-        Role createdRole = roleService.create(roleRequest);
-        return new ResponseEntity<>(createdRole, HttpStatus.CREATED);
+    @PostMapping("/")
+    public ResponseEntity<Role> createRole(@Valid @RequestBody @Parameter(description = "Role data", required = true) RoleRequestDto roleRequestDto) {
+        Role createdRole = roleService.create(roleRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
     }
 
     @Operation(
@@ -72,9 +70,9 @@ public class RoleController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<Role>> receiveAll() {
+    public ResponseEntity<List<Role>> findAll() {
         List<Role> roles = roleService.findAll();
-        return new ResponseEntity<>(roles, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(roles);
     }
 
     @Operation(
@@ -95,10 +93,10 @@ public class RoleController {
             }
     )
     @PutMapping("/{id}")
-    public ResponseEntity<Role> updateRole(@PathVariable("id") Long id,
-                                           @Valid @RequestBody RoleRequest roleRequest) {
-        Role updatedRole = roleService.update(roleRequest, id);
-        return new ResponseEntity<>(updatedRole, HttpStatus.OK);
+    public ResponseEntity<Role> updateRole(@PathVariable("id") Integer id,
+                                           @Valid @RequestBody RoleRequestDto roleRequestDto) {
+        Role updatedRole = roleService.update(roleRequestDto, id);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedRole);
     }
 
     @Operation(
@@ -119,9 +117,9 @@ public class RoleController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<Role> receiveRoleById(@PathVariable Long id) {
-        Role role = roleService.receiveById(id);
-        return new ResponseEntity<>(role, HttpStatus.OK);
+    public ResponseEntity<Role> findRoleById(@PathVariable Integer id) {
+        Role role = roleService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(role);
     }
 
     @Operation(
@@ -141,10 +139,10 @@ public class RoleController {
                     )
             }
     )
-    @GetMapping("/receive")
-    public ResponseEntity<Role> receiveRoleByRoleName(@Valid @RequestBody RoleRequest roleRequest) {
-        Role role = roleService.receiveByRoleName(roleRequest.getRoleName());
-        return new ResponseEntity<>(role, HttpStatus.OK);
+    @GetMapping("/")
+    public ResponseEntity<Role> findRoleByRoleName(@Valid @RequestBody RoleRequestDto roleRequestDto) {
+        Role role = roleService.findByRoleName(roleRequestDto.getRoleName());
+        return ResponseEntity.status(HttpStatus.OK).body(role);
     }
 
 }

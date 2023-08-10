@@ -1,11 +1,13 @@
 package com.trainlab.mapper;
 
-import com.trainlab.dto.request.RoleRequest;
+import com.trainlab.dto.RoleRequestDto;
 import com.trainlab.model.Role;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)

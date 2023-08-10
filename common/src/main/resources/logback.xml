@@ -1,19 +1,17 @@
 <configuration>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>
-                %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
-            </Pattern>
-        </layout>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
     </appender>
 
-    <logger name="com.trainlab" level="debug" additivity="false">
-        <appender-ref ref="CONSOLE"/>
-    </logger>
+    <logger name="org.springframework" level="INFO" />
+    <logger name="org.apache.tomcat" level="INFO" />
+    <logger name="org.flywaydb" level="INFO" />
 
-    <root level="error">
-        <appender-ref ref="CONSOLE"/>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
     </root>
 
 </configuration>

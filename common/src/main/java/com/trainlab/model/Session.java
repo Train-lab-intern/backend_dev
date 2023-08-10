@@ -1,6 +1,5 @@
 package com.trainlab.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,6 +43,9 @@ public class Session {
     @NotNull
     @Column(name = "session_id", length = 256)
     private String sessionId;
+
+    @Column(name = "ip_address", length = 256)
+    private String ipAddress;
 
     @JsonIgnore
     @NotNull

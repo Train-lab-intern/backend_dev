@@ -1,5 +1,6 @@
-package com.trainlab.security.dto;
+package com.trainlab.dto;
 
+import com.trainlab.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,11 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class AuthResponse {
+public class AuthResponseDto {
 
-    @Schema(example = "svetapiven93@gmail.com", type = "string", description = "User Login")
-    private String login;
+    @Schema(example = "trainlab@gmail.com", type = "string", description = "User Email")
+    private String userEmail;
 
     @Schema(example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c", type = "string", description = "Authentication token")
     private String token;
+
+    @Schema
+    private User user;
 }
