@@ -36,7 +36,7 @@ public interface UserController{
                             description = "User created",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = UserCreateRequestDto.class) // Изменим на UserDto
+                                    schema = @Schema(implementation = UserCreateRequestDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -76,7 +76,7 @@ public interface UserController{
                             description = "Successfully loaded Users",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserFindAllResponseDto.class)))
 
                     ),
                     @ApiResponse(responseCode = "INTERNAL_SERVER_ERROR", description = "Internal Server Error")
@@ -94,7 +94,7 @@ public interface UserController{
                             description = "Successfully updated User",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserUpdateResponseDto.class)))
                     ),
                     @ApiResponse(
                             responseCode = "BAD_REQUEST",
@@ -117,7 +117,7 @@ public interface UserController{
                             description = "Successfully loaded User",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserFindByIdResponseDto.class)))
                     ),
                     @ApiResponse(
                             responseCode = "NOT_FOUND",
