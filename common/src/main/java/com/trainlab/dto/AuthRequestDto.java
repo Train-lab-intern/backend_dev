@@ -1,4 +1,4 @@
-package com.trainlab.security.dto;
+package com.trainlab.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class AuthRequest {
+public class AuthRequestDto {
 
     @Schema(example = "trainlab@gmail.com", type = "string", description = "User Email")
     private String userEmail;

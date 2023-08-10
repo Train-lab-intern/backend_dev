@@ -1,23 +1,19 @@
 package com.trainlab.service;
 
-import com.trainlab.dto.request.RoleRequest;
+import com.trainlab.dto.RoleRequestDto;
 import com.trainlab.model.Role;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public interface RoleService {
 
+    Role create(RoleRequestDto roleRequestDto);
 
-    @Transactional
-    Role create(RoleRequest roleRequest);
+    Role findById(Integer id);
 
-    Role receiveById(Integer id);
-
-    Role receiveByRoleName(String roleName);
+    Role findByRoleName(String roleName);
 
     List<Role> findAll();
 
-    @Transactional
-    Role update(RoleRequest roleRequest, Integer id);
+    Role update(RoleRequestDto roleRequestDto, Integer id);
 }

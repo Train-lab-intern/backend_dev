@@ -56,12 +56,12 @@ public class SessionServiceImpl implements SessionService {
 
             if (userOptional.isPresent()) {
                 session.setUser(userOptional.get());
-                sessionRepository.save(session);
+                sessionRepository.saveAndFlush(session);
             } else {
                 log.error("User not found with ID: " + userId);
             }
         } else {
-            sessionRepository.save(session);
+            sessionRepository.saveAndFlush(session);
             log.error("userId is null");
         }
     }

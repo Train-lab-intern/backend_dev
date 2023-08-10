@@ -1,6 +1,6 @@
-package com.trainlab.security.filter;
+package com.trainlab.filter;
 
-import com.trainlab.security.jwt.TokenProvider;
+import com.trainlab.jwt.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

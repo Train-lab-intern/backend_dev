@@ -1,6 +1,5 @@
-package com.trainlab.security.config;
+package com.trainlab.configuration;
 
-import com.trainlab.configuration.JwtConfigurationProvider;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,8 +1,9 @@
 package com.trainlab.controller;
+
+import com.trainlab.configuration.JwtConfiguration;
 import com.trainlab.model.AuthenticationInfo;
 import com.trainlab.model.User;
 import com.trainlab.repository.UserRepository;
-import com.trainlab.security.config.JwtConfiguration;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,7 +11,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;

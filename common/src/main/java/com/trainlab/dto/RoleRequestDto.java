@@ -1,4 +1,4 @@
-package com.trainlab.dto.request;
+package com.trainlab.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class RoleRequest {
+public class RoleRequestDto {
     @Size(max = 30)
     @NotNull
     private String roleName;

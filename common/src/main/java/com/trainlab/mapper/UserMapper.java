@@ -1,7 +1,7 @@
 package com.trainlab.mapper;
 
-import com.trainlab.dto.request.UserCreateRequest;
-import com.trainlab.dto.request.UserUpdateRequest;
+import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.User;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -19,10 +19,10 @@ public interface UserMapper {
     @Mapping(target = "authenticationInfo.userPassword", source = "password")
     @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    User toEntity(UserCreateRequest userCreateRequest);
+    User toEntity(UserCreateDto userCreateDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    User partialUpdateToEntity(UserUpdateRequest userUpdateRequest, @MappingTarget User user);
+    User partialUpdateToEntity(UserUpdateDto userUpdateDto, @MappingTarget User user);
 
 }

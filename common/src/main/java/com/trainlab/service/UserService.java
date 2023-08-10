@@ -1,14 +1,14 @@
 package com.trainlab.service;
 
-import com.trainlab.dto.request.UserCreateRequest;
-import com.trainlab.dto.request.UserUpdateRequest;
+import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.User;
 
 import java.security.Principal;
 import java.util.List;
 
 public interface UserService {
-    User create(UserCreateRequest userCreateRequest);
+    User create(UserCreateDto userCreateDto);
 
     void activateUser(String userEmail);
 
@@ -16,6 +16,9 @@ public interface UserService {
 
     List<User> findAll();
 
-    User update(UserUpdateRequest userUpdateRequest, Long id, Principal principal);
-    void changePassword(UserUpdateRequest userUpdateRequest, Long id);
+    User update(UserUpdateDto userUpdateDto, Long id, Principal principal);
+
+    User findByEmail(String email);
+
+    void changePassword(UserUpdateDto userUpdateDto, Long id);
 }
