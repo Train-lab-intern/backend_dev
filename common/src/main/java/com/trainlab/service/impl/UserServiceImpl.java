@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
         User updated = userMapper.partialUpdateToEntity(userUpdateRequestDto, user);
         setEncodedPassword(updated);
-        return userRepository.save(updated);
+        return userRepository.saveAndFlush(updated);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncode.encodePassword(newPassword);
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         emailService.sendNewPassword(toAddress, newPassword);
     }
 
