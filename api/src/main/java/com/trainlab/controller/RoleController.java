@@ -1,42 +1,25 @@
 package com.trainlab.controller;
 
-import com.trainlab.dto.RoleRequestDto;
+import com.trainlab.dto.RoleCreateDto;
+import com.trainlab.dto.RoleDto;
 import com.trainlab.model.Role;
-import com.trainlab.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("api/v1/roles")
-@RequiredArgsConstructor
-public class RoleController {
-
-    private final RoleService roleService;
-
+public interface RoleController {
     @Operation(
             summary = "Spring Data Create role",
             description = "Creates a new role",
             responses = {
                     @ApiResponse(
                             responseCode = "CREATED",
-                            description = "Creating a new role",
+                            description = "Created a new role",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = Role.class)
@@ -48,11 +31,7 @@ public class RoleController {
                     )
             }
     )
-    @PostMapping("/")
-    public ResponseEntity<Role> createRole(@Valid @RequestBody @Parameter(description = "Role data", required = true) RoleRequestDto roleRequestDto) {
-        Role createdRole = roleService.create(roleRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
-    }
+    ResponseEntity<RoleDto> createRole(RoleCreateDto roleCreateDto);
 
     @Operation(
             summary = "Spring Data receiving all roles",
@@ -69,35 +48,7 @@ public class RoleController {
                     @ApiResponse(responseCode = "INTERNAL_SERVER_ERROR", description = "Internal Server Error")
             }
     )
-    @GetMapping
-    public ResponseEntity<List<Role>> findAll() {
-        List<Role> roles = roleService.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(roles);
-    }
-
-    @Operation(
-            summary = "Spring Data Update role ",
-            description = "Updating based user role on given id and request body",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "OK",
-                            description = "User role has successfully updated",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = Role.class))
-                    ),
-                    @ApiResponse(
-                            responseCode = "BAD_REQUEST",
-                            description = "Validation error"
-                    )
-            }
-    )
-    @PutMapping("/{id}")
-    public ResponseEntity<Role> updateRole(@PathVariable("id") Integer id,
-                                           @Valid @RequestBody RoleRequestDto roleRequestDto) {
-        Role updatedRole = roleService.update(roleRequestDto, id);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedRole);
-    }
+    ResponseEntity<List<RoleDto>> findAll();
 
     @Operation(
             summary = "Spring Data Role searching by its id",
@@ -116,15 +67,11 @@ public class RoleController {
                     )
             }
     )
-    @GetMapping("/{id}")
-    public ResponseEntity<Role> findRoleById(@PathVariable Integer id) {
-        Role role = roleService.findById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(role);
-    }
+    ResponseEntity<RoleDto> findRoleById(Integer id);
 
     @Operation(
             summary = "Spring Data Role receiving by role name",
-            description = "Receive role by id",
+            description = "Receive role by role name",
             responses = {
                     @ApiResponse(
                             responseCode = "OK",
@@ -139,10 +86,24 @@ public class RoleController {
                     )
             }
     )
-    @GetMapping("/")
-    public ResponseEntity<Role> findRoleByRoleName(@Valid @RequestBody RoleRequestDto roleRequestDto) {
-        Role role = roleService.findByRoleName(roleRequestDto.getRoleName());
-        return ResponseEntity.status(HttpStatus.OK).body(role);
-    }
+    ResponseEntity<RoleDto> findRoleByRoleName(String roleName);
 
+    @Operation(
+            summary = "Spring Data Update role ",
+            description = "Updating based user role on given id and request body",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "OK",
+                            description = "User role has successfully updated",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Role.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "BAD_REQUEST",
+                            description = "Validation error"
+                    )
+            }
+    )
+    ResponseEntity<RoleDto> updateRole(Integer id, RoleDto roleDto);
 }

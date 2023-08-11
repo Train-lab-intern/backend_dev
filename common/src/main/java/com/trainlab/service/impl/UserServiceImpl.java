@@ -2,7 +2,6 @@ package com.trainlab.service.impl;
 
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserUpdateDto;
-import com.trainlab.exception.AccessControlViolated;
 import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.mapper.UserMapper;
@@ -17,15 +16,15 @@ import com.trainlab.util.RandomValuesGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -33,10 +32,15 @@ import java.util.Optional;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final RandomValuesGenerator generator;
+
     private final UserMapper userMapper;
+
     private final PasswordEncode passwordEncode;
+
     private final UserRepository userRepository;
+
     private final RoleRepository roleRepository;
+
     private final EmailService emailService;
 
     @Override
@@ -70,24 +74,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id, Principal principal) {
-        Long userId = null;
+    public User findById(Long id, UserDetails userDetails) {
+        String userEmail = userDetails.getUsername();
 
-        if (principal != null) {
-            Optional<User> userOptional = userRepository.findByAuthenticationInfoEmail(principal.getName());
-            if (userOptional.isPresent()) {
-                userId = userOptional.get().getId();
-            }
+        Optional<User> userOptional = userRepository.findByAuthenticationInfoEmail(userEmail);
+        User loggedInUser = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!loggedInUser.getId().equals(id)) {
+            throw new AccessDeniedException("Access denied");
         }
 
-        User user;
-        if (Objects.equals(id, userId)) {
-            user = userCheck(userId);
-        } else {
-            throw new AccessControlViolated("You have no right for this operation");
-        }
-
-        return user;
+        return loggedInUser;
     }
 
     @Override
@@ -102,8 +99,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(UserUpdateDto userUpdateDto, Long id, Principal principal) {
-        User user = findById(id, principal);
+    public User update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails) {
+        String email = userDetails.getUsername();
+
+        User user = userRepository.findByAuthenticationInfoEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        if (!user.getId().equals(id)) {
+            throw new AccessDeniedException("Access denied");
+        }
+
         User updated = userMapper.partialUpdateToEntity(userUpdateDto, user);
         setEncodedPassword(updated);
         return userRepository.saveAndFlush(updated);
@@ -111,7 +116,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByAuthenticationInfoEmail(email).orElseThrow(() -> new ObjectNotFoundException("User not found"));
+        return userRepository.findByAuthenticationInfoEmail(email).orElseThrow(()
+                -> new ObjectNotFoundException("User not found"));
     }
 
     public void changePassword(UserUpdateDto userUpdateDto, Long id) {
@@ -122,7 +128,7 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncode.encodePassword(newPassword);
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         emailService.sendNewPassword(toAddress, newPassword);
     }
 

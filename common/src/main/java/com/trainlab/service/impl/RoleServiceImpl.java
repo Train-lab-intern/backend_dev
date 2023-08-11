@@ -1,6 +1,7 @@
 package com.trainlab.service.impl;
 
-import com.trainlab.dto.RoleRequestDto;
+import com.trainlab.dto.RoleCreateDto;
+import com.trainlab.dto.RoleDto;
 import com.trainlab.exception.ObjectIsExistException;
 import com.trainlab.mapper.RoleMapper;
 import com.trainlab.model.Role;
@@ -10,10 +11,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,44 +24,48 @@ public class RoleServiceImpl implements RoleService {
     private final RoleMapper roleMapper;
 
     @Override
-    public List<Role> findAll() {
+    public List<RoleDto> findAll() {
         List<Role> roles = roleRepository.findAll();
 
         if (roles.isEmpty()) {
             throw new EntityNotFoundException("Roles not found");
         }
 
-        return roles;
+        return roles.stream()
+                .map(roleMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Role create(RoleRequestDto roleRequestDto) {
-        if (roleRepository.existsByRoleName(roleRequestDto.getRoleName()))
+    public RoleDto create(RoleCreateDto roleCreateDto) {
+        if (roleRepository.existsByRoleName(roleCreateDto.getRoleName()))
             throw new ObjectIsExistException("The same role already exists");
-
-        Role role = roleMapper.toEntity(roleRequestDto);
-        return roleRepository.saveAndFlush(role);
+        Role role = roleRepository.saveAndFlush(roleMapper.toEntity(roleCreateDto));
+        return roleMapper.toDto(role);
     }
 
     @Override
-    public Role findById(Integer id) {
-        return roleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Role not found"));
+    public RoleDto findById(Integer id) {
+        Role role = roleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Role not found"));
+        return roleMapper.toDto(role);
     }
 
     @Override
-    public Role findByRoleName(String roleName) {
-        return roleRepository.findByRoleName(roleName).orElseThrow(() -> new EntityNotFoundException("Role not found"));
+    public RoleDto findByRoleName(String roleName) {
+        Role role = roleRepository.findByRoleName(roleName).orElseThrow(() -> new EntityNotFoundException("Role not found"));
+        return roleMapper.toDto(role);
     }
 
     @Override
-    public Role update(RoleRequestDto roleRequestDto, Integer id) {
+    public RoleDto update(RoleDto roleDto, Integer id) {
         Optional<Role> role = roleRepository.findById(id);
 
-        if (roleRepository.existsByRoleName(roleRequestDto.getRoleName()))
+        if (roleRepository.existsByRoleName(roleDto.getRoleName()))
             throw new ObjectIsExistException("The same role already exists");
 
-        Role updated = roleMapper.partialUpdateToEntity(roleRequestDto, role.orElseThrow(() -> new EntityNotFoundException("Role not found")));
-        return roleRepository.saveAndFlush(updated);
+        Role updated = roleMapper.partialUpdateToEntity(roleDto, role.orElseThrow(() -> new EntityNotFoundException("Role not found")));
+        Role roleSaved = roleRepository.saveAndFlush(updated);
+        return roleMapper.toDto(roleSaved);
     }
 
 }

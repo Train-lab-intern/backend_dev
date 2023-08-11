@@ -1,6 +1,7 @@
 package com.trainlab.mapper;
 
 import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.User;
 import org.mapstruct.BeanMapping;
@@ -24,4 +25,11 @@ public interface UserMapper {
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))")
     User partialUpdateToEntity(UserUpdateDto userUpdateDto, @MappingTarget User user);
 
+    @Mapping(target = "username", source = "username")
+    @Mapping(target = "email", source = "authenticationInfo.email")
+    @Mapping(target = "password", source = "authenticationInfo.userPassword")
+    UserUpdateDto toUpdateDto(User user);
+
+    @Mapping(target = "email", source = "authenticationInfo.email")
+    UserDto toDto(User user);
 }
