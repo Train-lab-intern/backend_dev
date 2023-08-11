@@ -1,19 +1,20 @@
 package com.trainlab.service;
 
-import com.trainlab.dto.RoleRequestDto;
+import com.trainlab.dto.RoleCreateDto;
+import com.trainlab.dto.RoleDto;
 import com.trainlab.model.Role;
 
 import java.util.List;
 
 public interface RoleService {
 
-    Role create(RoleRequestDto roleRequestDto);
+    RoleDto create(RoleCreateDto roleCreateDto);
 
-    Role findById(Integer id);
+    RoleDto findById(Integer id);
 
-    Role findByRoleName(String roleName);
+    RoleDto findByRoleName(String roleName);
 
-    List<Role> findAll();
+    List<RoleDto> findAll();
 
-    Role update(RoleRequestDto roleRequestDto, Integer id);
+    RoleDto update(RoleDto roleDto, Integer id);
 }

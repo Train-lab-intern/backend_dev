@@ -1,6 +1,7 @@
 package com.trainlab.mapper;
 
-import com.trainlab.dto.RoleRequestDto;
+import com.trainlab.dto.RoleCreateDto;
+import com.trainlab.dto.RoleDto;
 import com.trainlab.model.Role;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -14,10 +15,17 @@ import org.mapstruct.ReportingPolicy;
 public interface RoleMapper {
     @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    Role toEntity(RoleRequestDto roleRequestDto);
+    Role toEntity(RoleDto roleDto);
+
+    @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
+    @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
+    Role toEntity(RoleCreateDto roleCreateDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    Role partialUpdateToEntity(RoleRequestDto roleRequestDto, @MappingTarget Role role);
+    Role partialUpdateToEntity(RoleDto roleDto, @MappingTarget Role role);
 
+    RoleDto toDto(Role role);
+
+    RoleDto toEntity(Role role);
 }
