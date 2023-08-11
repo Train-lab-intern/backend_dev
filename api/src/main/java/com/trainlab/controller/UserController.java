@@ -1,37 +1,28 @@
 package com.trainlab.controller;
 
 import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
-import com.trainlab.model.User;
-import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
 import java.util.List;
-
-@RestController
-@RequestMapping("/api/v1/users")
-@RequiredArgsConstructor
-public class UserController {
-    private final UserService userService;
-
+@Tag(name = "UserRestController", description = "User management methods")
+public interface UserController{
     @Operation(
             summary = "Spring Data Create User",
             description = "Creates a new user",
@@ -41,7 +32,7 @@ public class UserController {
                             description = "User created",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = User.class)
+                                    schema = @Schema(implementation = UserCreateDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -50,11 +41,9 @@ public class UserController {
                     )
             }
     )
-    @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@Valid @RequestBody @Parameter(description = "User information", required = true) UserCreateDto userCreateDto) {
-        User createdUser = userService.create(userCreateDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-    }
+    ResponseEntity<String> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
+                                      UserCreateDto userCreateDto, BindingResult bindingResult);
+
 
     @Operation(
             summary = "Complete Registration",
@@ -70,15 +59,7 @@ public class UserController {
                     )
             }
     )
-    @GetMapping("/complete-registration")
-    public ResponseEntity<String> completeRegistration(@RequestParam("userEmail") String userEmail) {
-        try {
-            userService.activateUser(userEmail);
-            return ResponseEntity.ok("Registration completed successfully!");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Error occurred during registration completion: " + e.getMessage());
-        }
-    }
+    ResponseEntity<String> completeRegistration(@RequestParam("userEmail") String userEmail);
 
     @Operation(
             summary = "Spring Data User Find All Search",
@@ -89,17 +70,13 @@ public class UserController {
                             description = "Successfully loaded Users",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))
 
                     ),
                     @ApiResponse(responseCode = "INTERNAL_SERVER_ERROR", description = "Internal Server Error")
             }
     )
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(users);
-    }
+    ResponseEntity<List<UserDto>> getAllUsers();
 
     @Operation(
             summary = "Spring Data Update User",
@@ -110,7 +87,7 @@ public class UserController {
                             description = "Successfully updated User",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserUpdateDto.class)))
                     ),
                     @ApiResponse(
                             responseCode = "BAD_REQUEST",
@@ -118,12 +95,10 @@ public class UserController {
                     )
             }
     )
-    @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id,
-                                           @Valid @RequestBody UserUpdateDto userUpdateDto, Principal principal) {
-        User updatedUser = userService.update(userUpdateDto, id, principal);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
-    }
+    ResponseEntity<UserUpdateDto> updateUser(@PathVariable("id") Long id,
+                                             @Valid @RequestBody UserUpdateDto userUpdateRequestDto,
+                                             BindingResult bindingResult,
+                                             @AuthenticationPrincipal UserDetails userDetails);
 
     @Operation(
             summary = "Spring Data User Search by user Id",
@@ -134,7 +109,7 @@ public class UserController {
                             description = "Successfully loaded User",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = User.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))
                     ),
                     @ApiResponse(
                             responseCode = "NOT_FOUND",
@@ -142,16 +117,24 @@ public class UserController {
                     )
             }
     )
-    @GetMapping("/{id}")
-    public ResponseEntity<User> findUserById(@PathVariable Long id, Principal principal) {
-        User user = userService.findById(id, principal);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
-    }
+    ResponseEntity<UserDto> findUserById(@PathVariable Long id, @AuthenticationPrincipal UserDetails detailsService);
 
     @PatchMapping("/change-password/{id}")
-    public ResponseEntity<String> forgotPassword(@PathVariable("id") Long id,
-                                                 @Valid @RequestBody UserUpdateDto userUpdateDto) {
-        userService.changePassword(userUpdateDto, id);
-        return ResponseEntity.status(HttpStatus.OK).body("You changed password");
-    }
+    @Operation(
+            summary = "Change User Password by user Id",
+            description = "Change user password by Id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "OK",
+                            description = "Password changed successfully",
+                            content = @Content(mediaType = "text/plain")
+                    ),
+                    @ApiResponse(
+                            responseCode = "NOT_FOUND",
+                            description = "User not found"
+                    )
+            }
+    )
+    ResponseEntity<String> forgotPassword(@PathVariable("id") Long id,
+                                          @Valid @RequestBody UserUpdateDto userUpdateDto);
 }

@@ -15,10 +15,6 @@ import org.mapstruct.ReportingPolicy;
 public interface RoleMapper {
     @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    Role toEntity(RoleDto roleDto);
-
-    @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
     Role toEntity(RoleCreateDto roleCreateDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -26,6 +22,4 @@ public interface RoleMapper {
     Role partialUpdateToEntity(RoleDto roleDto, @MappingTarget Role role);
 
     RoleDto toDto(Role role);
-
-    RoleDto toEntity(Role role);
 }
