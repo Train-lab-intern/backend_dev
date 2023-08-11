@@ -1,7 +1,7 @@
 package com.trainlab.service.impl;
 
-import com.trainlab.dto.UserCreateRequestDto;
-import com.trainlab.dto.UserUpdateRequestDto;
+import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.mapper.UserMapper;
@@ -39,8 +39,8 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
 
     @Override
-    public User create(UserCreateRequestDto userCreateRequestDto) {
-        User user = userMapper.toEntity(userCreateRequestDto);
+    public User create(UserCreateDto userCreateDto) {
+        User user = userMapper.toEntity(userCreateDto);
         setEncodedPassword(user);
         setDefaultRole(user);
         userRepository.saveAndFlush(user);
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(UserUpdateRequestDto userUpdateRequestDto, Long id, UserDetails userDetails) {
+    public User update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails) {
         String email = userDetails.getUsername();
 
         User user = userRepository.findByAuthenticationInfoEmail(email)
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
             throw new AccessDeniedException("Access denied");
         }
 
-        User updated = userMapper.partialUpdateToEntity(userUpdateRequestDto, user);
+        User updated = userMapper.partialUpdateToEntity(userUpdateDto, user);
         setEncodedPassword(updated);
         return userRepository.saveAndFlush(updated);
     }
@@ -115,9 +115,9 @@ public class UserServiceImpl implements UserService {
                 -> new ObjectNotFoundException("User not found"));
     }
 
-    public void changePassword(UserUpdateRequestDto userUpdateRequestDto, Long id) {
+    public void changePassword(UserUpdateDto userUpdateDto, Long id) {
         User user = userCheck(id);
-        String toAddress = userUpdateRequestDto.getEmail();
+        String toAddress = userUpdateDto.getEmail();
 
         String newPassword = generator.generateRandomPassword(8);
         String encodedPassword = passwordEncode.encodePassword(newPassword);

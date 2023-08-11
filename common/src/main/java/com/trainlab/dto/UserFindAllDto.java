@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 @Data
 @Schema(description = "User FindAll Response")
-public class UserFindAllResponseDto {
+public class UserFindAllDto {
     private Long id;
 
     private String username;

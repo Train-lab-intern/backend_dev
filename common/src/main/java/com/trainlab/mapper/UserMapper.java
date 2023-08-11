@@ -1,10 +1,9 @@
 package com.trainlab.mapper;
 
-import com.trainlab.dto.UserCreateRequestDto;
-import com.trainlab.dto.UserFindAllResponseDto;
-import com.trainlab.dto.UserFindByIdResponseDto;
-import com.trainlab.dto.UserUpdateRequestDto;
-import com.trainlab.dto.UserUpdateResponseDto;
+import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserFindAllDto;
+import com.trainlab.dto.UserFindByIdDto;
+import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.User;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -22,20 +21,20 @@ public interface UserMapper {
     @Mapping(target = "authenticationInfo.userPassword", source = "password")
     @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    User toEntity(UserCreateRequestDto userCreateRequestDto);
+    User toEntity(UserCreateDto userCreateDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    User partialUpdateToEntity(UserUpdateRequestDto userUpdateRequestDto, @MappingTarget User user);
+    User partialUpdateToEntity(UserUpdateDto userUpdateDto, @MappingTarget User user);
 
     @Mapping(target = "username", source = "username")
     @Mapping(target = "email", source = "authenticationInfo.email")
     @Mapping(target = "password", source = "authenticationInfo.userPassword")
-    UserUpdateResponseDto toDto(User user);
+    UserUpdateDto toDto(User user);
 
     @Mapping(target = "email", source = "authenticationInfo.email")
-    UserFindAllResponseDto toFindAllDto(User user);
+    UserFindAllDto toFindAllDto(User user);
 
     @Mapping(target = "email", source = "authenticationInfo.email")
-    UserFindByIdResponseDto toFindByIdDto(User user);
+    UserFindByIdDto toFindByIdDto(User user);
 }

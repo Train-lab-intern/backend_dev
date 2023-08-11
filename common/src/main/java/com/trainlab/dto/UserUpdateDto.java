@@ -1,6 +1,5 @@
 package com.trainlab.dto;
 
-
 import com.trainlab.valid.ValidPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -10,11 +9,11 @@ import org.springframework.validation.annotation.Validated;
 
 @Data
 @Validated
-@Schema(description = "User Request")
-public class UserUpdateRequestDto {
+@Schema(description = "User Update Response")
+public class UserUpdateDto {
+
     @Schema(example = "SvetaPiven", type = "string", description = "Username")
     private String username;
-
 
     @Size(message = "User email must be between 8 and 256 characters", min = 8, max = 256)
     @Email(message = "Invalid email address")
@@ -28,3 +27,4 @@ public class UserUpdateRequestDto {
             type = "string", description = "User password")
     private String password;
 }
+

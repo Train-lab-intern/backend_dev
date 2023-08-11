@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "User FindById Response")
-public class UserFindByIdResponseDto {
+public class UserFindByIdDto {
     private String username;
 
     private String email;
