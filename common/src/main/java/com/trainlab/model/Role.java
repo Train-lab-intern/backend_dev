@@ -1,6 +1,5 @@
 package com.trainlab.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +24,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-//@Cacheable("roles")
 @Table(name = "roles", schema = "public")
 public class Role {
     @Id
@@ -41,16 +39,13 @@ public class Role {
 
     @NotNull
     @Column
-    @JsonIgnore
-    private Timestamp created = Timestamp.valueOf(LocalDateTime.now());
+    private Timestamp created = Timestamp.valueOf(LocalDateTime.now().withNano(0));
 
     @NotNull
     @Column
-    @JsonIgnore
-    private Timestamp changed = Timestamp.valueOf(LocalDateTime.now());
+    private Timestamp changed = Timestamp.valueOf(LocalDateTime.now().withNano(0));
 
     @NotNull
     @Column
-    @JsonIgnore
     private boolean isDeleted = false;
 }
