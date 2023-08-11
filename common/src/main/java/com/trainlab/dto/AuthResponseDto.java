@@ -1,6 +1,5 @@
 package com.trainlab.dto;
 
-import com.trainlab.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +19,5 @@ public class AuthResponseDto {
     private String token;
 
     @Schema
-    private User user;
+    private UserDto userDto;
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-@Schema(description = "User FindById Response")
+@Schema(description = "User Response")
 public class UserDto {
     private Long id;
 
@@ -17,6 +17,4 @@ public class UserDto {
     private boolean active;
 
     private Timestamp created;
-
-    private boolean isDeleted;
 }

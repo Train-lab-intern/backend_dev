@@ -3,8 +3,10 @@ package com.trainlab.controller;
 import com.trainlab.configuration.JwtConfiguration;
 import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.dto.AuthResponseDto;
+import com.trainlab.dto.UserDto;
 import com.trainlab.exception.ActivationException;
 import com.trainlab.jwt.TokenProvider;
+import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.User;
 import com.trainlab.service.CustomUserDetailsService;
 import com.trainlab.service.UserService;
@@ -25,10 +27,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
+
     private final TokenProvider tokenProvider;
+
     private final JwtConfiguration jwtConfiguration;
+
     private final UserService userService;
+
     private final CustomUserDetailsService userDetailsService;
+
+    private final UserMapper userMapper;
 
     @PostMapping("/auth")
     public ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request) {
@@ -49,11 +57,13 @@ public class AuthenticationController {
 
         String token = tokenProvider.generateToken(userDetailsService.loadUserByUsername(request.getUserEmail()));
 
+        UserDto userDto = userMapper.toDto(userByEmail);
+
         return ResponseEntity.ok(
                 AuthResponseDto.builder()
                         .userEmail(request.getUserEmail())
                         .token(token)
-                        .user(userByEmail)
+                        .userDto(userDto)
                         .build()
         );
     }
