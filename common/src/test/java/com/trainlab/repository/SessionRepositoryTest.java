@@ -56,5 +56,6 @@ class SessionRepositoryTest {
         expected.add(session);
         List<Session> actual = sessionRepository.findSessionByUserId(userId);
         assertEquals(expected, actual);
+        userRepository.delete(user);
     }
 }
