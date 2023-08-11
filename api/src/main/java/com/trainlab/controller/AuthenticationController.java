@@ -10,6 +10,7 @@ import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.User;
 import com.trainlab.service.CustomUserDetailsService;
 import com.trainlab.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "AuthenticationController", description = "Authentication")
 @RequestMapping("/api/v1")
 public class AuthenticationController {
 

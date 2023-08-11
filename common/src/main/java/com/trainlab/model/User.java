@@ -35,6 +35,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
+@EqualsAndHashCode
 @Table(name = "users", schema = "public")
 public class User {
     @Id
@@ -78,7 +80,7 @@ public class User {
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private Set<Session> sessions = new HashSet<>();
 
 }

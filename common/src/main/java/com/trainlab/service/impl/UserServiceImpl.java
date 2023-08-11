@@ -32,10 +32,15 @@ import java.util.Optional;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final RandomValuesGenerator generator;
+
     private final UserMapper userMapper;
+
     private final PasswordEncode passwordEncode;
+
     private final UserRepository userRepository;
+
     private final RoleRepository roleRepository;
+
     private final EmailService emailService;
 
     @Override
@@ -133,7 +138,8 @@ public class UserServiceImpl implements UserService {
         if (user.getRoles() == null) {
             user.setRoles(new HashSet<>());
         }
-        user.getRoles().add(userRole);
+        roleRepository.findByRoleName("ROLE_USER").map(role -> user.getRoles().add(role))
+                .orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
     }
 
     private void buildEmailMessage(User user) {

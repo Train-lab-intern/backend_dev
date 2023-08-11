@@ -5,6 +5,7 @@ import com.trainlab.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
+@Tag(name = "AdminController", description = "Admin controller")
 @RequestMapping("/api/v1/admin/users")
 @RequiredArgsConstructor
-public class UserAdminDataController {
+public class AdminController {
 
     private final UserRepository userRepository;
 
