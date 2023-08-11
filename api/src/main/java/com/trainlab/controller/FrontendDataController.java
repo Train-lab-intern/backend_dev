@@ -3,6 +3,7 @@ package com.trainlab.controller;
 import com.trainlab.model.FrontendData;
 import com.trainlab.repository.FrontendDataRepository;
 import com.trainlab.repository.UserRepository;
+import com.trainlab.service.FrontendDataService;
 import com.trainlab.service.SessionService;
 import com.trainlab.util.RandomValuesGenerator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/front")
@@ -29,7 +31,7 @@ import java.util.Map;
 @Slf4j
 public class FrontendDataController {
 
-    private final FrontendDataRepository frontendDataRepository;
+    private final FrontendDataService frontendDataService;
     @Operation(
             summary = "Get Main Page Data",
             description = "Get main page data by range",
@@ -48,19 +50,9 @@ public class FrontendDataController {
                     )
             }
     )
-    @GetMapping("/pages/{range}")
-    public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int range) {
-
-        List<FrontendData> mainPageDataList = frontendDataRepository.findDataByRange(range);
-
-        if (mainPageDataList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Map<String, String> mainPageDataMap = new HashMap<>();
-        for (FrontendData data : mainPageDataList) {
-            mainPageDataMap.put(Float.toString(data.getFrontId()), data.getText());
-        }
+    @GetMapping("/pages/{page}")
+    public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int page) {
+        Map<String, String> mainPageDataMap = frontendDataService.getDataByPage(page);
 
         return new ResponseEntity<>(mainPageDataMap, HttpStatus.OK);
     }
