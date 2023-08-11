@@ -4,8 +4,6 @@ import com.trainlab.model.FrontendData;
 import com.trainlab.repository.FrontendDataRepository;
 import com.trainlab.service.FrontendDataService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

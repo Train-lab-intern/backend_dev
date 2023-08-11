@@ -10,6 +10,7 @@ import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,7 +50,7 @@ public class UserControllerImpl implements UserController {
 
         String message = "Registration initiated. Please check your email for further instructions.";
 
-        return ResponseEntity.ok(message);
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
     @Override
@@ -57,9 +58,9 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<String> completeRegistration(@RequestParam("userEmail") String userEmail) {
         try {
             userService.activateUser(userEmail);
-            return ResponseEntity.ok("Registration completed successfully!");
+            return ResponseEntity.status(HttpStatus.OK).body("Registration completed successfully!");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Error occurred during registration completion: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error occurred during registration completion: " + e.getMessage());
         }
     }
 
@@ -72,7 +73,7 @@ public class UserControllerImpl implements UserController {
                 .map(userMapper::toDto)
                 .toList();
 
-        return ResponseEntity.ok(usersDto);
+        return ResponseEntity.status(HttpStatus.OK).body(usersDto);
     }
 
     @Override
@@ -90,7 +91,7 @@ public class UserControllerImpl implements UserController {
 
         UserUpdateDto updatedUserUpdateDto = userMapper.toUpdateDto(updatedUser);
 
-        return ResponseEntity.ok(updatedUserUpdateDto);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedUserUpdateDto);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class UserControllerImpl implements UserController {
 
         UserDto responseDto = userMapper.toDto(user);
 
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @Override
@@ -109,6 +110,6 @@ public class UserControllerImpl implements UserController {
                                                  @Valid @RequestBody UserUpdateDto userUpdateDto) {
         userService.changePassword(userUpdateDto, id);
 
-        return ResponseEntity.ok("You changed password");
+        return ResponseEntity.status(HttpStatus.OK).body("You changed password");
     }
 }
