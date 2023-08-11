@@ -147,13 +147,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private User userCheck(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User could not be found"));
-
-        if (user.isDeleted()) {
-            log.error("User is deleted (isDeleted = true)");
-            throw new IllegalRequestException("User is deleted");
-        }
-
-        return user;
+        return userRepository.findByIsDeletedFalseAndId(id);
     }
 }
