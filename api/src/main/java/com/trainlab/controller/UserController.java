@@ -1,8 +1,7 @@
 package com.trainlab.controller;
 
 import com.trainlab.dto.UserCreateDto;
-import com.trainlab.dto.UserFindAllDto;
-import com.trainlab.dto.UserFindByIdDto;
+import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -71,13 +70,13 @@ public interface UserController{
                             description = "Successfully loaded Users",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = UserFindAllDto.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))
 
                     ),
                     @ApiResponse(responseCode = "INTERNAL_SERVER_ERROR", description = "Internal Server Error")
             }
     )
-    ResponseEntity<List<UserFindAllDto>> getAllUsers();
+    ResponseEntity<List<UserDto>> getAllUsers();
 
     @Operation(
             summary = "Spring Data Update User",
@@ -110,7 +109,7 @@ public interface UserController{
                             description = "Successfully loaded User",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = UserFindByIdDto.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))
                     ),
                     @ApiResponse(
                             responseCode = "NOT_FOUND",
@@ -118,7 +117,7 @@ public interface UserController{
                     )
             }
     )
-    ResponseEntity<UserFindByIdDto> findUserById(@PathVariable Long id, @AuthenticationPrincipal UserDetails detailsService);
+    ResponseEntity<UserDto> findUserById(@PathVariable Long id, @AuthenticationPrincipal UserDetails detailsService);
 
     @PatchMapping("/change-password/{id}")
     @Operation(

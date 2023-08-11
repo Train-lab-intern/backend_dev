@@ -1,8 +1,7 @@
 package com.trainlab.mapper;
 
 import com.trainlab.dto.UserCreateDto;
-import com.trainlab.dto.UserFindAllDto;
-import com.trainlab.dto.UserFindByIdDto;
+import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.User;
 import org.mapstruct.BeanMapping;
@@ -30,11 +29,8 @@ public interface UserMapper {
     @Mapping(target = "username", source = "username")
     @Mapping(target = "email", source = "authenticationInfo.email")
     @Mapping(target = "password", source = "authenticationInfo.userPassword")
-    UserUpdateDto toDto(User user);
+    UserUpdateDto toUpdateDto(User user);
 
     @Mapping(target = "email", source = "authenticationInfo.email")
-    UserFindAllDto toFindAllDto(User user);
-
-    @Mapping(target = "email", source = "authenticationInfo.email")
-    UserFindByIdDto toFindByIdDto(User user);
+    UserDto toDto(User user);
 }

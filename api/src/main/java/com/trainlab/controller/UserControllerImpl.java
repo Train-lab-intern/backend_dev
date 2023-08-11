@@ -1,8 +1,7 @@
 package com.trainlab.controller;
 
 import com.trainlab.dto.UserCreateDto;
-import com.trainlab.dto.UserFindAllDto;
-import com.trainlab.dto.UserFindByIdDto;
+import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.ValidationException;
 import com.trainlab.mapper.UserMapper;
@@ -66,11 +65,11 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<UserFindAllDto>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         List<User> users = userService.findAll();
 
-        List<UserFindAllDto> usersDto = users.stream()
-                .map(userMapper::toFindAllDto)
+        List<UserDto> usersDto = users.stream()
+                .map(userMapper::toDto)
                 .toList();
 
         return ResponseEntity.ok(usersDto);
@@ -89,17 +88,17 @@ public class UserControllerImpl implements UserController {
 
         User updatedUser = userService.update(userUpdateDto, id, userDetails);
 
-        UserUpdateDto updatedUserUpdateDto = userMapper.toDto(updatedUser);
+        UserUpdateDto updatedUserUpdateDto = userMapper.toUpdateDto(updatedUser);
 
         return ResponseEntity.ok(updatedUserUpdateDto);
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<UserFindByIdDto> findUserById(@PathVariable Long id, @AuthenticationPrincipal UserDetails detailsService) {
+    public ResponseEntity<UserDto> findUserById(@PathVariable Long id, @AuthenticationPrincipal UserDetails detailsService) {
         User user = userService.findById(id, detailsService);
 
-        UserFindByIdDto responseDto = userMapper.toFindByIdDto(user);
+        UserDto responseDto = userMapper.toDto(user);
 
         return ResponseEntity.ok(responseDto);
     }
