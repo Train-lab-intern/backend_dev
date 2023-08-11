@@ -6,7 +6,6 @@ import com.trainlab.exception.AccessControlViolated;
 import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.mapper.UserMapper;
-import com.trainlab.model.Role;
 import com.trainlab.model.User;
 import com.trainlab.repository.RoleRepository;
 import com.trainlab.repository.UserRepository;
@@ -47,11 +46,6 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(user);
         buildEmailMessage(user);
         return user;
-    }
-
-    private void setEncodedPassword(User user) {
-        String encodedPassword = passwordEncode.encodePassword(user.getAuthenticationInfo().getUserPassword());
-        user.getAuthenticationInfo().setUserPassword(encodedPassword);
     }
 
     @Override
@@ -132,7 +126,8 @@ public class UserServiceImpl implements UserService {
         if (user.getRoles() == null) {
             user.setRoles(new HashSet<>());
         }
-        user.getRoles().add(userRole);
+        roleRepository.findByRoleName("ROLE_USER").map(role -> user.getRoles().add(role))
+                .orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
     }
 
     private void buildEmailMessage(User user) {

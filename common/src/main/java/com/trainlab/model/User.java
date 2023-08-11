@@ -35,6 +35,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
+@EqualsAndHashCode
 //@Cacheable("users")
 @Table(name = "users", schema = "public")
 public class User {
@@ -85,7 +87,7 @@ public class User {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonManagedReference
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = false)
     private Set<Session> sessions = new HashSet<>();
 
 }
