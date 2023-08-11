@@ -1,6 +1,6 @@
 package com.trainlab.service.impl;
 
-import com.trainlab.dto.request.UserRequest;
+import com.trainlab.dto.UserCreateDto;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.AuthenticationInfo;
 import com.trainlab.model.Role;
@@ -47,11 +47,11 @@ class UserServiceImplTest {
 
     @Test
     void create() {
-        ReflectionTestUtils.setField(userService, "dbHost", "test.db");
+         //  ReflectionTestUtils.setField(userService, "dbHost", "test.db");
         String email = "test@gmail.com";
         String userName = "testName";
         String password = "sdfkjgh376";
-        UserRequest userRequest = UserRequest.builder()
+        UserCreateDto userRequest = UserCreateDto.builder()
                 .email(email)
                 .username(userName)
                 .password(password)
@@ -83,10 +83,10 @@ class UserServiceImplTest {
                 С наилучшими пожеланиями,
                 Команда Trainlab""";
         when(userMapper.toEntity(userRequest)).thenReturn(expected);
-        when(userRepository.save(any())).thenReturn(expected);
+        when(userRepository.saveAndFlush(any())).thenReturn(expected);
         when(passwordEncode.encodePassword(userRequest.getPassword())).thenReturn("");
         when(roleRepository.findByRoleName("ROLE_USER")).thenReturn(Optional.of(role));
-        doNothing().when(emailService).sendRegistrationConfirmationEmail(userRequest.getEmail(), emailSubject, message);
+        doNothing().when(emailService).sendRegistrationConfirmationEmail(userRequest.getEmail());
         User actual = userService.create(userRequest);
         assertEquals(expected, actual);
     }

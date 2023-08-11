@@ -1,9 +1,11 @@
 package com.trainlab.mapper;
 
 import com.trainlab.TestApplication;
-import com.trainlab.dto.request.UserRequest;
+import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.AuthenticationInfo;
 import com.trainlab.model.User;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,21 +27,25 @@ class UserMapperTest {
         String email = "test@gmail.com";
         String userName = "testName";
         String password = "sdfkjgh376";
-        UserRequest userRequest = UserRequest.builder()
+
+        UserCreateDto userRequest = UserCreateDto.builder()
                 .email(email)
                 .username(userName)
                 .password(password)
                 .build();
+
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .email(email)
                 .userPassword(password)
                 .build();
+
         User expected = User.builder()
                 .username(userName)
                 .authenticationInfo(authenticationInfo)
                 .created(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
                 .changed(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
                 .build();
+
         User actual = userMapper.toEntity(userRequest);
         assertEquals(expected, actual);
     }
@@ -49,10 +55,12 @@ class UserMapperTest {
         String email = "test@gmail.com";
         String userName = "testName";
         String password = "sdfkjgh376";
+
         AuthenticationInfo authenticationInfo1 = AuthenticationInfo.builder()
                 .email(email)
                 .userPassword(password)
                 .build();
+
         User user = User.builder()
                 .username(email)
                 .authenticationInfo(authenticationInfo1)
@@ -61,21 +69,25 @@ class UserMapperTest {
                 .active(false)
                 .isDeleted(false)
                 .build();
-        UserRequest userRequest = UserRequest.builder()
+
+        UserUpdateDto userRequest = UserUpdateDto.builder()
                 .email(email)
                 .username(userName)
                 .password(password)
                 .build();
+
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .email(email)
                 .userPassword(password)
                 .build();
+
         User expected = User.builder()
                 .username(userName)
                 .authenticationInfo(authenticationInfo)
                 .created(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
                 .changed(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
                 .build();
+
         User actual = userMapper.partialUpdateToEntity(userRequest, user);
         assertEquals(expected, actual);
     }
