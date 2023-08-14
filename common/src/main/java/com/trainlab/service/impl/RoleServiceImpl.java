@@ -2,6 +2,7 @@ package com.trainlab.service.impl;
 
 import com.trainlab.dto.RoleCreateDto;
 import com.trainlab.dto.RoleDto;
+import com.trainlab.dto.RoleUpdateDto;
 import com.trainlab.exception.ObjectIsExistException;
 import com.trainlab.mapper.RoleMapper;
 import com.trainlab.model.Role;
@@ -57,13 +58,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleDto update(RoleDto roleDto, Integer id) {
+    public RoleDto update(RoleUpdateDto roleUpdateDto, Integer id) {
         Optional<Role> role = roleRepository.findById(id);
 
-        if (roleRepository.existsByRoleName(roleDto.getRoleName()))
+        if (roleRepository.existsByRoleName(roleUpdateDto.getRoleName()))
             throw new ObjectIsExistException("The same role already exists");
 
-        Role updated = roleMapper.partialUpdateToEntity(roleDto, role.orElseThrow(() -> new EntityNotFoundException("Role not found")));
+        Role updated = roleMapper.partialUpdateToEntity(roleUpdateDto, role.orElseThrow(() -> new EntityNotFoundException("Role not found")));
         Role roleSaved = roleRepository.saveAndFlush(updated);
         return roleMapper.toDto(roleSaved);
     }

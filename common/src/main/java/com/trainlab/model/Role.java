@@ -11,9 +11,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -24,6 +26,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode
+@ToString
 @Table(name = "roles", schema = "public")
 public class Role {
     @Id

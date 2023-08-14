@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RunWith(SpringRunner.class)
 class UserMapperTest {
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
     @Test
     void toEntity() {
