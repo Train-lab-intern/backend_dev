@@ -2,6 +2,7 @@ package com.trainlab.mapper;
 
 import com.trainlab.dto.RoleCreateDto;
 import com.trainlab.dto.RoleDto;
+import com.trainlab.dto.RoleUpdateDto;
 import com.trainlab.model.Role;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -19,7 +20,7 @@ public interface RoleMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
-    Role partialUpdateToEntity(RoleDto roleDto, @MappingTarget Role role);
-
+    Role partialUpdateToEntity(RoleUpdateDto roleUpdateDto, @MappingTarget Role role);
+    @Mapping(target = "id", source = "id")
     RoleDto toDto(Role role);
 }

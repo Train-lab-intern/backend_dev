@@ -2,6 +2,7 @@ package com.trainlab.controller;
 
 import com.trainlab.dto.RoleCreateDto;
 import com.trainlab.dto.RoleDto;
+import com.trainlab.dto.RoleUpdateDto;
 import com.trainlab.model.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -105,5 +106,5 @@ public interface RoleController {
                     )
             }
     )
-    ResponseEntity<RoleDto> updateRole(Integer id, RoleDto roleDto);
+    ResponseEntity<RoleDto> updateRole(Integer id, RoleUpdateDto roleUpdateDto);
 }
