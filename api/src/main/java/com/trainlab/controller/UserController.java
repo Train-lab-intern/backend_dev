@@ -95,7 +95,7 @@ public interface UserController{
                     )
             }
     )
-    ResponseEntity<UserUpdateDto> updateUser(@PathVariable("id") Long id,
+    ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
                                              @Valid @RequestBody UserUpdateDto userUpdateRequestDto,
                                              BindingResult bindingResult,
                                              @AuthenticationPrincipal UserDetails userDetails);

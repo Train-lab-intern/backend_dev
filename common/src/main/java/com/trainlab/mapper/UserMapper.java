@@ -25,11 +25,6 @@ public interface UserMapper {
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))")
     User partialUpdateToEntity(UserUpdateDto userUpdateDto, @MappingTarget User user);
 
-    @Mapping(target = "username", source = "username")
-    @Mapping(target = "email", source = "authenticationInfo.email")
-    @Mapping(target = "password", source = "authenticationInfo.userPassword")
-    UserUpdateDto toUpdateDto(User user);
-
     @Mapping(target = "email", source = "authenticationInfo.email")
     UserDto toDto(User user);
 }

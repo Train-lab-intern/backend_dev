@@ -77,7 +77,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @PatchMapping("/{id}")
-    public ResponseEntity<UserUpdateDto> updateUser(@PathVariable("id") Long id,
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
                                                     @Valid @RequestBody UserUpdateDto userUpdateDto,
                                                     BindingResult bindingResult,
                                                     @AuthenticationPrincipal UserDetails userDetails) {
@@ -86,11 +86,8 @@ public class UserControllerImpl implements UserController {
             throw new ValidationException(errorMessage);
         }
 
-        User updatedUser = userService.update(userUpdateDto, id, userDetails);
-
-        UserUpdateDto updatedUserUpdateDto = userMapper.toUpdateDto(updatedUser);
-
-        return ResponseEntity.ok(updatedUserUpdateDto);
+        UserDto userDto = userMapper.toDto(userService.update(userUpdateDto, id, userDetails));
+        return ResponseEntity.ok(userDto);
     }
 
     @Override
