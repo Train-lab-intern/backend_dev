@@ -39,8 +39,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDto create(RoleCreateDto roleCreateDto) {
-        if (roleRepository.existsByRoleName(roleCreateDto.getRoleName()))
+        if (roleRepository.existsByRoleName(roleCreateDto.getRoleName())) {
             throw new ObjectIsExistException("The same role already exists");
+        }
         Role role = roleRepository.saveAndFlush(roleMapper.toEntity(roleCreateDto));
         return roleMapper.toDto(role);
     }

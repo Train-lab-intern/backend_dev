@@ -33,12 +33,10 @@ class UserMapperTest {
                 .username(userName)
                 .password(password)
                 .build();
-
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
                 .email(email)
                 .userPassword(password)
                 .build();
-
         User expected = User.builder()
                 .username(userName)
                 .authenticationInfo(authenticationInfo)
@@ -55,12 +53,10 @@ class UserMapperTest {
         String email = "test@gmail.com";
         String userName = "testName";
         String password = "sdfkjgh376";
-
         AuthenticationInfo authenticationInfo1 = AuthenticationInfo.builder()
                 .email(email)
                 .userPassword(password)
                 .build();
-
         User user = User.builder()
                 .username(userName)
                 .authenticationInfo(authenticationInfo1)

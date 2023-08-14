@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -21,14 +19,5 @@ public class RoleCreateDto {
     @NotNull
     @NotEmpty
     private String roleName;
-
-    @NotNull
-    private Timestamp created;
-
-    @NotNull
-    private Timestamp changed;
-
-    @NotNull
-    private boolean isDeleted = false;
 
 }

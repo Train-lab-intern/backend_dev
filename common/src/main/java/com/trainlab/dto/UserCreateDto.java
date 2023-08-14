@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 
 @Data
 @Validated
-@Builder
 @Schema(description = "User Request")
 public class UserCreateDto {
 
