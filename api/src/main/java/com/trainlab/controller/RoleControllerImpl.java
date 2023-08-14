@@ -2,6 +2,7 @@ package com.trainlab.controller;
 
 import com.trainlab.dto.RoleCreateDto;
 import com.trainlab.dto.RoleDto;
+import com.trainlab.dto.RoleUpdateDto;
 import com.trainlab.service.RoleService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -47,8 +48,8 @@ public class RoleControllerImpl implements RoleController {
 
     @PutMapping("/{id}")
     public ResponseEntity<RoleDto> updateRole(@PathVariable("id") Integer id,
-                                           @Valid @RequestBody RoleDto roleDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(roleService.update(roleDto, id));
+                                           @Valid @RequestBody RoleUpdateDto roleUpdateDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(roleService.update(roleUpdateDto, id));
     }
 
 }
