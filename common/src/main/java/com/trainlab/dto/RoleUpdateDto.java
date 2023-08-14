@@ -25,12 +25,4 @@ public class RoleUpdateDto {
     @NotEmpty
     private String roleName;
 
-    @NotNull
-    @Column
-    private Timestamp created = Timestamp.valueOf(LocalDateTime.now().withNano(0));
-
-    @NotNull
-    @Column
-    private Timestamp changed = Timestamp.valueOf(LocalDateTime.now().withNano(0));
-
 }
