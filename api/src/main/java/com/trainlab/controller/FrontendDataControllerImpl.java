@@ -15,7 +15,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/front")
 @RequiredArgsConstructor
-@Slf4j
 public class FrontendDataControllerImpl implements FrontendDataController {
     private final FrontendDataService frontendDataService;
 

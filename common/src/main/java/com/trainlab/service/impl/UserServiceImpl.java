@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         User user = userCheck(id);
         String userEmail = userDetails.getUsername();
 
-        if (!user.getAuthenticationInfo().getEmail().equals(userEmail)) {
+        if (!user.getAuthenticationInfo().getEmail().equalsIgnoreCase(userEmail)) {
             throw new AccessDeniedException("Access denied");
         }
 
