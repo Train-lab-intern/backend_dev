@@ -94,7 +94,7 @@ class UserRepositoryTest {
                 .active(false)
                 .isDeleted(false)
                 .build();
-        Optional<User> actual = userRepository.findByAuthenticationInfoEmail(userEmail);
+        Optional<User> actual = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(userEmail);
         assertEquals(expected, actual.orElse(null));
     }
 

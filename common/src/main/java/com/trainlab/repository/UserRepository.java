@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByAuthenticationInfoEmail(String email);
+    Optional<User> findByAuthenticationInfoEmailAndIsDeletedFalse(String email);
 
     List<User> findAllByIsDeletedFalseOrderById();
-    User findByIsDeletedFalseAndId(Long id);
+    Optional<User> findByIsDeletedFalseAndId(Long id);
 }

@@ -2,7 +2,6 @@ package com.trainlab.service.impl;
 
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserUpdateDto;
-import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.Role;
@@ -60,8 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void activateUser(String userEmail) {
-        User user = userRepository.findByAuthenticationInfoEmail(userEmail)
-                .orElseThrow(() -> new EntityNotFoundException("User with email not found"));
+        User user = findByEmail(userEmail);
 
         if (!user.isActive()) {
             user.setActive(true);
@@ -77,14 +75,13 @@ public class UserServiceImpl implements UserService {
     public User findById(Long id, UserDetails userDetails) {
         String userEmail = userDetails.getUsername();
 
-        Optional<User> userOptional = userRepository.findByAuthenticationInfoEmail(userEmail);
-        User loggedInUser = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = findByEmail(userEmail);
 
-        if (!loggedInUser.getId().equals(id)) {
+        if (!user.getId().equals(id)) {
             throw new AccessDeniedException("Access denied");
         }
 
-        return loggedInUser;
+        return user;
     }
 
     @Override
@@ -102,8 +99,7 @@ public class UserServiceImpl implements UserService {
     public User update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails) {
         String email = userDetails.getUsername();
 
-        User user = userRepository.findByAuthenticationInfoEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        User user = findByEmail(email);
 
         if (!user.getId().equals(id)) {
             throw new AccessDeniedException("Access denied");
@@ -116,8 +112,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByAuthenticationInfoEmail(email).orElseThrow(()
-                -> new ObjectNotFoundException("User not found"));
+        return userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(email).orElseThrow(()
+                -> new ObjectNotFoundException("User not found with email: " + email));
     }
 
     public void changePassword(UserUpdateDto userUpdateDto, Long id) {
@@ -147,6 +143,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private User userCheck(Long id) {
-        return userRepository.findByIsDeletedFalseAndId(id);
+        return userRepository.findByIsDeletedFalseAndId(id).orElseThrow(() -> new EntityNotFoundException("User could not be found"));
     }
 }
