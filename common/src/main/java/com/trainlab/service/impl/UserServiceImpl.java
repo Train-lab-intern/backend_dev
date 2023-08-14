@@ -17,14 +17,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,23 +59,22 @@ public class UserServiceImpl implements UserService {
     public void activateUser(String userEmail) {
         User user = findByEmail(userEmail);
 
-        if (!user.isActive()) {
-            user.setActive(true);
-            user.setChanged(Timestamp.valueOf(LocalDateTime.now()));
-            userRepository.saveAndFlush(user);
-            log.info("User with email " + userEmail + " activate successfully!");
-        } else {
+        if (user.isActive()) {
             throw new IllegalStateException("User with email " + userEmail + " is yet activate.");
         }
+
+        user.setActive(true);
+        user.setChanged(Timestamp.valueOf(LocalDateTime.now()));
+        userRepository.saveAndFlush(user);
+        log.info("User with email " + userEmail + " activate successfully!");
     }
 
     @Override
     public User findById(Long id, UserDetails userDetails) {
+        User user = userCheck(id);
         String userEmail = userDetails.getUsername();
 
-        User user = findByEmail(userEmail);
-
-        if (!user.getId().equals(id)) {
+        if (!user.getAuthenticationInfo().getEmail().equals(userEmail)) {
             throw new AccessDeniedException("Access denied");
         }
 
@@ -97,13 +94,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails) {
-        String email = userDetails.getUsername();
-
-        User user = findByEmail(email);
-
-        if (!user.getId().equals(id)) {
-            throw new AccessDeniedException("Access denied");
-        }
+        User user = findById(id, userDetails);
 
         User updated = userMapper.partialUpdateToEntity(userUpdateDto, user);
         setEncodedPassword(updated);
@@ -143,6 +134,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private User userCheck(Long id) {
-        return userRepository.findByIsDeletedFalseAndId(id).orElseThrow(() -> new EntityNotFoundException("User could not be found"));
+        return userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new EntityNotFoundException("User could not be found"));
     }
 }

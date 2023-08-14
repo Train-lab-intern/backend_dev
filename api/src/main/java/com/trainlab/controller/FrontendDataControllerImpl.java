@@ -21,7 +21,7 @@ public class FrontendDataControllerImpl implements FrontendDataController {
 
     @Override
     @GetMapping("/pages/{page}")
-    public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int page) {
+    public ResponseEntity<Map<String, String>> getMainPageData(@PathVariable Integer page) {
         Map<String, String> mainPageDataMap = frontendDataService.getDataByPage(page);
 
         return ResponseEntity.status(HttpStatus.OK).body(mainPageDataMap);

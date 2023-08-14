@@ -32,5 +32,5 @@ public interface FrontendDataController {
                     )
             }
     )
-    ResponseEntity<Map<String, String>> getMainPageData(@PathVariable int page);
+    ResponseEntity<Map<String, String>> getMainPageData(Integer page);
 }
