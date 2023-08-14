@@ -21,6 +21,6 @@ public interface RoleMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "changed", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()))")
     Role partialUpdateToEntity(RoleUpdateDto roleUpdateDto, @MappingTarget Role role);
-
+    @Mapping(target = "id", source = "id")
     RoleDto toDto(Role role);
 }
