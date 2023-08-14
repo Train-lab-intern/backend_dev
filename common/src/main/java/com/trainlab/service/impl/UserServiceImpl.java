@@ -2,7 +2,6 @@ package com.trainlab.service.impl;
 
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserUpdateDto;
-import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.Role;
@@ -18,14 +17,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -60,31 +57,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void activateUser(String userEmail) {
-        User user = userRepository.findByAuthenticationInfoEmail(userEmail)
-                .orElseThrow(() -> new EntityNotFoundException("User with email not found"));
+        User user = findByEmail(userEmail);
 
-        if (!user.isActive()) {
-            user.setActive(true);
-            user.setChanged(Timestamp.valueOf(LocalDateTime.now()));
-            userRepository.saveAndFlush(user);
-            log.info("User with email " + userEmail + " activate successfully!");
-        } else {
+        if (user.isActive()) {
             throw new IllegalStateException("User with email " + userEmail + " is yet activate.");
         }
+
+        user.setActive(true);
+        user.setChanged(Timestamp.valueOf(LocalDateTime.now()));
+        userRepository.saveAndFlush(user);
+        log.info("User with email " + userEmail + " activate successfully!");
     }
 
     @Override
     public User findById(Long id, UserDetails userDetails) {
+        User user = userCheck(id);
         String userEmail = userDetails.getUsername();
 
-        Optional<User> userOptional = userRepository.findByAuthenticationInfoEmail(userEmail);
-        User loggedInUser = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        if (!loggedInUser.getId().equals(id)) {
+        if (!user.getAuthenticationInfo().getEmail().equalsIgnoreCase(userEmail)) {
             throw new AccessDeniedException("Access denied");
         }
 
-        return loggedInUser;
+        return user;
     }
 
     @Override
@@ -100,14 +94,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails) {
-        String email = userDetails.getUsername();
-
-        User user = userRepository.findByAuthenticationInfoEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-
-        if (!user.getId().equals(id)) {
-            throw new AccessDeniedException("Access denied");
-        }
+        User user = findById(id, userDetails);
 
         User updated = userMapper.partialUpdateToEntity(userUpdateDto, user);
         setEncodedPassword(updated);
@@ -116,8 +103,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByAuthenticationInfoEmail(email).orElseThrow(()
-                -> new ObjectNotFoundException("User not found"));
+        return userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(email).orElseThrow(()
+                -> new ObjectNotFoundException("User not found with email: " + email));
     }
 
     public void changePassword(UserUpdateDto userUpdateDto, Long id) {
@@ -138,8 +125,7 @@ public class UserServiceImpl implements UserService {
         if (user.getRoles() == null) {
             user.setRoles(new HashSet<>());
         }
-        roleRepository.findByRoleName("ROLE_USER").map(role -> user.getRoles().add(role))
-                .orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
+        user.getRoles().add(userRole);
     }
 
     private void buildEmailMessage(User user) {
@@ -148,13 +134,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private User userCheck(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User could not be found"));
-
-        if (user.isDeleted()) {
-            log.error("User is deleted (isDeleted = true)");
-            throw new IllegalRequestException("User is deleted");
-        }
-
-        return user;
+        return userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new EntityNotFoundException("User could not be found"));
     }
 }
