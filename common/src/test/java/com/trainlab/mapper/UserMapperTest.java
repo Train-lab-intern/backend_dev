@@ -62,7 +62,7 @@ class UserMapperTest {
                 .authenticationInfo(authenticationInfo1)
                 .created(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
                 .changed(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
 
@@ -134,7 +134,7 @@ class UserMapperTest {
                 .authenticationInfo(authenticationInfo)
                 .created(Timestamp.valueOf("2023-01-01 00:00:00"))
                 .changed(Timestamp.valueOf("2023-01-02 00:00:00"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
 

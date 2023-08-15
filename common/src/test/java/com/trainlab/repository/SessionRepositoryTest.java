@@ -39,7 +39,7 @@ class SessionRepositoryTest {
                 .authenticationInfo(authenticationInfo)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
         Session session = Session.builder()

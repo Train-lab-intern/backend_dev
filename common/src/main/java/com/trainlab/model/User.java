@@ -53,8 +53,10 @@ public class User {
     })
     private AuthenticationInfo authenticationInfo;
 
-    @Column
-    private boolean active;
+    @NotNull
+    @Column(name = "is_active")
+    @Builder.Default
+    private boolean isActive = false;
 
     @NotNull
     @Column
