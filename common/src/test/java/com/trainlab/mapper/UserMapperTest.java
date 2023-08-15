@@ -88,6 +88,36 @@ class UserMapperTest {
         assertEquals(expected, actual);
     }
 
+
+    @Test
+    void toEntityFromUserDto() {
+        Long id = 1L;
+        String email = "test@gmail.com";
+        String userName = "testName";
+        UserDto userDto = UserDto.builder()
+                .id(id)
+                .username(userName)
+                .email(email)
+                .created(Timestamp.valueOf("2023-01-01 00:00:00"))
+                .changed(Timestamp.valueOf("2023-01-02 00:00:00"))
+                .active(false)
+                .build();
+
+        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
+                .email(email)
+                .build();
+        User expected = User.builder()
+                .id(id)
+                .username(userName)
+                .authenticationInfo(authenticationInfo)
+                .created(Timestamp.valueOf("2023-01-01 00:00:00"))
+                .changed(Timestamp.valueOf("2023-01-02 00:00:00"))
+                .build();
+
+        User actual = userMapper.toEntity(userDto);
+        assertEquals(expected, actual);
+    }
+
     @Test
     void toDto() {
         Long id = 1L;

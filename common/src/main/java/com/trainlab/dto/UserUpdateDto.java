@@ -4,11 +4,13 @@ import com.trainlab.valid.ValidPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
 @Data
 @Validated
+@Builder
 @Schema(description = "User Update Response")
 public class UserUpdateDto {
 

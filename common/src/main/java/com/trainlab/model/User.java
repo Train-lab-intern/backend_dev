@@ -66,6 +66,7 @@ public class User {
 
     @NotNull
     @Column(name = "is_deleted")
+    @Builder.Default
     private boolean isDeleted = false;
 
     @EqualsAndHashCode.Exclude
@@ -80,6 +81,7 @@ public class User {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @Builder.Default
     private Set<Session> sessions = new HashSet<>();
 
 }

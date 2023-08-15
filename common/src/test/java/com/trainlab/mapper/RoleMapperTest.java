@@ -27,7 +27,6 @@ class RoleMapperTest {
         String name = "testName";
         RoleCreateDto roleCreateDto = RoleCreateDto.builder()
                 .roleName(name)
-                .isDeleted(false)
                 .build();
 
         Role expected = Role.builder()

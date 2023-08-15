@@ -1,6 +1,7 @@
 package com.trainlab.service;
 
 import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,13 +13,13 @@ public interface UserService {
 
     void activateUser(String userEmail);
 
-    User findById(Long id, UserDetails userDetails);
+    UserDto findAuthorizedUser(Long id, UserDetails userDetails);
 
-    List<User> findAll();
+    List<UserDto> findAll();
 
-    User update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails);
+    UserDto update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails);
 
     User findByEmail(String email);
 
-    void changePassword(UserUpdateDto userUpdateDto, Long id);
+    void changePassword(Long id, UserUpdateDto userUpdateDto);
 }

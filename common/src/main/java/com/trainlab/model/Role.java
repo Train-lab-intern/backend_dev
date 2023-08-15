@@ -22,12 +22,12 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @EqualsAndHashCode
 @ToString
+@Builder
 @Table(name = "roles", schema = "public")
 public class Role {
     @Id

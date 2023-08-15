@@ -4,8 +4,6 @@ import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.ValidationException;
-import com.trainlab.mapper.UserMapper;
-import com.trainlab.model.User;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -34,8 +32,6 @@ import java.util.Objects;
 public class UserControllerImpl implements UserController {
 
     private final UserService userService;
-
-    private final UserMapper userMapper;
 
     @Override
     @PostMapping("/register")
@@ -67,45 +63,33 @@ public class UserControllerImpl implements UserController {
     @Override
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        List<User> users = userService.findAll();
-
-        List<UserDto> usersDto = users.stream()
-                .map(userMapper::toDto)
-                .toList();
-
-        return ResponseEntity.status(HttpStatus.OK).body(usersDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
 
     @Override
     @PatchMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
-                                                    @Valid @RequestBody UserUpdateDto userUpdateDto,
-                                                    BindingResult bindingResult,
-                                                    @AuthenticationPrincipal UserDetails userDetails) {
+                                              @Valid @RequestBody UserUpdateDto userUpdateDto,
+                                              BindingResult bindingResult,
+                                              @AuthenticationPrincipal UserDetails userDetails) {
         if (bindingResult.hasErrors()) {
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);
         }
-        UserDto userDto = userMapper.toDto(userService.update(userUpdateDto, id, userDetails));
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok(userService.update(userUpdateDto, id, userDetails));
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> findUserById(@PathVariable Long id, @AuthenticationPrincipal UserDetails detailsService) {
-        User user = userService.findById(id, detailsService);
-
-        UserDto responseDto = userMapper.toDto(user);
-
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAuthorizedUser(id, detailsService));
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<String> forgotPassword(@PathVariable("id") Long id,
+    public ResponseEntity<String> changePassword(@PathVariable("id") Long id,
                                                  @Valid @RequestBody UserUpdateDto userUpdateDto) {
-        userService.changePassword(userUpdateDto, id);
-
+        userService.changePassword(id, userUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body("You changed password");
     }
 }

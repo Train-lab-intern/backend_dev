@@ -8,8 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -22,6 +20,7 @@ public class RoleUpdateDto {
     @NotNull
     private String roleName;
 
+    @Builder.Default
     private boolean isDeleted = false;
 
 }
