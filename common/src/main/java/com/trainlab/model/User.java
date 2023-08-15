@@ -56,7 +56,7 @@ public class User {
     @NotNull
     @Column(name = "is_active")
     @Builder.Default
-    private boolean isActive = false;
+    private Boolean isActive = false;
 
     @NotNull
     @Column
@@ -69,7 +69,7 @@ public class User {
     @NotNull
     @Column(name = "is_deleted")
     @Builder.Default
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

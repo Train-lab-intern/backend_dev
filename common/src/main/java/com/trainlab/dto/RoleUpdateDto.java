@@ -21,6 +21,6 @@ public class RoleUpdateDto {
     private String roleName;
 
     @Builder.Default
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
 }

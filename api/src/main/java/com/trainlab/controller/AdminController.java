@@ -49,7 +49,7 @@ public class AdminController {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setDeleted(isDeleted);
+            user.setIsDeleted(isDeleted);
             userRepository.saveAndFlush(user);
             return ResponseEntity.status(HttpStatus.OK).body("Status changed successfully") ;
         } else {

@@ -20,5 +20,6 @@ public class UserDto {
 
     private Timestamp changed;
 
-    private boolean active;
+    @Builder.Default
+    private Boolean active = false;
 }

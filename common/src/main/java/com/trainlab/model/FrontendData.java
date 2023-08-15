@@ -51,5 +51,5 @@ public class FrontendData {
 
     @JsonIgnore
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 }

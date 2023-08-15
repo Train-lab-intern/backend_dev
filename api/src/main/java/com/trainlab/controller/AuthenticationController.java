@@ -46,7 +46,7 @@ public class AuthenticationController {
         String userEmail = request.getUserEmail();
         User userByEmail = userService.findByEmail(userEmail);
 
-        if (!(userByEmail.isActive())) {
+        if (!(userByEmail.getIsActive())) {
             throw new ActivationException("User not activated");
         }
 
