@@ -21,8 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+
 @Tag(name = "UserRestController", description = "User management methods")
-public interface UserController{
+public interface UserController {
     @Operation(
             summary = "Spring Data Create User",
             description = "Creates a new user",
@@ -95,10 +96,10 @@ public interface UserController{
                     )
             }
     )
-    ResponseEntity<UserUpdateDto> updateUser(@PathVariable("id") Long id,
-                                             @Valid @RequestBody UserUpdateDto userUpdateRequestDto,
-                                             BindingResult bindingResult,
-                                             @AuthenticationPrincipal UserDetails userDetails);
+    ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
+                                       @Valid @RequestBody UserUpdateDto userUpdateDto,
+                                       BindingResult bindingResult,
+                                       @AuthenticationPrincipal UserDetails userDetails);
 
     @Operation(
             summary = "Spring Data User Search by user Id",
@@ -121,8 +122,8 @@ public interface UserController{
 
     @PatchMapping("/change-password/{id}")
     @Operation(
-            summary = "Change User Password by user Id",
-            description = "Change user password by Id",
+            summary = "Changing the user's password when user forgot it",
+            description = "Changing user password by using user's Id",
             responses = {
                     @ApiResponse(
                             responseCode = "OK",
@@ -135,6 +136,6 @@ public interface UserController{
                     )
             }
     )
-    ResponseEntity<String> forgotPassword(@PathVariable("id") Long id,
+    ResponseEntity<String> changePassword(@PathVariable("id") Long id,
                                           @Valid @RequestBody UserUpdateDto userUpdateDto);
 }

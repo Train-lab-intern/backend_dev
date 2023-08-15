@@ -53,8 +53,10 @@ public class User {
     })
     private AuthenticationInfo authenticationInfo;
 
-    @Column
-    private boolean active;
+    @NotNull
+    @Column(name = "is_active")
+    @Builder.Default
+    private boolean isActive = false;
 
     @NotNull
     @Column
@@ -66,6 +68,7 @@ public class User {
 
     @NotNull
     @Column(name = "is_deleted")
+    @Builder.Default
     private boolean isDeleted = false;
 
     @EqualsAndHashCode.Exclude
@@ -80,6 +83,7 @@ public class User {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @Builder.Default
     private Set<Session> sessions = new HashSet<>();
 
 }

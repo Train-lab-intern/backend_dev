@@ -1,6 +1,7 @@
 package com.trainlab.service.impl;
 
 import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.mapper.UserMapper;
@@ -50,11 +51,6 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private void setEncodedPassword(User user) {
-        String encodedPassword = passwordEncode.encodePassword(user.getAuthenticationInfo().getUserPassword());
-        user.getAuthenticationInfo().setUserPassword(encodedPassword);
-    }
-
     @Override
     public void activateUser(String userEmail) {
         User user = findByEmail(userEmail);
@@ -64,41 +60,38 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setActive(true);
-        user.setChanged(Timestamp.valueOf(LocalDateTime.now()));
+        user.setChanged(Timestamp.valueOf(LocalDateTime.now().withNano(0)));
         userRepository.saveAndFlush(user);
         log.info("User with email " + userEmail + " activate successfully!");
     }
 
     @Override
-    public User findById(Long id, UserDetails userDetails) {
-        User user = userCheck(id);
-        String userEmail = userDetails.getUsername();
-
-        if (!user.getAuthenticationInfo().getEmail().equalsIgnoreCase(userEmail)) {
-            throw new AccessDeniedException("Access denied");
+    public UserDto findAuthorizedUser(Long id, UserDetails userDetails) {
+        User user = findByIdAndIsDeletedFalse(id);
+        UserDto userDto = null;
+        if (isAuthorized(user, userDetails)) {
+            userDto = userMapper.toDto(user);
         }
-
-        return user;
+        return userDto;
     }
 
     @Override
-    public List<User> findAll() {
+    public List<UserDto> findAll() {
         List<User> users = userRepository.findAllByIsDeletedFalseOrderById();
-
-        if (users == null) {
-            throw new EntityNotFoundException("Users not found");
-        }
-
-        return users;
+        return users.stream()
+                .map(userMapper::toDto)
+                .toList();
     }
 
     @Override
-    public User update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails) {
-        User user = findById(id, userDetails);
+    public UserDto update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails) {
+        UserDto userDto = findAuthorizedUser(id, userDetails);
+        User user = userMapper.toEntity(userDto);
 
         User updated = userMapper.partialUpdateToEntity(userUpdateDto, user);
         setEncodedPassword(updated);
-        return userRepository.saveAndFlush(updated);
+
+        return userMapper.toDto(userRepository.saveAndFlush(updated));
     }
 
     @Override
@@ -107,8 +100,9 @@ public class UserServiceImpl implements UserService {
                 -> new ObjectNotFoundException("User not found with email: " + email));
     }
 
-    public void changePassword(UserUpdateDto userUpdateDto, Long id) {
-        User user = userCheck(id);
+    @Override
+    public void changePassword(Long id, UserUpdateDto userUpdateDto) {
+        User user = findByIdAndIsDeletedFalse(id);
         String toAddress = userUpdateDto.getEmail();
 
         String newPassword = generator.generateRandomPassword(8);
@@ -117,6 +111,11 @@ public class UserServiceImpl implements UserService {
 
         userRepository.saveAndFlush(user);
         emailService.sendNewPassword(toAddress, newPassword);
+    }
+
+    private void setEncodedPassword(User user) {
+        String encodedPassword = passwordEncode.encodePassword(user.getAuthenticationInfo().getUserPassword());
+        user.getAuthenticationInfo().setUserPassword(encodedPassword);
     }
 
     private void setDefaultRole(User user) {
@@ -133,7 +132,17 @@ public class UserServiceImpl implements UserService {
         emailService.sendRegistrationConfirmationEmail(toAddress);
     }
 
-    private User userCheck(Long id) {
+    private User findByIdAndIsDeletedFalse(Long id) {
         return userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new EntityNotFoundException("User could not be found"));
+    }
+
+    private boolean isAuthorized(User user, UserDetails userDetails) {
+        String userEmail = user.getAuthenticationInfo().getEmail();
+        String username = userDetails.getUsername();
+        if (userEmail.equalsIgnoreCase(username)) {
+            return true;
+        } else {
+            throw new AccessDeniedException("Access denied");
+        }
     }
 }

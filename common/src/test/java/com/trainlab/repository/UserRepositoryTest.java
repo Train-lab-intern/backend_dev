@@ -39,7 +39,7 @@ class UserRepositoryTest {
                 .authenticationInfo(authenticationInfo1)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
         userRepository.save(user1);
@@ -53,7 +53,7 @@ class UserRepositoryTest {
                 .authenticationInfo(authenticationInfo2)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
         userRepository.save(user2);
@@ -67,7 +67,7 @@ class UserRepositoryTest {
                 .authenticationInfo(authenticationInfo3)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(true)
                 .build();
         userRepository.save(user3);
@@ -91,7 +91,7 @@ class UserRepositoryTest {
                 .authenticationInfo(authenticationInfo)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
         Optional<User> actual = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(userEmail);
@@ -110,7 +110,7 @@ class UserRepositoryTest {
                 .authenticationInfo(authenticationInfo1)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
         AuthenticationInfo authenticationInfo2 = AuthenticationInfo.builder()
@@ -123,7 +123,7 @@ class UserRepositoryTest {
                 .authenticationInfo(authenticationInfo2)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
         List<User> expected = new ArrayList<>();
@@ -145,7 +145,7 @@ class UserRepositoryTest {
                 .authenticationInfo(authenticationInfo1)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
         AuthenticationInfo authenticationInfo2 = AuthenticationInfo.builder()
@@ -158,7 +158,7 @@ class UserRepositoryTest {
                 .authenticationInfo(authenticationInfo2)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
         List<User> expected = new ArrayList<>();
