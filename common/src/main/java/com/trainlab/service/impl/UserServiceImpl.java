@@ -55,11 +55,11 @@ public class UserServiceImpl implements UserService {
     public void activateUser(String userEmail) {
         User user = findByEmail(userEmail);
 
-        if (user.isActive()) {
+        if (user.getIsActive()) {
             throw new IllegalStateException("User with email " + userEmail + " is yet activate.");
         }
 
-        user.setActive(true);
+        user.setIsActive(true);
         user.setChanged(Timestamp.valueOf(LocalDateTime.now().withNano(0)));
         userRepository.saveAndFlush(user);
         log.info("User with email " + userEmail + " activate successfully!");

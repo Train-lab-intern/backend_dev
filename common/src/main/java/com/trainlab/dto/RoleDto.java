@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Data
 @Builder
-@Schema(description = "Role DTO data to UI role response")
+@Schema(description = "Role DTO data to role response")
 public class RoleDto {
     private Integer id;
 

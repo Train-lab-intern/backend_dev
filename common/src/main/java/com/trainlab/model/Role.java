@@ -51,5 +51,6 @@ public class Role {
 
     @NotNull
     @Column
-    private boolean isDeleted = false;
+    @Builder.Default
+    private Boolean isDeleted = false;
 }
