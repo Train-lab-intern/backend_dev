@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.checkerframework.common.aliasing.qual.Unique;
 
 @Setter
 @Getter
@@ -19,7 +20,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class AuthenticationInfo {
-
+    @Unique
     private String email;
 
     @JsonIgnore
