@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Data
 @Validated
-@Builder
+//@Builder
 @Schema(description = "User Update Response")
 public class UserUpdateDto {
 

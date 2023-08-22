@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @Validated
 @Schema(description = "User Request")
-@Builder
+//@Builder
 public class UserCreateDto {
 
     @Schema(example = "SvetaPiven", type = "string", description = "Username")

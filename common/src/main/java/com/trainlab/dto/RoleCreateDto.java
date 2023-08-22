@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
+//@Builder
 @Schema(description = "Request role DTO data from UI to create role")
 public class RoleCreateDto {
     @Size(max = 30)

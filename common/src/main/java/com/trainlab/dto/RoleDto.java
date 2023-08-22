@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
+//@Builder
 @Schema(description = "Role DTO data to role response")
 public class RoleDto {
     private Integer id;

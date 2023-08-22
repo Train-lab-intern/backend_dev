@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
+//@Builder
 @Schema(description = "Request role DTO data from UI to update role")
 public class RoleUpdateDto {
     private Integer id;
@@ -20,7 +20,7 @@ public class RoleUpdateDto {
     @NotNull
     private String roleName;
 
-    @Builder.Default
+    //@Builder.Default
     private Boolean isDeleted = false;
 
 }

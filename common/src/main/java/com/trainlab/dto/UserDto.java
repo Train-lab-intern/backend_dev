@@ -7,7 +7,7 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-@Builder
+//@Builder
 @Schema(description = "User Response")
 public class UserDto {
     private Long id;
@@ -20,6 +20,6 @@ public class UserDto {
 
     private Timestamp changed;
 
-    @Builder.Default
+   // @Builder.Default
     private Boolean active = false;
 }
