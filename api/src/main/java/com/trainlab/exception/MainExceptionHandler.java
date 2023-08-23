@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 @RestControllerAdvice
 public class MainExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -25,7 +26,7 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError err = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
-                "Resource Not Found",
+                ex.getMessage(),
                 details);
         return ResponseEntityBuilder.build(err);
     }
@@ -40,7 +41,7 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError err = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
-                "Malformed JSON request",
+                ex.getMessage(),
                 details);
         return ResponseEntityBuilder.build(err);
     }
@@ -55,7 +56,7 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError err = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND,
-                "Method Not Found",
+                ex.getMessage(),
                 details);
         return ResponseEntityBuilder.build(err);
 
@@ -70,7 +71,7 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError err = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
-                "Error occurred",
+                ex.getMessage(),
                 details);
         return ResponseEntityBuilder.build(err);
     }
