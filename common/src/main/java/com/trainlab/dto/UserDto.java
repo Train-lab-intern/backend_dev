@@ -1,13 +1,23 @@
 package com.trainlab.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
-@Data
-//@Builder
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
+@Builder
 @Schema(description = "User Response")
 public class UserDto {
     private Long id;
@@ -20,6 +30,6 @@ public class UserDto {
 
     private Timestamp changed;
 
-   // @Builder.Default
+    @Builder.Default
     private Boolean active = false;
 }

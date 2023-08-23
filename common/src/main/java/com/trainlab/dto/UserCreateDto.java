@@ -2,17 +2,29 @@ package com.trainlab.dto;
 
 import com.trainlab.valid.ValidPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.validation.annotation.Validated;
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
+@Builder
 @Validated
 @Schema(description = "User Request")
-//@Builder
 public class UserCreateDto {
 
     @Schema(example = "SvetaPiven", type = "string", description = "Username")

@@ -5,13 +5,19 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-//@Builder
+@EqualsAndHashCode
+@ToString
+@Builder
 @Schema(description = "Request role DTO data from UI to update role")
 public class RoleUpdateDto {
     private Integer id;
@@ -20,7 +26,7 @@ public class RoleUpdateDto {
     @NotNull
     private String roleName;
 
-    //@Builder.Default
+    @Builder.Default
     private Boolean isDeleted = false;
 
 }
