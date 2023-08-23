@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 @RestControllerAdvice
 public class MainExceptionHandler extends ResponseEntityExceptionHandler {
@@ -65,7 +66,7 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
             Exception ex,
             WebRequest request) {
         List<String> details = new ArrayList<>();
-        details.add(ex.getLocalizedMessage());
+        details.add(Arrays.toString(ex.getStackTrace()));
         ApiError err = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
