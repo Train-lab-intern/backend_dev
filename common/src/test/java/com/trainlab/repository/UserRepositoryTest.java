@@ -34,43 +34,40 @@ class UserRepositoryTest {
                 .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
                 .build();
         User user1 = User.builder()
-                .id(1L)
                 .username("testName1")
                 .authenticationInfo(authenticationInfo1)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
-        userRepository.save(user1);
+        userRepository.saveAndFlush(user1);
         AuthenticationInfo authenticationInfo2 = AuthenticationInfo.builder()
                 .email("test2@gmail.com")
                 .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
                 .build();
         User user2 = User.builder()
-                .id(2L)
                 .username("testName2")
                 .authenticationInfo(authenticationInfo2)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
-        userRepository.save(user2);
+        userRepository.saveAndFlush(user2);
         AuthenticationInfo authenticationInfo3 = AuthenticationInfo.builder()
                 .email("test3@gmail.com")
                 .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
                 .build();
         User user3 = User.builder()
-                .id(3L)
                 .username("testName3")
                 .authenticationInfo(authenticationInfo3)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(true)
                 .build();
-        userRepository.save(user3);
+        userRepository.saveAndFlush(user3);
     }
 
     @AfterAll
@@ -81,49 +78,54 @@ class UserRepositoryTest {
     @Test
     void findByAuthenticationInfoEmail() {
         String userEmail = "test1@gmail.com";
+        Optional<User> userWithEmail = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(userEmail);
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
-                .email("test1@gmail.com")
+                .email(userWithEmail.get().getAuthenticationInfo().getEmail())
                 .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
                 .build();
         User expected = User.builder()
-                .id(1L)
+                .id(userWithEmail.get().getId())
                 .username("testName1")
                 .authenticationInfo(authenticationInfo)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
-        Optional<User> actual = userRepository.findByAuthenticationInfoEmail(userEmail);
+        Optional<User> actual = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(userEmail);
         assertEquals(expected, actual.orElse(null));
     }
 
     @Test
     void testFindAllByIsDeletedFalseOrderById_should_return_IsDeletedFalse() {
+        String userEmail1 = "test1@gmail.com";
+        String userEmail2 = "test2@gmail.com";
+        Optional<User> userWithEmail1 = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(userEmail1);
+        Optional<User> userWithEmail2 = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(userEmail2);
         AuthenticationInfo authenticationInfo1 = AuthenticationInfo.builder()
-                .email("test1@gmail.com")
+                .email(userWithEmail1.get().getAuthenticationInfo().getEmail())
                 .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
                 .build();
         User user1 = User.builder()
-                .id(1L)
+                .id(userWithEmail1.get().getId())
                 .username("testName1")
                 .authenticationInfo(authenticationInfo1)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
         AuthenticationInfo authenticationInfo2 = AuthenticationInfo.builder()
-                .email("test2@gmail.com")
+                .email(userWithEmail2.get().getAuthenticationInfo().getEmail())
                 .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
                 .build();
         User user2 = User.builder()
-                .id(2L)
+                .id(userWithEmail2.get().getId())
                 .username("testName2")
                 .authenticationInfo(authenticationInfo2)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
         List<User> expected = new ArrayList<>();
@@ -134,37 +136,23 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindAllByIsDeletedFalseOrderById_should_return_IsDeletedTrue() {
-        AuthenticationInfo authenticationInfo1 = AuthenticationInfo.builder()
-                .email("test1@gmail.com")
+    void findByIdAndIsDeletedFalse() {
+        String userEmail = "test1@gmail.com";
+        Optional<User> userWithEmail = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(userEmail);
+        AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
+                .email(userWithEmail.get().getAuthenticationInfo().getEmail())
                 .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
                 .build();
-        User user1 = User.builder()
-                .id(1L)
+        User expected = User.builder()
+                .id(userWithEmail.get().getId())
                 .username("testName1")
-                .authenticationInfo(authenticationInfo1)
+                .authenticationInfo(authenticationInfo)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
+                .isActive(false)
                 .isDeleted(false)
                 .build();
-        AuthenticationInfo authenticationInfo2 = AuthenticationInfo.builder()
-                .email("test2@gmail.com")
-                .userPassword("$2a$06$dnfljySL5wwO918hOHWkwOfOzSuQMORHXAr5em7CzMREoxnCJx2UC")
-                .build();
-        User user2 = User.builder()
-                .id(2L)
-                .username("testName2")
-                .authenticationInfo(authenticationInfo2)
-                .created(Timestamp.valueOf("2023-07-13 16:28:08"))
-                .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
-                .active(false)
-                .isDeleted(false)
-                .build();
-        List<User> expected = new ArrayList<>();
-        expected.add(user1);
-        expected.add(user2);
-        List<User> actual = userRepository.findAllByIsDeletedFalseOrderById();
-        assertEquals(expected, actual);
+        Optional<User> actual = userRepository.findByIdAndIsDeletedFalse(userWithEmail.get().getId());
+        assertEquals(expected, actual.orElse(null));
     }
 }

@@ -59,7 +59,8 @@ public class Session {
 
     @JsonIgnore
     @Column(name = "is_deleted")
-    private boolean isDeleted = false;
+    @Builder.Default
+    private Boolean isDeleted = false;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

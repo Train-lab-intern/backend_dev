@@ -4,12 +4,11 @@ import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.ValidationException;
-import com.trainlab.mapper.UserMapper;
-import com.trainlab.model.User;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,8 +33,6 @@ public class UserControllerImpl implements UserController {
 
     private final UserService userService;
 
-    private final UserMapper userMapper;
-
     @Override
     @PostMapping("/register")
     public ResponseEntity<String> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
@@ -49,7 +46,7 @@ public class UserControllerImpl implements UserController {
 
         String message = "Registration initiated. Please check your email for further instructions.";
 
-        return ResponseEntity.ok(message);
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
     @Override
@@ -57,58 +54,42 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<String> completeRegistration(@RequestParam("userEmail") String userEmail) {
         try {
             userService.activateUser(userEmail);
-            return ResponseEntity.ok("Registration completed successfully!");
+            return ResponseEntity.status(HttpStatus.OK).body("Registration completed successfully!");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Error occurred during registration completion: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error occurred during registration completion: " + e.getMessage());
         }
     }
 
     @Override
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        List<User> users = userService.findAll();
-
-        List<UserDto> usersDto = users.stream()
-                .map(userMapper::toDto)
-                .toList();
-
-        return ResponseEntity.ok(usersDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
 
     @Override
     @PatchMapping("/{id}")
-    public ResponseEntity<UserUpdateDto> updateUser(@PathVariable("id") Long id,
-                                                    @Valid @RequestBody UserUpdateDto userUpdateDto,
-                                                    BindingResult bindingResult,
-                                                    @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
+                                              @Valid @RequestBody UserUpdateDto userUpdateDto,
+                                              BindingResult bindingResult,
+                                              @AuthenticationPrincipal UserDetails userDetails) {
         if (bindingResult.hasErrors()) {
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);
         }
-
-        User updatedUser = userService.update(userUpdateDto, id, userDetails);
-
-        UserUpdateDto updatedUserUpdateDto = userMapper.toUpdateDto(updatedUser);
-
-        return ResponseEntity.ok(updatedUserUpdateDto);
+        return ResponseEntity.ok(userService.update(userUpdateDto, id, userDetails));
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> findUserById(@PathVariable Long id, @AuthenticationPrincipal UserDetails detailsService) {
-        User user = userService.findById(id, detailsService);
-
-        UserDto responseDto = userMapper.toDto(user);
-
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAuthorizedUser(id, detailsService));
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<String> forgotPassword(@PathVariable("id") Long id,
+    public ResponseEntity<String> changePassword(@PathVariable("id") Long id,
                                                  @Valid @RequestBody UserUpdateDto userUpdateDto) {
-        userService.changePassword(userUpdateDto, id);
-
-        return ResponseEntity.ok("You changed password");
+        userService.changePassword(id, userUpdateDto);
+        return ResponseEntity.status(HttpStatus.OK).body("You changed password");
     }
 }

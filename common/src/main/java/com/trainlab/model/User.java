@@ -1,6 +1,5 @@
 package com.trainlab.model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
@@ -54,8 +53,10 @@ public class User {
     })
     private AuthenticationInfo authenticationInfo;
 
-    @Column
-    private boolean active;
+    @NotNull
+    @Column(name = "is_active")
+    @Builder.Default
+    private Boolean isActive = false;
 
     @NotNull
     @Column
@@ -67,7 +68,8 @@ public class User {
 
     @NotNull
     @Column(name = "is_deleted")
-    private boolean isDeleted = false;
+    @Builder.Default
+    private Boolean isDeleted = false;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -81,6 +83,7 @@ public class User {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @Builder.Default
     private Set<Session> sessions = new HashSet<>();
 
 }

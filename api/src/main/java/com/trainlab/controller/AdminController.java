@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +41,7 @@ public class AdminController {
             }
     )
     @PutMapping("/{id}/status")
-    public String changeStatusDelete(
+    public ResponseEntity<String> changeStatusDelete(
             @Parameter(description = "User ID") @PathVariable("id") Long id,
             @Parameter(description = "Status value") @RequestParam("isDeleted") boolean isDeleted) {
 
@@ -47,9 +49,9 @@ public class AdminController {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setDeleted(isDeleted);
+            user.setIsDeleted(isDeleted);
             userRepository.saveAndFlush(user);
-            return "Status changed successfully";
+            return ResponseEntity.status(HttpStatus.OK).body("Status changed successfully") ;
         } else {
             throw new EntityNotFoundException("User with id " + id + " not found!");
         }

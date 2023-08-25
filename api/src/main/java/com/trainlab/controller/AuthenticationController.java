@@ -12,6 +12,7 @@ import com.trainlab.service.CustomUserDetailsService;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,7 +46,7 @@ public class AuthenticationController {
         String userEmail = request.getUserEmail();
         User userByEmail = userService.findByEmail(userEmail);
 
-        if (!(userByEmail.isActive())) {
+        if (!(userByEmail.getIsActive())) {
             throw new ActivationException("User not activated");
         }
 
@@ -61,7 +62,7 @@ public class AuthenticationController {
 
         UserDto userDto = userMapper.toDto(userByEmail);
 
-        return ResponseEntity.ok(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 AuthResponseDto.builder()
                         .userEmail(request.getUserEmail())
                         .token(token)

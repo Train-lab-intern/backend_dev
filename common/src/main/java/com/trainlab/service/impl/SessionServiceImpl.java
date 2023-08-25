@@ -36,7 +36,7 @@ public class SessionServiceImpl implements SessionService {
         Long userId = null;
 
         if (principal != null) {
-            Optional<User> userOptional = userRepository.findByAuthenticationInfoEmail(principal.getName());
+            Optional<User> userOptional = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(principal.getName());
 
             if (userOptional.isPresent()) {
                 userId = userOptional.get().getId();
