@@ -3,6 +3,7 @@ package com.trainlab.service.impl;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
+import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.Role;
@@ -24,6 +25,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +46,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(UserCreateDto userCreateDto) {
         User user = userMapper.toEntity(userCreateDto);
+        checkUserEmailAndPasswordExist(user);
+
         setEncodedPassword(user);
         setDefaultRole(user);
         userRepository.saveAndFlush(user);
@@ -91,7 +95,20 @@ public class UserServiceImpl implements UserService {
         User updated = userMapper.partialUpdateToEntity(userUpdateDto, user);
         setEncodedPassword(updated);
 
+        checkUserEmailAndPasswordExist(updated);
+
         return userMapper.toDto(userRepository.saveAndFlush(updated));
+    }
+
+    private void checkUserEmailAndPasswordExist(User updated) {
+        Optional<User> checkUsername = userRepository.findByUsername(updated.getUsername());
+        Optional<User> checkUserEmail = userRepository.findByAuthenticationInfoEmail(updated.getAuthenticationInfo().getEmail());
+
+        if (checkUsername.isPresent()) {
+            throw new IllegalRequestException("User with this username is already exists.");
+        } else if (checkUserEmail.isPresent()) {
+            throw new IllegalRequestException("User with this email is already exists.");
+        }
     }
 
     @Override
