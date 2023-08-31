@@ -1,0 +1,5 @@
+DB_HOST=tldb-postgresql-fra1-48017-do-user-14346310-0.b.db.ondigitalocean.com
+DB_PORT=25060
+DB_NAME=trainlab
+DB_USERNAME=trainlab
+DB_PASSWORD=AVNS_tuu6r5V-pTo-Xxixa5h
