@@ -11,7 +11,7 @@ create table if not exists public.users
     created       timestamp(6) default now() not null,
     changed       timestamp(6)               not null,
     is_deleted    boolean      default false not null,
-    active        boolean      default false
+    is_active        boolean      default false
 );
 
 alter table public.users
