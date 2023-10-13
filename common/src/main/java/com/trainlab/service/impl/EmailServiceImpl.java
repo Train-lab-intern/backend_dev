@@ -24,7 +24,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendRegistrationConfirmationEmail(String toAddress) {
         String emailSubject = "Подтверждение регистрации";
         String message = "Спасибо за регистрацию! Пожалуйста, перейдите по ссылке ниже, чтобы завершить регистрацию:\n" +
-                "https://test.app.it-roast.com/api/v1/users/complete-registration?userEmail=" + toAddress +
+                "https://www.it-roast.com/api/v1/users/complete-registration?userEmail=" + toAddress +
                 "\nС наилучшими пожеланиями,\nКоманда Trainlab";
 
         sendEmail(toAddress, emailSubject, message);
