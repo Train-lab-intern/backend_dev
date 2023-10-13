@@ -9,12 +9,9 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 @Builder
 @Validated
 @Schema(description = "User Request")

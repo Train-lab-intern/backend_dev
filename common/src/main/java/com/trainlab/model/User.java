@@ -16,26 +16,17 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
-@Setter
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@ToString
-@EqualsAndHashCode
 @Table(name = "users", schema = "public")
 public class User {
     @Id

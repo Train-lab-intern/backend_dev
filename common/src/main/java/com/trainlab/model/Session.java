@@ -11,24 +11,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.sql.Timestamp;
 
-@Setter
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@ToString
-@EqualsAndHashCode
 @Table(name = "sessions")
 public class Session {
     @Id
@@ -65,7 +56,6 @@ public class Session {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-
 }
