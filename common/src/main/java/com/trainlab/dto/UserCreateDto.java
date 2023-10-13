@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,7 @@ public class UserCreateDto {
     @NotNull(message = "User email must not be null")
     @Size(message = "User email must be between 8 and 256 characters", min = 8, max = 256)
     @Email(message = "Invalid email address")
+    @Pattern(regexp = "^(.+)@(.+\\..+)$", message = "Invalid email address. The email should contain a dot (.) in the domain part.")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
             type = "string", description = "User email")
     private String email;
