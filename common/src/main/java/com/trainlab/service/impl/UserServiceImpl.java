@@ -72,11 +72,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findAuthorizedUser(Long id, UserDetails userDetails) {
         User user = findByIdAndIsDeletedFalse(id);
-        UserDto userDto = null;
+
         if (isAuthorized(user, userDetails)) {
-            userDto = userMapper.toDto(user);
+            return userMapper.toDto(user);
         }
-        return userDto;
+        else throw new AccessDeniedException("Access denied");
     }
 
     @Override
@@ -156,10 +156,7 @@ public class UserServiceImpl implements UserService {
     private boolean isAuthorized(User user, UserDetails userDetails) {
         String userEmail = user.getAuthenticationInfo().getEmail();
         String username = userDetails.getUsername();
-        if (userEmail.equalsIgnoreCase(username)) {
-            return true;
-        } else {
-            throw new AccessDeniedException("Access denied");
-        }
+
+        return userEmail.equalsIgnoreCase(username);
     }
 }
