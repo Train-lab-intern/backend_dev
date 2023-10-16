@@ -2,15 +2,26 @@ package com.trainlab.dto;
 
 import com.trainlab.valid.ValidPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.validation.annotation.Validated;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 @Builder
 @Validated
 @Schema(description = "User Request")
@@ -20,8 +31,8 @@ public class UserCreateDto {
     private String username;
 
     @NotNull(message = "User email must not be null")
-    @Size(message = "User email must be between 1 and 256 characters", min = 1, max = 256)
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$", message = "Invalid email address.")
+    @Size(message = "User email must be between 8 and 256 characters", min = 8, max = 256)
+    @Email(message = "Invalid email address")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
             type = "string", description = "User email")
     private String email;
