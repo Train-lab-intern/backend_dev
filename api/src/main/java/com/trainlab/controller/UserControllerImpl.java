@@ -5,10 +5,8 @@ import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.ValidationException;
 import com.trainlab.service.UserService;
-import com.trainlab.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +31,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @Override
     @PostMapping("/register")
