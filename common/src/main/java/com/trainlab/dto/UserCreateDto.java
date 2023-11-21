@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
+import static com.trainlab.util.IPUtil.IPv4_PATTERN;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,7 +26,8 @@ public class UserCreateDto {
 
     @NotNull(message = "User email must not be null")
     @Size(message = "User email must be between 1 and 256 characters", min = 1, max = 257)
-    @Pattern(regexp = "^[A-Za-z0-9._%+\\-']+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$", message = "Invalid email address.")
+    @Pattern(regexp = "^[A-Za-z0-9._%+\\-']+@(" + IPv4_PATTERN + "|([A-Za-z0-9.-]+\\.[A-Za-z]{2,4}))$",
+             message = "Invalid email address.")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
             type = "string", description = "User email")
     private String email;
