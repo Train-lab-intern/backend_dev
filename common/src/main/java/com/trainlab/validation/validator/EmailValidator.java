@@ -1,6 +1,5 @@
 package com.trainlab.validation.validator;
 
-import com.trainlab.dto.UserCreateDto;
 import com.trainlab.validation.Email;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -14,7 +13,7 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return value.matches("^[A-Za-z0-9._%+\\-']+@(" + Pattern.quote(IPv4_PATTERN) +
+        return value.matches("^[A-Za-z0-9._%+\\-]+@(" + Pattern.quote(IPv4_PATTERN) +
                 "|([A-Za-z0-9.-]+\\.[A-Za-z]{2,4}))$");
     }
 }
