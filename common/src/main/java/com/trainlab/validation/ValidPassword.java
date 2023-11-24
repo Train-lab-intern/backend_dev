@@ -1,4 +1,4 @@
-package com.trainlab.valid;
+package com.trainlab.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
