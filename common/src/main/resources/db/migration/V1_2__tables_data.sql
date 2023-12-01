@@ -1,6 +1,13 @@
-insert into public.roles (id, role_name, created, changed, is_deleted)
-values  (1, 'ROLE_ADMIN', '2023-07-13 16:33:07.000000', '2023-07-13 16:33:11.000000', false),
-        (2, 'ROLE_USER', '2023-07-13 16:33:37.000000', '2023-07-13 16:33:42.000000', false);
+-- Check if the record with id=1 already exists
+INSERT INTO public.roles (id, role_name, created, changed, is_deleted)
+SELECT 1, 'ROLE_ADMIN', '2023-07-13 16:33:07.000000', '2023-07-13 16:33:11.000000', false
+    WHERE NOT EXISTS (SELECT 1 FROM public.roles WHERE id = 1);
+
+-- Check if the record with id=2 already exists
+INSERT INTO public.roles (id, role_name, created, changed, is_deleted)
+SELECT 2, 'ROLE_USER', '2023-07-13 16:33:37.000000', '2023-07-13 16:33:42.000000', false
+    WHERE NOT EXISTS (SELECT 1 FROM public.roles WHERE id = 2);
+
 
 insert into public.frontend_data (id, front_id, text, created, changed, is_deleted)
 values  (1, 1.1, 'Создай свой успех', '2023-07-09 20:54:37.000000', '2023-07-09 20:54:41.000000', false),
@@ -12,3 +19,4 @@ values  (1, 1.1, 'Создай свой успех', '2023-07-09 20:54:37.000000
         (7, 1.7, 'Все права защищены. Любое использование либо копирование материалов и (или) подборки материалов сайта, элементов дизайна и оформления допускается лишь с письменного разрешения правообладателя и только со ссылкой на источник: URL', '2023-07-09 22:55:03.000000', '2023-07-09 22:55:05.000000', false),
         (8, 1.8, 'Здесь будет история успеха нашего пользователя', '2023-07-09 22:56:16.000000', '2023-07-09 22:56:17.000000', false),
         (9, 1.9, '© 2023 OOO «ХХХХХХХХ»', '2023-07-09 22:56:43.000000', '2023-07-09 22:56:44.000000', false);
+ON CONFLICT (id) DO NOTHING;
