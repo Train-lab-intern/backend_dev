@@ -18,4 +18,6 @@ public interface RoleService {
     List<RoleDto> findAll();
 
     RoleDto update(RoleUpdateDto roleUpdateDto, Integer id);
+
+    void delete(Integer id);
 }
