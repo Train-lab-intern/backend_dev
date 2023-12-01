@@ -69,5 +69,9 @@ public class RoleServiceImpl implements RoleService {
         Role roleSaved = roleRepository.saveAndFlush(updated);
         return roleMapper.toDto(roleSaved);
     }
+    @Override
+    public void delete(Integer id){
+        roleRepository.deleteById(id);
+    }
 
 }

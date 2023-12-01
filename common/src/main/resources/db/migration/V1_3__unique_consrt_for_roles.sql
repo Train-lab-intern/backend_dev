@@ -1,1 +1,1 @@
-ALTER TABLE roles ADD CONSTRAINT role_name_unq UNIQUE (role_name);
+--ALTER TABLE roles ADD CONSTRAINT role_name_unq UNIQUE (role_name);
