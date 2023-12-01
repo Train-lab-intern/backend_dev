@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -109,4 +110,23 @@ public interface RoleController {
             }
     )
     ResponseEntity<RoleDto> updateRole(Integer id, RoleUpdateDto roleUpdateDto);
+
+    @Operation(
+            summary = "Spring Data Delete Role ",
+            description = "Removing role",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "OK",
+                            description = "Role removed",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Role.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "BAD_REQUEST",
+                            description = "Validation error"
+                    )
+            }
+    )
+    ResponseEntity<String> deleteRole(@PathVariable("id") Integer id);
 }
