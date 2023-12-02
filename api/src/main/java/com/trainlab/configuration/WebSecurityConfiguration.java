@@ -46,29 +46,29 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
-        http
-                .httpBasic().disable()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests()
-                .requestMatchers("/v3/api-docs/**", "/v2/api-docs", "/configuration/ui/**", "/swagger-resources/**",
-                        "/configuration/security/**", "/swagger-ui/**", "/swagger-ui.html#", "/webjars/**"
-                ).permitAll()
-                .requestMatchers(HttpMethod.GET, "/front/**").permitAll()
-                .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/v1/**").permitAll()
-                .requestMatchers("/api/v1/users").permitAll()
-                .requestMatchers("/api/v1/roles").permitAll()
-                .requestMatchers("/api/v1/users/register").permitAll()
-                .requestMatchers("/api/v1/users/complete-registration").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
-                .requestMatchers("/api/v1/users/change-password/**").permitAll()
-                .requestMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/api/v1/admin/users/**").hasAnyRole("ADMIN")
-                .anyRequest().authenticated();
-        return http.build();
+        return http
+                    .httpBasic().disable()
+                    .csrf().disable()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                    .authorizeHttpRequests(config -> config
+                            .requestMatchers("/v3/api-docs/**", "/v2/api-docs", "/configuration/ui/**",
+                                "/swagger-resources/**", "/configuration/security/**", "/swagger-ui/**", "/swagger-ui.html#",
+                                "/webjars/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/front/**").permitAll()
+                            .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
+                            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                            .requestMatchers("/api/v1/**").permitAll()
+                            .requestMatchers("/api/v1/users").permitAll()
+                            .requestMatchers("/api/v1/roles").permitAll()
+                            .requestMatchers("/api/v1/users/register").permitAll()
+                            .requestMatchers("/api/v1/users/complete-registration").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
+                            .requestMatchers("/api/v1/users/change-password/**").permitAll()
+                            .requestMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
+                            .requestMatchers("/api/v1/admin/users/**").hasAnyRole("ADMIN")
+                            .anyRequest().authenticated()
+                    ).build();
     }
 }
