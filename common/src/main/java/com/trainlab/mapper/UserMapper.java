@@ -14,7 +14,7 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
-    @Mapping(target = "username", source = "username")
+    //@Mapping(target = "username", source = "username")
     @Mapping(target = "authenticationInfo.email", source = "email")
     @Mapping(target = "authenticationInfo.userPassword", source = "password")
     @Mapping(target = "created", expression = "java(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))")

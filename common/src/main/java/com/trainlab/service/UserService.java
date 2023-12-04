@@ -3,13 +3,14 @@ package com.trainlab.service;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
+import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
 public interface UserService {
-    User create(UserCreateDto userCreateDto);
+    User create(UserCreateDto userCreateDto) throws UsernameGenerationException;
 
     void activateUser(String userEmail);
 
