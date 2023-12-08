@@ -1,6 +1,7 @@
 package com.trainlab.service.impl;
 
 import com.trainlab.dto.UserCreateDto;
+import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.AuthenticationInfo;
 import com.trainlab.model.Role;
@@ -46,14 +47,13 @@ class UserServiceImplTest {
     EmailService emailService;
 
     @Test
-    void create() {
+    void create() throws UsernameGenerationException {
          //  ReflectionTestUtils.setField(userService, "dbHost", "test.db");
         String email = "test@gmail.com";
         String userName = "testName";
         String password = "sdfkjgh376";
         UserCreateDto userRequest = UserCreateDto.builder()
                 .email(email)
-                .username(userName)
                 .password(password)
                 .build();
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()

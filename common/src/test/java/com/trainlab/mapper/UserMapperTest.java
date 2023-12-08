@@ -6,6 +6,7 @@ import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.AuthenticationInfo;
 import com.trainlab.model.User;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,10 @@ import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = {TestApplication.class, UserMapperImpl.class})
+@SpringBootTest(classes = {TestApplication.class})
 @RunWith(SpringRunner.class)
+@AllArgsConstructor
 class UserMapperTest {
-    @Autowired
     private UserMapper userMapper;
 
     @Test
@@ -30,7 +31,6 @@ class UserMapperTest {
 
         UserCreateDto userCreateDto = UserCreateDto.builder()
                 .email(email)
-                .username(userName)
                 .password(password)
                 .build();
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
