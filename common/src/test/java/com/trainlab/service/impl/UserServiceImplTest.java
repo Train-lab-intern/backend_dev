@@ -54,6 +54,7 @@ class UserServiceImplTest {
         String password = "sdfkjgh376";
         UserCreateDto userRequest = UserCreateDto.builder()
                 .email(email)
+                //.username(userName)
                 .password(password)
                 .build();
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
@@ -62,7 +63,7 @@ class UserServiceImplTest {
                 .build();
         User expected = User.builder()
                 .id(1L)
-                .username(userName)
+              //  .username(userName)
                 .authenticationInfo(authenticationInfo)
                 .created(Timestamp.valueOf("2023-07-13 16:28:08"))
                 .changed(Timestamp.valueOf("2023-07-31 15:32:53"))
