@@ -34,3 +34,4 @@ build/
 
 # .gitignore
 database.yml
+env.list

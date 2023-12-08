@@ -3,6 +3,7 @@ package com.trainlab.controller;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
+import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.exception.ValidationException;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,7 +43,13 @@ public class UserControllerImpl implements UserController {
             throw new ValidationException(errorMessage);
         }
 
-        userService.create(userCreateDto);
+        try {
+            userService.create(userCreateDto);
+        }
+        catch (UsernameGenerationException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+
 
         String message = "Registration initiated. Please check your email for further instructions.";
 
