@@ -169,7 +169,6 @@ public class UserServiceImpl implements UserService {
 
 
     private String generateUsername(Long id) throws UsernameGenerationException {
-        String usrname;
         if (id < 10) {
             return  "user-0000" + id;
         } else if (id<100) {

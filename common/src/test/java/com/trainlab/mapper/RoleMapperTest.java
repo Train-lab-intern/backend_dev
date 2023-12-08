@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = {TestApplication.class, RoleMapperImpl.class})
+@SpringBootTest(classes = {TestApplication.class})
 @RunWith(SpringRunner.class)
 class RoleMapperTest {
     @Autowired

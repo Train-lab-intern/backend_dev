@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = {TestApplication.class, UserMapperImpl.class})
+@SpringBootTest(classes = {TestApplication.class})
 @RunWith(SpringRunner.class)
 class UserMapperTest {
     @Autowired
@@ -25,12 +25,10 @@ class UserMapperTest {
     @Test
     void toEntity() {
         String email = "test@gmail.com";
-        String userName = "testName";
         String password = "sdfkjgh376";
 
         UserCreateDto userCreateDto = UserCreateDto.builder()
                 .email(email)
-                .username(userName)
                 .password(password)
                 .build();
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
@@ -38,7 +36,6 @@ class UserMapperTest {
                 .userPassword(password)
                 .build();
         User expected = User.builder()
-                .username(userName)
                 .authenticationInfo(authenticationInfo)
                 .created(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
                 .changed(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
@@ -58,7 +55,6 @@ class UserMapperTest {
                 .userPassword(password)
                 .build();
         User user = User.builder()
-                .username(userName)
                 .authenticationInfo(authenticationInfo1)
                 .created(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
                 .changed(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
@@ -68,7 +64,6 @@ class UserMapperTest {
 
         UserUpdateDto userUpdateDto = UserUpdateDto.builder()
                 .email(email)
-                .username(userName)
                 .password(password)
                 .build();
 
@@ -78,7 +73,6 @@ class UserMapperTest {
                 .build();
 
         User expected = User.builder()
-                .username(userName)
                 .authenticationInfo(authenticationInfo)
                 .created(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
                 .changed(Timestamp.valueOf(java.time.LocalDateTime.now().withNano(0)))
