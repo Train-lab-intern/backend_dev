@@ -1,6 +1,8 @@
 package com.trainlab.configuration;
 
+import com.auth0.jwt.algorithms.Algorithm;
 import com.trainlab.filter.JwtTokenFilter;
+import com.trainlab.security.JwtTokenProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,14 +45,16 @@ public class WebSecurityConfiguration {
         return new ProviderManager(provider);
     }
 
+    // Changed
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
         return http
                     .httpBasic().disable()
+                    .formLogin().disable()
                     .csrf().disable()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
+                    .sessionManagement(sessionManagement ->
+                            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                     .authorizeHttpRequests(config -> config
                             .requestMatchers("/v3/api-docs/**", "/v2/api-docs", "/configuration/ui/**",
@@ -70,5 +74,10 @@ public class WebSecurityConfiguration {
                             .requestMatchers("/api/v1/admin/users/**").hasAnyRole("ADMIN")
                             .anyRequest().authenticated()
                     ).build();
+    }
+
+    @Bean
+    public Algorithm jwtAlgorithm(JwtTokenProperties jwtTokenProperties) {
+        return Algorithm.HMAC256(jwtTokenProperties.getSecret());
     }
 }

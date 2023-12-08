@@ -78,7 +78,7 @@ public class TokenProvider {
                 .map(String::toLowerCase).toList();
     }
 
-    private Map<String, Object> generateJWTHeaders() {
+    private Map<String, Object>  generateJWTHeaders() {
         Map<String, Object> jwtHeaders = new LinkedHashMap<>();
         jwtHeaders.put("typ", JWT);
         jwtHeaders.put("alg", ALGORITHM.getValue());

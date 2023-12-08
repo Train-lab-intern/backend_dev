@@ -49,3 +49,7 @@ spring:
   logging:
     level:
       root: OFF
+
+  jwt:
+    secret: ${SECRET}
+    time-to-live: P1D
