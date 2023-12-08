@@ -18,11 +18,11 @@ import org.springframework.validation.annotation.Validated;
 @Schema(description = "User Request")
 public class UserCreateDto {
 
-    @NotBlank(message = "User name must not be null")
-    @Size(message = "User name must be between 2 and 256 characters", min = 2, max = 256)
-    @Pattern(regexp = "^[A-Za-z0-9]+$", message = "User name should consist of uppercase and lowercase letters and numbers without spaces")
-    @Schema(example = "SvetaPiven", type = "string", description = "Username")
-    private String username;
+//    @NotBlank(message = "User name must not be null")
+//    @Size(message = "User name must be between 2 and 256 characters", min = 2, max = 256)
+//    @Pattern(regexp = "^[A-Za-z0-9]+$", message = "User name should consist of uppercase and lowercase letters and numbers without spaces")
+//    @Schema(example = "SvetaPiven", type = "string", description = "Username")
+//    private String username;
 
     @NotBlank(message = "User email must not be null")
     @Size(message = "User email must be between 1 and 256 characters", min = 1, max = 256)

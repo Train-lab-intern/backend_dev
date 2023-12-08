@@ -5,6 +5,7 @@ import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
+import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.Role;
 import com.trainlab.model.User;
@@ -17,6 +18,8 @@ import com.trainlab.util.RandomValuesGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -44,13 +47,16 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
 
     @Override
-    public User create(UserCreateDto userCreateDto) {
+    public User create(UserCreateDto userCreateDto) throws UsernameGenerationException {
         User user = userMapper.toEntity(userCreateDto);
         checkUserEmailAndPasswordExist(user);
-
         setEncodedPassword(user);
         setDefaultRole(user);
         userRepository.saveAndFlush(user);
+
+          user.setUsername(generateUsername(user.getId()));
+            userRepository.save(user);
+
         buildEmailMessage(user);
         return user;
     }
@@ -101,12 +107,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkUserEmailAndPasswordExist(User updated) {
-        Optional<User> checkUsername = userRepository.findByUsername(updated.getUsername());
+//        Optional<User> checkUsername = userRepository.findByUsername(updated.getUsername());
         Optional<User> checkUserEmail = userRepository.findByAuthenticationInfoEmail(updated.getAuthenticationInfo().getEmail());
 
-        if (checkUsername.isPresent()) {
-            throw new IllegalRequestException("User with this username is already exists.");
-        } else if (checkUserEmail.isPresent()) {
+//        if (checkUsername.isPresent()) {
+//            throw new IllegalRequestException("User with this username is already exists.");
+//        }
+         if (checkUserEmail.isPresent()) {
             throw new IllegalRequestException("User with this email is already exists.");
         }
     }
@@ -158,5 +165,22 @@ public class UserServiceImpl implements UserService {
         String username = userDetails.getUsername();
 
         return userEmail.equalsIgnoreCase(username);
+    }
+
+
+    private String generateUsername(Long id) throws UsernameGenerationException {
+        if (id < 10) {
+            return  "user-0000" + id;
+        } else if (id<100) {
+            return  "user-000"+id;
+        } else if (id<1000) {
+            return  "user-00"+id;
+        } else if (id<10000) {
+            return   "user-0"+id;
+        } else if (id<100000) {
+            return   "user-"+id;
+        }else {
+            throw new UsernameGenerationException("Username generation failed. User's id more then expected");
+        }
     }
 }
