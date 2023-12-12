@@ -1,7 +1,6 @@
 package com.trainlab.security.principal;
 
 import com.trainlab.model.Role;
-import com.trainlab.security.principal.AccountPrincipal;
 import lombok.Value;
 
 import java.util.List;

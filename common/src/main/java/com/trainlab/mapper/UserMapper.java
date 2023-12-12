@@ -29,5 +29,6 @@ public interface UserMapper {
     User toEntity(UserDto userDto);
 
     @Mapping(target = "email", source = "authenticationInfo.email")
+    @Mapping(target = "roles", source = "roles")
     UserDto toDto(User user);
 }

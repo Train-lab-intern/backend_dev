@@ -10,9 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 
 public interface UserService {
-    User create(UserCreateDto userCreateDto) throws UsernameGenerationException;
+    UserDto create(UserCreateDto userCreateDto) throws UsernameGenerationException;
 
-    void activateUser(String userEmail);
+/*    void activateUser(String userEmail);*/
 
     UserDto findAuthorizedUser(Long id, UserDetails userDetails);
 
@@ -20,7 +20,7 @@ public interface UserService {
 
     UserDto update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails);
 
-    User findByEmail(String email);
+    UserDto findByEmail(String email);
 
     void changePassword(Long id, UserUpdateDto userUpdateDto);
 }

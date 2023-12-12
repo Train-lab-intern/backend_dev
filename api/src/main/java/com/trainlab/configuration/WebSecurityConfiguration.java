@@ -1,8 +1,12 @@
 package com.trainlab.configuration;
 
+import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.JWTVerifier;
+import com.trainlab.filter.AccessTokenAuthenticationFilter;
 import com.trainlab.filter.JwtTokenFilter;
-import com.trainlab.security.JwtTokenProperties;
+import com.trainlab.security.TokenProvider;
+import com.trainlab.security.security.JwtTokenProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -47,7 +52,7 @@ public class WebSecurityConfiguration {
 
     // Changed
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, TokenProvider tokenProvider)
             throws Exception {
         return http
                     .httpBasic().disable()
@@ -56,6 +61,7 @@ public class WebSecurityConfiguration {
                     .sessionManagement(sessionManagement ->
                             sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                    .addFilterAfter(new AccessTokenAuthenticationFilter(tokenProvider), BasicAuthenticationFilter.class)
                     .authorizeHttpRequests(config -> config
                             .requestMatchers("/v3/api-docs/**", "/v2/api-docs", "/configuration/ui/**",
                                 "/swagger-resources/**", "/configuration/security/**", "/swagger-ui/**", "/swagger-ui.html#",
@@ -79,5 +85,10 @@ public class WebSecurityConfiguration {
     @Bean
     public Algorithm jwtAlgorithm(JwtTokenProperties jwtTokenProperties) {
         return Algorithm.HMAC256(jwtTokenProperties.getSecret());
+    }
+
+    @Bean
+    public JWTVerifier jwtVerifier(Algorithm algorithm) {
+        return JWT.require(algorithm).build();
     }
 }

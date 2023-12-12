@@ -18,15 +18,13 @@ import com.trainlab.util.RandomValuesGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,23 +45,23 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
 
     @Override
-    public User create(UserCreateDto userCreateDto) throws UsernameGenerationException {
+    public UserDto create(UserCreateDto userCreateDto) throws UsernameGenerationException {
         User user = userMapper.toEntity(userCreateDto);
         checkUserEmailAndPasswordExist(user);
         setEncodedPassword(user);
         setDefaultRole(user);
         userRepository.saveAndFlush(user);
 
-          user.setUsername(generateUsername(user.getId()));
-            userRepository.save(user);
+        user.setUsername(generateUsername(user.getId()));
+        userRepository.save(user);
 
-        buildEmailMessage(user);
-        return user;
+/*        buildEmailMessage(user);*/
+        return userMapper.toDto(user);
     }
 
-    @Override
+/*    @Override
     public void activateUser(String userEmail) {
-        User user = findByEmail(userEmail);
+        UserDto user = findByEmail(userEmail);
 
         if (user.getIsActive()) {
             throw new IllegalStateException("User with email " + userEmail + " is yet activate.");
@@ -71,9 +69,9 @@ public class UserServiceImpl implements UserService {
 
         user.setIsActive(true);
         user.setChanged(Timestamp.valueOf(LocalDateTime.now().withNano(0)));
-        userRepository.saveAndFlush(user);
+        userRepository.saveAndFlush(userMapper.toEntity(user));
         log.info("User with email " + userEmail + " activate successfully!");
-    }
+    }*/
 
     @Override
     public UserDto findAuthorizedUser(Long id, UserDetails userDetails) {
@@ -119,9 +117,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) {
-        return userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(email).orElseThrow(()
+    public UserDto findByEmail(String email) {
+        User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(email).orElseThrow(()
                 -> new ObjectNotFoundException("User not found with email: " + email));
+        return userMapper.toDto(user);
     }
 
     @Override
@@ -146,15 +145,15 @@ public class UserServiceImpl implements UserService {
         Role userRole = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
 
         if (user.getRoles() == null) {
-            user.setRoles(new HashSet<>());
+            user.setRoles(new ArrayList<>());
         }
         user.getRoles().add(userRole);
     }
 
-    private void buildEmailMessage(User user) {
+/*    private void buildEmailMessage(User user) {
         String toAddress = user.getAuthenticationInfo().getEmail();
         emailService.sendRegistrationConfirmationEmail(toAddress);
-    }
+    }*/
 
     private User findByIdAndIsDeletedFalse(Long id) {
         return userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new EntityNotFoundException("User could not be found"));

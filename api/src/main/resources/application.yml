@@ -52,4 +52,4 @@ spring:
 
   jwt:
     secret: ${SECRET}
-    time-to-live: P1D
+    time-to-live: PT30M

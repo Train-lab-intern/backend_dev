@@ -3,6 +3,7 @@ package com.trainlab.controller;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
+import com.trainlab.security.dto.AuthResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -42,11 +43,11 @@ public interface UserController {
                     )
             }
     )
-    ResponseEntity<String> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
+    ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
                                       UserCreateDto userCreateDto, BindingResult bindingResult);
 
 
-    @Operation(
+/*    @Operation(
             summary = "Complete Registration",
             description = "Completes the user registration process",
             responses = {
@@ -60,7 +61,7 @@ public interface UserController {
                     )
             }
     )
-    ResponseEntity<String> completeRegistration(@RequestParam("userEmail") String userEmail);
+    ResponseEntity<String> completeRegistration(@RequestParam("userEmail") String userEmail);*/
 
     @Operation(
             summary = "Spring Data User Find All Search",

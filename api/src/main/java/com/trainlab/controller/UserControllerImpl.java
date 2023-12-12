@@ -5,6 +5,11 @@ import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.exception.ValidationException;
+import com.trainlab.security.TokenProvider;
+import com.trainlab.security.dto.AuthResponseDto;
+import com.trainlab.security.principal.AccountPrincipal;
+import com.trainlab.security.principal.UserPrincipal;
+import com.trainlab.security.security.AccessToken;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -34,29 +39,35 @@ public class UserControllerImpl implements UserController {
 
     private final UserService userService;
 
+    private final TokenProvider tokenProvider;
+
     @Override
     @PostMapping("/register")
-    public ResponseEntity<String> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
+    public ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
                                              UserCreateDto userCreateDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);
         }
 
+
         try {
-            userService.create(userCreateDto);
+            UserDto user = userService.create(userCreateDto);
+            AccountPrincipal principal = new UserPrincipal(user.getId(), user.getRoles());
+            AccessToken token = tokenProvider.generate(principal);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    AuthResponseDto.builder()
+                            .token(token)
+                            .userDto(user)
+                            .build());
+        } catch (UsernameGenerationException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    AuthResponseDto.builder().build()
+            );
         }
-        catch (UsernameGenerationException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-
-
-        String message = "Registration initiated. Please check your email for further instructions.";
-
-        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
-    @Override
+/*    @Override
     @GetMapping("/complete-registration")
     public ResponseEntity<String> completeRegistration(@RequestParam("userEmail") String userEmail) {
         try {
@@ -65,7 +76,7 @@ public class UserControllerImpl implements UserController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error occurred during registration completion: " + e.getMessage());
         }
-    }
+    }*/
 
     @Override
     @GetMapping

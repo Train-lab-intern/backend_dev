@@ -1,7 +1,6 @@
 package com.trainlab.jwt;
 
 import com.trainlab.configuration.JwtConfiguration;
-import com.trainlab.service.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
