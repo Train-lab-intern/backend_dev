@@ -94,7 +94,6 @@ class UserMapperTest {
                 .email(email)
                 .created(Timestamp.valueOf("2023-01-01 00:00:00"))
                 .changed(Timestamp.valueOf("2023-01-02 00:00:00"))
-                .active(false)
                 .build();
 
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
@@ -138,7 +137,6 @@ class UserMapperTest {
                 .username(userName)
                 .created(Timestamp.valueOf("2023-01-01 00:00:00"))
                 .changed(Timestamp.valueOf("2023-01-02 00:00:00"))
-                .active(false)
                 .build();
         UserDto actual = userMapper.toDto(user);
         assertEquals(expected, actual);

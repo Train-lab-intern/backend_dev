@@ -1,5 +1,6 @@
 package com.trainlab.dto;
 
+import com.trainlab.model.ClientData;
 import com.trainlab.validation.Email;
 import com.trainlab.validation.ValidPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,4 +36,6 @@ public class UserCreateDto {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
             type = "string", description = "User password")
     private String password;
+
+    private ClientData clientData;
 }

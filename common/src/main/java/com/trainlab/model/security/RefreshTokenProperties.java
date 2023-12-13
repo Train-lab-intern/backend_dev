@@ -1,16 +1,12 @@
-package com.trainlab.security.security;
+package com.trainlab.model.security;
 
 import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import java.time.Duration;
 
-// Changed
 @Value
-@ConfigurationProperties(prefix = "jwt")
-public class JwtTokenProperties {
-
-    String secret;
-
+@ConfigurationProperties(prefix = "refresh-token")
+public class RefreshTokenProperties {
     Duration timeToLive;
-
 }

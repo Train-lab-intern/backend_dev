@@ -1,4 +1,4 @@
-package com.trainlab.security.security;
+package com.trainlab.security.model;
 
 import lombok.Value;
 

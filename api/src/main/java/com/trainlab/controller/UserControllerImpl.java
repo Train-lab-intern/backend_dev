@@ -7,10 +7,12 @@ import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.exception.ValidationException;
 import com.trainlab.security.TokenProvider;
 import com.trainlab.security.dto.AuthResponseDto;
+import com.trainlab.model.security.RefreshToken;
 import com.trainlab.security.principal.AccountPrincipal;
 import com.trainlab.security.principal.UserPrincipal;
-import com.trainlab.security.security.AccessToken;
+import com.trainlab.security.model.AccessToken;
 import com.trainlab.service.UserService;
+import com.trainlab.service.AuthService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -39,25 +40,31 @@ public class UserControllerImpl implements UserController {
 
     private final UserService userService;
 
+    private final AuthService authService;
+
     private final TokenProvider tokenProvider;
 
+    // Валидация ClientData
     @Override
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
-                                             UserCreateDto userCreateDto, BindingResult bindingResult) {
+                                                      UserCreateDto userCreateDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);
         }
 
-
         try {
             UserDto user = userService.create(userCreateDto);
             AccountPrincipal principal = new UserPrincipal(user.getId(), user.getRoles());
             AccessToken token = tokenProvider.generate(principal);
+            RefreshToken refreshToken = tokenProvider.generateRefreshToken();
+            authService.createRefreshSession(userCreateDto.getClientData(), user, refreshToken);
+
             return ResponseEntity.status(HttpStatus.OK).body(
                     AuthResponseDto.builder()
                             .token(token)
+                            .refreshToken(refreshToken)
                             .userDto(user)
                             .build());
         } catch (UsernameGenerationException e){

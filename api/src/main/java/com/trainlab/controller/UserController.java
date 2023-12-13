@@ -3,6 +3,7 @@ package com.trainlab.controller;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
+import com.trainlab.model.ClientData;
 import com.trainlab.security.dto.AuthResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,7 +20,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -34,17 +34,21 @@ public interface UserController {
                             description = "User created",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = UserCreateDto.class)
+                                    schema = @Schema(allOf = {UserCreateDto.class, ClientData.class})
                             )
                     ),
                     @ApiResponse(
                             responseCode = "BAD_REQUEST",
                             description = "Validation error"
+                    ),
+                    @ApiResponse(
+                            responseCode = "INTERNAL_SERVER_ERROR",
+                            description = "Username generation error"
                     )
             }
     )
     ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
-                                      UserCreateDto userCreateDto, BindingResult bindingResult);
+                                               UserCreateDto userCreateDto, BindingResult bindingResult);
 
 
 /*    @Operation(

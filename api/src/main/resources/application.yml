@@ -42,9 +42,7 @@ spring:
 ---
 
   config:
-    secret: ${SECRET}
-    expiration: ${EXPIRATION}
-    passwordSalt: ${SALT}
+    password-salt: ${SALT}
 
   logging:
     level:
@@ -53,3 +51,6 @@ spring:
   jwt:
     secret: ${SECRET}
     time-to-live: PT30M
+
+  refresh-token:
+    time-to-live: P90D
