@@ -12,13 +12,18 @@ import com.trainlab.security.model.AccessToken;
 import com.trainlab.service.AuthService;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,9 +53,14 @@ public class AuthenticationController {
         );
     }
 
-    // Валидация AuthRefreshTokens
     @PostMapping("/refresh-tokens")
-    public ResponseEntity<AuthResponseDto> refreshToken(@RequestBody AuthRefreshToken authRefreshToken) {
+    public ResponseEntity<AuthResponseDto> refreshToken(@Valid @RequestBody AuthRefreshToken authRefreshToken,
+                                                        BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+            throw new ValidationException(errorMessage);
+        }
         try {
             UserDto user = authService.validateAndRemoveRefreshToken(authRefreshToken);
             RefreshToken refreshToken = tokenProvider.generateRefreshToken();
