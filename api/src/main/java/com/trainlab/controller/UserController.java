@@ -103,8 +103,7 @@ public interface UserController {
     )
     ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
                                        @Valid @RequestBody UserUpdateDto userUpdateDto,
-                                       BindingResult bindingResult,
-                                       @AuthenticationPrincipal UserDetails userDetails);
+                                       BindingResult bindingResult);
 
     @Operation(
             summary = "Spring Data User Search by user Id",
@@ -123,7 +122,7 @@ public interface UserController {
                     )
             }
     )
-    ResponseEntity<UserDto> findUserById(@PathVariable Long id, @AuthenticationPrincipal UserDetails detailsService);
+    ResponseEntity<UserDto> findUserById(@PathVariable Long id);
 
     @PatchMapping("/change-password/{id}")
     @Operation(

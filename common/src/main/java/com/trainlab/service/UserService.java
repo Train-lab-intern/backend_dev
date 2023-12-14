@@ -4,8 +4,7 @@ import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.UsernameGenerationException;
-import com.trainlab.model.User;
-import org.springframework.security.core.userdetails.UserDetails;
+
 
 import java.util.List;
 
@@ -14,11 +13,11 @@ public interface UserService {
 
 /*    void activateUser(String userEmail);*/
 
-    UserDto findAuthorizedUser(Long id, UserDetails userDetails);
+    UserDto findAuthorizedUser(Long id);
 
     List<UserDto> findAll();
 
-    UserDto update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails);
+    UserDto update(UserUpdateDto userUpdateDto, Long id);
 
     UserDto findByEmail(String email);
 

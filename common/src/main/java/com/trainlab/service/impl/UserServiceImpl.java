@@ -18,12 +18,10 @@ import com.trainlab.util.RandomValuesGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -74,13 +72,9 @@ public class UserServiceImpl implements UserService {
     }*/
 
     @Override
-    public UserDto findAuthorizedUser(Long id, UserDetails userDetails) {
+    public UserDto findAuthorizedUser(Long id) {
         User user = findByIdAndIsDeletedFalse(id);
-
-        if (isAuthorized(user, userDetails)) {
             return userMapper.toDto(user);
-        }
-        else throw new AccessDeniedException("Access denied");
     }
 
     @Override
@@ -92,8 +86,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(UserUpdateDto userUpdateDto, Long id, UserDetails userDetails) {
-        UserDto userDto = findAuthorizedUser(id, userDetails);
+    public UserDto update(UserUpdateDto userUpdateDto, Long id) {
+        UserDto userDto = findAuthorizedUser(id);
         User user = userMapper.toEntity(userDto);
 
         User updated = userMapper.partialUpdateToEntity(userUpdateDto, user);

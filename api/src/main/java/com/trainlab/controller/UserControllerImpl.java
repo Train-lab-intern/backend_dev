@@ -95,23 +95,19 @@ public class UserControllerImpl implements UserController {
     @PatchMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
                                               @Valid @RequestBody UserUpdateDto userUpdateDto,
-                                              BindingResult bindingResult,
-                                              @AuthenticationPrincipal UserDetails userDetails) {
+                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);
         }
-        return ResponseEntity.ok(userService.update(userUpdateDto, id, userDetails));
+        return ResponseEntity.ok(userService.update(userUpdateDto, id));
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> findUserById(@PathVariable Long id, @AuthenticationPrincipal  UserDetails detailsService) {
-        if (detailsService == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
+    public ResponseEntity<UserDto> findUserById(@PathVariable Long id) {
 
-        UserDto userDto = userService.findAuthorizedUser(id, detailsService);
+        UserDto userDto = userService.findAuthorizedUser(id);
         if (userDto != null)
             return ResponseEntity.status(HttpStatus.OK).body(userDto);
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
