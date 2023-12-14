@@ -26,7 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "users", schema = "public")
-public class User {
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -68,4 +68,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private List<Role> roles;
+
+
 }
