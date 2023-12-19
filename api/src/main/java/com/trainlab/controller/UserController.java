@@ -34,7 +34,7 @@ public interface UserController {
                             description = "User created",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(allOf = {UserCreateDto.class, ClientData.class})
+                                    schema = @Schema(allOf = {UserCreateDto.class})
                             )
                     ),
                     @ApiResponse(
