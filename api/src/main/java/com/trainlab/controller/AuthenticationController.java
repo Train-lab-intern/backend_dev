@@ -1,73 +1,73 @@
 package com.trainlab.controller;
 
-import com.trainlab.configuration.JwtConfiguration;
-import com.trainlab.dto.AuthRequestDto;
-import com.trainlab.dto.AuthResponseDto;
-import com.trainlab.dto.UserDto;
-import com.trainlab.exception.ActivationException;
-import com.trainlab.jwt.TokenProvider;
-import com.trainlab.mapper.UserMapper;
-import com.trainlab.model.User;
-import com.trainlab.service.CustomUserDetailsService;
-import com.trainlab.service.UserService;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import com.trainlab.model.security.AuthRefreshToken;
+import com.trainlab.security.dto.AuthRequestDto;
+import com.trainlab.security.dto.AuthResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequiredArgsConstructor
-@Tag(name = "AuthenticationController", description = "Authentication")
-@RequestMapping("/api/v1")
-public class AuthenticationController {
+public interface AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
+    @Operation(
+        summary = "Login user by email and password.",
+        description = "Get user data by email and password. The response is AuthResponse object with token, refresh token" +
+                " and user object.",
+        responses =
+                @ApiResponse(
+                    responseCode = "CREATED",
+                    description = "Login successful.",
+                    content = @Content(schema = @Schema(implementation = AuthRequestDto.class),
+                                       mediaType = "application/json"))
+    )
+    ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request);
 
-    private final TokenProvider tokenProvider;
+    @Operation(
+        summary = "Refresh old token.",
+        description = "When the front verified jwt token and it expired. Client sends refresh token to this controller" +
+                "and if refresh token is valid and has not expired, controller sends to the client new jwt and refresh token.",
+        responses = {
+                @ApiResponse(
+                        responseCode = "CREATED",
+                        description = "Refresh token successful.",
+                        content = @Content(schema = @Schema(implementation = AuthRefreshToken.class),
+                                           mediaType = "application/json")
+                ),
+                @ApiResponse(
+                        responseCode = "BAD_REQUEST",
+                        description = "Validation error."
+                ),
+                @ApiResponse(
+                        responseCode = "UNAUTHORIZED",
+                        description = "The RefreshToken doesn't exist or has expired."
+                )}
+    )
+    ResponseEntity<AuthResponseDto> refreshToken(@Valid @RequestBody AuthRefreshToken authRefreshToken,
+                                                 BindingResult bindingResult);
 
-    private final JwtConfiguration jwtConfiguration;
 
-    private final UserService userService;
-
-    private final CustomUserDetailsService userDetailsService;
-
-    private final UserMapper userMapper;
-
-    @PostMapping("/auth")
-    public ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request) {
-        String userEmail = request.getUserEmail();
-        User userByEmail = userService.findByEmail(userEmail);
-
-        if (!(userByEmail.getIsActive())) {
-            throw new ActivationException("User not activated");
-        }
-
-        Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUserEmail(),
-                        request.getUserPassword() + jwtConfiguration.getPasswordSalt()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
-
-        String token = tokenProvider.generateToken(userDetailsService.loadUserByUsername(request.getUserEmail()));
-
-        UserDto userDto = userMapper.toDto(userByEmail);
-
-        return ResponseEntity.status(HttpStatus.OK).body(
-                AuthResponseDto.builder()
-                        .userEmail(request.getUserEmail())
-                        .token(token)
-                        .userDto(userDto)
-                        .build()
-        );
-    }
+    @Operation(
+        summary = "User logout.",
+        description = "When a client sends a request to this controller and refresh token is valid, the refresh token" +
+                    " will removed from the DB.",
+        responses = {
+                @ApiResponse(
+                        responseCode = "OK",
+                        description = "Logout successful.",
+                        content = @Content(schema = @Schema(implementation = AuthRefreshToken.class),
+                                           mediaType = "application/json")
+                        ),
+                @ApiResponse(
+                        responseCode = "BAD_REQUEST",
+                        description = "Validation error."
+                )}
+    )
+    ResponseEntity<HttpStatus> logout(@Valid @RequestBody AuthRefreshToken authRefreshToken,
+                                      BindingResult bindingResult);
 }

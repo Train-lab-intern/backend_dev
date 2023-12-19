@@ -5,9 +5,9 @@ import com.trainlab.dto.RoleCreateDto;
 import com.trainlab.dto.RoleDto;
 import com.trainlab.dto.RoleUpdateDto;
 import com.trainlab.model.Role;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -18,8 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {TestApplication.class})
 @RunWith(SpringRunner.class)
+@AllArgsConstructor
 class RoleMapperTest {
-    @Autowired
+
     private RoleMapper roleMapper;
 
     @Test

@@ -1,6 +1,7 @@
 package com.trainlab.service.impl;
 
 import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.UserDto;
 import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.AuthenticationInfo;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.sql.Timestamp;
 import java.util.Optional;
@@ -88,7 +88,7 @@ class UserServiceImplTest {
         when(passwordEncode.encodePassword(userRequest.getPassword())).thenReturn("");
         when(roleRepository.findByRoleName("ROLE_USER")).thenReturn(Optional.of(role));
         doNothing().when(emailService).sendRegistrationConfirmationEmail(userRequest.getEmail());
-        User actual = userService.create(userRequest);
+        User actual = userMapper.toEntity(userService.create(userRequest));
         assertEquals(expected, actual);
     }
 

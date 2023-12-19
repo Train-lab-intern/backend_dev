@@ -10,9 +10,9 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
 
 @Data
 @AllArgsConstructor
@@ -44,4 +44,5 @@ public class Role {
     @Column
     @Builder.Default
     private Boolean isDeleted = false;
+
 }

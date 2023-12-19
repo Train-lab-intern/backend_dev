@@ -6,9 +6,9 @@ import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.AuthenticationInfo;
 import com.trainlab.model.User;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {TestApplication.class})
 @RunWith(SpringRunner.class)
+@AllArgsConstructor
 class UserMapperTest {
-    @Autowired
     private UserMapper userMapper;
 
     @Test
@@ -94,7 +94,6 @@ class UserMapperTest {
                 .email(email)
                 .created(Timestamp.valueOf("2023-01-01 00:00:00"))
                 .changed(Timestamp.valueOf("2023-01-02 00:00:00"))
-                .active(false)
                 .build();
 
         AuthenticationInfo authenticationInfo = AuthenticationInfo.builder()
@@ -138,7 +137,6 @@ class UserMapperTest {
                 .username(userName)
                 .created(Timestamp.valueOf("2023-01-01 00:00:00"))
                 .changed(Timestamp.valueOf("2023-01-02 00:00:00"))
-                .active(false)
                 .build();
         UserDto actual = userMapper.toDto(user);
         assertEquals(expected, actual);

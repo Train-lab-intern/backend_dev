@@ -39,13 +39,17 @@ spring:
         smtp:
           auth: true
           starttls.enable: true
----
 
-  config:
-    secret: ${SECRET}
-    expiration: ${EXPIRATION}
-    passwordSalt: ${SALT}
+config:
+  password-salt: ${SALT}
 
-  logging:
-    level:
-      root: OFF
+logging:
+  level:
+    root: OFF
+
+jwt:
+  secret: ${SECRET}
+  time-to-live: PT30M
+
+refresh-token:
+  time-to-live: P90D

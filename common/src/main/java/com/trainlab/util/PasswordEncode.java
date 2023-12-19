@@ -1,6 +1,5 @@
 package com.trainlab.util;
 
-import com.trainlab.configuration.JwtConfigurationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -10,11 +9,10 @@ import org.springframework.stereotype.Component;
 public class PasswordEncode {
 
     private final PasswordEncoder passwordEncoder;
-
-    private final JwtConfigurationProvider jwtConfigurationProvider;
+    private final PasswordProvider passwordProvider;
 
     public String encodePassword(String password) {
-        String passwordWithSalt = password + jwtConfigurationProvider.getPasswordSalt();
+        String passwordWithSalt = password + passwordProvider.getPasswordSalt();
         return passwordEncoder.encode(passwordWithSalt);
     }
 }
