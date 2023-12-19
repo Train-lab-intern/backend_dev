@@ -43,7 +43,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @PostMapping("/register")
-    public ResponseEntity<String> createUser(@Valid @RequestBody UserCreateDto userCreateDto, BindingResult bindingResult) {
+    public ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody UserCreateDto userCreateDto, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             if (userCreateDto.isValid()) {
@@ -61,17 +61,15 @@ public class UserControllerImpl implements UserController {
             authService.createRefreshSession(user, refreshToken);
 
             return ResponseEntity.status(HttpStatus.OK).body(
-//                    AuthResponseDto.builder()
-//                            .token(token)
-//                            .refreshToken(refreshToken)
-//                            .userDto(user)
-//                            .build()
-                    "done ! "
+                    AuthResponseDto.builder()
+                           .token(token)
+                            .refreshToken(refreshToken)
+                            .userDto(user)
+                            .build()
             );
         } catch (UsernameGenerationException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    //AuthResponseDto.builder().build()
-                    "bad"
+                    AuthResponseDto.builder().build()
             );
         }
     }

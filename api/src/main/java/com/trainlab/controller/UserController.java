@@ -47,7 +47,7 @@ public interface UserController {
                     )
             }
     )
-    ResponseEntity<String> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
+    ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
                                                UserCreateDto userCreateDto, BindingResult bindingResult);
 
 
