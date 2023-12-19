@@ -44,9 +44,12 @@ public class UserControllerImpl implements UserController {
     @Override
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody UserCreateDto userCreateDto, BindingResult bindingResult) {
+        if (userCreateDto.isValid()) {
+            throw new ValidationException("Email and password fields are required");
+        }
         if (bindingResult.hasErrors()) {
-            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-            throw new ValidationException(errorMessage);
+                String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+                throw new ValidationException(errorMessage);
         }
 
         try {
