@@ -1,4 +1,4 @@
-package com.trainlab.model.security;
+package com.trainlab.security.model;
 
 import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;

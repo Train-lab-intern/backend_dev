@@ -13,13 +13,10 @@ import com.trainlab.security.principal.UserPrincipal;
 import com.trainlab.security.model.AccessToken;
 import com.trainlab.service.UserService;
 import com.trainlab.service.AuthService;
-import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -44,11 +41,9 @@ public class UserControllerImpl implements UserController {
 
     private final TokenProvider tokenProvider;
 
-    // Валидация ClientData
     @Override
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
-                                                      UserCreateDto userCreateDto, BindingResult bindingResult) {
+    public ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody UserCreateDto userCreateDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);
@@ -59,7 +54,7 @@ public class UserControllerImpl implements UserController {
             AccountPrincipal principal = new UserPrincipal(user.getId(), user.getRoles());
             AccessToken token = tokenProvider.generate(principal);
             RefreshToken refreshToken = tokenProvider.generateRefreshToken();
-            authService.createRefreshSession(userCreateDto.getClientData(), user, refreshToken);
+            authService.createRefreshSession(user, refreshToken);
 
             return ResponseEntity.status(HttpStatus.OK).body(
                     AuthResponseDto.builder()

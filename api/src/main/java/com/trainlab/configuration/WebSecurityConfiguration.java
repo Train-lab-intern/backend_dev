@@ -26,7 +26,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
         securedEnabled = true)
 @RequiredArgsConstructor
 public class WebSecurityConfiguration {
-
     @Bean
     public PasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder(6);
@@ -40,7 +39,6 @@ public class WebSecurityConfiguration {
         return new ProviderManager(provider);
     }*/
 
-    // Changed
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, TokenProvider tokenProvider)
             throws Exception {
@@ -50,25 +48,25 @@ public class WebSecurityConfiguration {
                     .csrf().disable()
                     .sessionManagement(sessionManagement ->
                             sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .addFilterAfter(new AccessTokenAuthenticationFilter(tokenProvider), BasicAuthenticationFilter.class)
                     .authorizeHttpRequests(config -> config
                             .requestMatchers("/v3/api-docs/**", "/v2/api-docs", "/configuration/ui/**",
-                                "/swagger-resources/**", "/configuration/security/**", "/swagger-ui/**", "/swagger-ui.html#",
+                                "/swagger-resources/**", "/configuration/security/**", "/swagger-ui/**",
                                 "/webjars/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/front/**").permitAll()
-                            .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                             .requestMatchers("/api/v1/**").permitAll()
                             .requestMatchers("/api/v1/users").permitAll()
                             .requestMatchers("/api/v1/roles").permitAll()
                             .requestMatchers("/api/v1/users/register").permitAll()
-                            .requestMatchers("/api/v1/users/complete-registration").permitAll()
-                            .requestMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
                             .requestMatchers("/api/v1/users/change-password/**").permitAll()
                             .requestMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
                             .requestMatchers("/api/v1/admin/users/**").hasAnyRole("ADMIN")
+                            .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                            .requestMatchers("/api/v1/auth/**").hasAnyRole("USER", "ADMIN")
                             .anyRequest().authenticated()
-                    ).build();
+                    )
+                    .addFilterAfter(new AccessTokenAuthenticationFilter(tokenProvider), BasicAuthenticationFilter.class)
+                    .build();
     }
 
     @Bean

@@ -9,7 +9,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import com.trainlab.model.Role;
 import com.trainlab.security.model.AccessToken;
 import com.trainlab.model.security.RefreshToken;
-import com.trainlab.model.security.RefreshTokenProperties;
+import com.trainlab.security.model.RefreshTokenProperties;
 import com.trainlab.security.principal.AccountPrincipal;
 import com.trainlab.security.principal.UserPrincipal;
 import com.trainlab.security.model.JwtTokenProperties;

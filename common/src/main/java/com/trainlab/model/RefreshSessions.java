@@ -27,9 +27,6 @@ public class RefreshSessions {
     @Column(name = "refresh_token", nullable = false)
     private UUID refreshToken;
 
-    @Column(name = "fingerprint", nullable = false)
-    private String fingerprint;
-
     @Column(name = "expired_at", nullable = false)
     private Instant expiredAt;
 

@@ -1,6 +1,5 @@
 package com.trainlab.security.dto;
 
-import com.trainlab.model.ClientData;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -16,5 +15,4 @@ public class AuthRequestDto {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW", type = "string", description = "User password")
     private String userPassword;
 
-    private ClientData clientData;
 }
