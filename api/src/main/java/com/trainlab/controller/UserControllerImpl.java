@@ -43,11 +43,12 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody UserCreateDto userCreateDto, BindingResult bindingResult) {
-        if (userCreateDto.isValid()) {
-            throw new ValidationException("Email and password fields are required");
-        }
+    public ResponseEntity<String> createUser(@Valid @RequestBody UserCreateDto userCreateDto, BindingResult bindingResult) {
+
         if (bindingResult.hasErrors()) {
+            if (userCreateDto.isValid()) {
+                throw new ValidationException("Email and password fields are required");
+            }
                 String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
                 throw new ValidationException(errorMessage);
         }
@@ -60,14 +61,17 @@ public class UserControllerImpl implements UserController {
             authService.createRefreshSession(user, refreshToken);
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    AuthResponseDto.builder()
-                            .token(token)
-                            .refreshToken(refreshToken)
-                            .userDto(user)
-                            .build());
+//                    AuthResponseDto.builder()
+//                            .token(token)
+//                            .refreshToken(refreshToken)
+//                            .userDto(user)
+//                            .build()
+                    "done ! "
+            );
         } catch (UsernameGenerationException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    AuthResponseDto.builder().build()
+                    //AuthResponseDto.builder().build()
+                    "bad"
             );
         }
     }
