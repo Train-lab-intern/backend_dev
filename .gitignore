@@ -35,4 +35,3 @@ build/
 # .gitignore
 database.yml
 env.list
-common/src/main/resources/db/migration/V1_4__refresh_session.sql
