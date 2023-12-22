@@ -1,13 +1,13 @@
 package com.trainlab.util;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "config.password-salt")
-@RequiredArgsConstructor
+@ConfigurationProperties(prefix = "config")
+@Value
 public class PasswordProviderImpl implements PasswordProvider {
 
-    private final String passwordSalt;
+    String passwordSalt;
 
     @Override
     public String getPasswordSalt() {

@@ -14,33 +14,28 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Validated
-@GroupSequence(value = {Group1.class, UserCreateDto.class})
-@Schema(description = "User Request")
-public class UserCreateDto {
+@GroupSequence(value = {Group1.class, AuthRequestDto.class})
+@Builder
+@Schema(description = "User auth request.")
+public class AuthRequestDto {
 
     @NotBlank(message = "The email field is required.", groups = {Group1.class})
     @Size(message = "User email must be between 1 and 256 characters", min = 1, max = 256)
     @Email
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
-            type = "string", description = "User email.")
-    private String email;
+            type = "string", description = "User Email")
+    private String userEmail;
 
     @NotBlank(message = "The password field is required.", groups = {Group1.class})
     @Size(message = "User password must be between 8 and 256 characters", min = 8, max = 256)
     @ValidPassword
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
-            type = "string", description = "User password.")
-    private String password;
+            type = "string", description = "User password")
+    private String userPassword;
 
     @JsonIgnore
     public boolean isValid() {
-        return email.isBlank() && password.isBlank();
+        return userEmail.isBlank() && userPassword.isBlank();
     }
 }
-//    @NotBlank(message = "User name must not be null")
-//    @Size(message = "User name must be between 2 and 256 characters", min = 2, max = 256)
-//    @Pattern(regexp = "^[A-Za-z0-9]+$", message = "User name should consist of uppercase and lowercase letters and numbers without spaces")
-//    @Schema(example = "SvetaPiven", type = "string", description = "Username")
-//    private String username;

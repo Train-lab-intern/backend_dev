@@ -2,7 +2,7 @@ package com.trainlab.controller;
 
 import com.trainlab.dto.UserDto;
 import com.trainlab.model.security.RefreshToken;
-import com.trainlab.security.dto.AuthRequestDto;
+import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.security.dto.AuthResponseDto;
 import com.trainlab.security.TokenProvider;
 import com.trainlab.model.security.AuthRefreshToken;
@@ -35,9 +35,17 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request) {
-        String userEmail = request.getUserEmail();
-        UserDto user = userService.findByEmail(userEmail);
+    public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody AuthRequestDto request, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            if (request.isValid())
+                throw new ValidationException("Email and password fields are required.");
+
+            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+            throw new ValidationException(errorMessage);
+        }
+
+        UserDto user = userService.findUserByAuthenticationInfo(request);
 
         AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
         RefreshToken refreshToken = tokenProvider.generateRefreshToken();
