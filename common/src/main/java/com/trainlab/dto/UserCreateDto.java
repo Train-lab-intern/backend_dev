@@ -24,14 +24,14 @@ public class UserCreateDto {
     @Size(message = "User email must be between 1 and 256 characters", min = 1, max = 256)
     @Email
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
-            type = "string", description = "User email")
+            type = "string", description = "User email.")
     private String email;
 
     @NotBlank(message = "The password field is required.", groups = {Group1.class})
     @Size(message = "User password must be between 8 and 256 characters", min = 8, max = 256)
     @ValidPassword
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
-            type = "string", description = "User password")
+            type = "string", description = "User password.")
     private String password;
 
     @JsonIgnore

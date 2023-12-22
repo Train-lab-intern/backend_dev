@@ -11,6 +11,6 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return value.matches("^[A-Za-z0-9._%+\\-'`]+@(" + IPv4_PATTERN +  "|([A-Za-z0-9.-]+\\.[A-Za-z]{2,4}))$");
+        return value.matches("^[a-z\\d._%+\\-'`]+@(" + IPv4_PATTERN +  "|([a-z\\d.-]+\\.[a-z]{2,4}))$");
     }
 }

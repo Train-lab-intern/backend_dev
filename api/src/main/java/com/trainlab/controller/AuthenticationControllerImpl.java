@@ -35,7 +35,16 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request) {
+    public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody AuthRequestDto request, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            if (request.isValid())
+                throw new ValidationException("Email and password fields are required.");
+
+            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+            throw new ValidationException(errorMessage);
+        }
+
         String userEmail = request.getUserEmail();
         UserDto user = userService.findByEmail(userEmail);
 
