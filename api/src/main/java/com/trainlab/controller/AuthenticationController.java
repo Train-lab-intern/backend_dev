@@ -1,7 +1,7 @@
 package com.trainlab.controller;
 
 import com.trainlab.model.security.AuthRefreshToken;
-import com.trainlab.security.dto.AuthRequestDto;
+import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.security.dto.AuthResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

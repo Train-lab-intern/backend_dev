@@ -1,4 +1,4 @@
-package com.trainlab.security.dto;
+package com.trainlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trainlab.validation.Email;

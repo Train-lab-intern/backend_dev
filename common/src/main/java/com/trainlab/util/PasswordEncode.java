@@ -15,4 +15,8 @@ public class PasswordEncode {
         String passwordWithSalt = password + passwordProvider.getPasswordSalt();
         return passwordEncoder.encode(passwordWithSalt);
     }
+
+    public boolean matches(CharSequence rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword + passwordProvider.getPasswordSalt(), encodedPassword);
+    }
 }

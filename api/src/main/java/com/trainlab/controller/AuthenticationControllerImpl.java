@@ -2,7 +2,7 @@ package com.trainlab.controller;
 
 import com.trainlab.dto.UserDto;
 import com.trainlab.model.security.RefreshToken;
-import com.trainlab.security.dto.AuthRequestDto;
+import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.security.dto.AuthResponseDto;
 import com.trainlab.security.TokenProvider;
 import com.trainlab.model.security.AuthRefreshToken;
@@ -45,8 +45,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             throw new ValidationException(errorMessage);
         }
 
-        String userEmail = request.getUserEmail();
-        UserDto user = userService.findByEmail(userEmail);
+        UserDto user = userService.findUserByAuthenticationInfo(request);
 
         AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
         RefreshToken refreshToken = tokenProvider.generateRefreshToken();
