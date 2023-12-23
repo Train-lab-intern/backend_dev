@@ -1,5 +1,6 @@
 package com.trainlab.service.impl;
 
+import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
@@ -18,6 +19,7 @@ import com.trainlab.util.RandomValuesGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
 
-    private final PasswordEncode passwordEncode;
+    private final PasswordEncode passwordEncoder;
 
     private final UserRepository userRepository;
 
@@ -45,6 +47,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserCreateDto userCreateDto) throws UsernameGenerationException {
         User user = userMapper.toEntity(userCreateDto);
+        String email = user.getAuthenticationInfo().getEmail().toLowerCase();
+        user.getAuthenticationInfo().setEmail(email);
+
         checkUserEmailAndPasswordExist(user);
         setEncodedPassword(user);
         setDefaultRole(user);
@@ -54,6 +59,24 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
 /*        buildEmailMessage(user);*/
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    public UserDto findUserByAuthenticationInfo(AuthRequestDto authRequestDto) {
+        User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(authRequestDto
+                .getUserEmail()
+                .toLowerCase())
+                .orElseThrow(() -> new ObjectNotFoundException("User not found with email: " + authRequestDto.getUserEmail()));
+
+        boolean isPasswordMatches = passwordEncoder.matches(
+                authRequestDto.getUserPassword(),
+                user.getAuthenticationInfo().getUserPassword()
+        );
+
+        if (!isPasswordMatches)
+            throw new BadCredentialsException("Invalid email or password.");
+
         return userMapper.toDto(user);
     }
 
@@ -111,19 +134,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findByEmail(String email) {
-        User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(email).orElseThrow(()
-                -> new ObjectNotFoundException("User not found with email: " + email));
-        return userMapper.toDto(user);
-    }
-
-    @Override
     public void changePassword(Long id, UserUpdateDto userUpdateDto) {
         User user = findByIdAndIsDeletedFalse(id);
         String toAddress = userUpdateDto.getEmail();
 
         String newPassword = generator.generateRandomPassword(8);
-        String encodedPassword = passwordEncode.encodePassword(newPassword);
+        String encodedPassword = passwordEncoder.encodePassword(newPassword);
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
 
         userRepository.saveAndFlush(user);
@@ -131,7 +147,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void setEncodedPassword(User user) {
-        String encodedPassword = passwordEncode.encodePassword(user.getAuthenticationInfo().getUserPassword());
+        String encodedPassword = passwordEncoder.encodePassword(user.getAuthenticationInfo().getUserPassword());
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
     }
 

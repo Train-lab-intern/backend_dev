@@ -1,7 +1,7 @@
 package com.trainlab.controller;
 
 import com.trainlab.model.security.AuthRefreshToken;
-import com.trainlab.security.dto.AuthRequestDto;
+import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.security.dto.AuthResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,14 +19,19 @@ public interface AuthenticationController {
         summary = "Login user by email and password.",
         description = "Get user data by email and password. The response is AuthResponse object with token, refresh token" +
                 " and user object.",
-        responses =
+        responses ={
                 @ApiResponse(
                     responseCode = "CREATED",
                     description = "Login successful.",
                     content = @Content(schema = @Schema(implementation = AuthRequestDto.class),
-                                       mediaType = "application/json"))
+                                       mediaType = "application/json")
+                ),
+                @ApiResponse(
+                        responseCode = "BAD_REQUEST",
+                        description = "Validation error."
+                )}
     )
-    ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request);
+    ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request, BindingResult bindingResult);
 
     @Operation(
         summary = "Refresh old token.",

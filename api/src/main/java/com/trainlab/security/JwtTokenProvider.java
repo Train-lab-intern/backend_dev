@@ -28,7 +28,6 @@ import java.util.UUID;
 public class JwtTokenProvider implements TokenProvider {
 
     private final JwtTokenProperties jwtProps;
-
     private final RefreshTokenProperties refreshProps;
     private final Algorithm jwtAlgorithm;
     private final JWTVerifier jwtVerifier;
