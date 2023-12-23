@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?!.*[а-яА-Я]).{8,}$")
 @ReportAsSingleViolation
 public @interface ValidPassword {
-    String message() default "Password must contain 8 characters and at least one lowercase and one uppercase character";
+    String message() default "Invalid login or password.";
 
     Class<?>[] groups() default {};
 
