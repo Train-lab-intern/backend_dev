@@ -1,6 +1,7 @@
 package com.trainlab.controller;
 
 import com.trainlab.dto.UserDto;
+import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.security.dto.AuthResponseDto;
@@ -45,19 +46,25 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             throw new ValidationException(errorMessage);
         }
 
-        UserDto user = userService.findUserByAuthenticationInfo(request);
+        try {
+            UserDto user = userService.findUserByAuthenticationInfo(request);
+            AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
+            RefreshToken refreshToken = tokenProvider.generateRefreshToken();
+            authService.createRefreshSession(user, refreshToken);
 
-        AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
-        RefreshToken refreshToken = tokenProvider.generateRefreshToken();
-        authService.createRefreshSession(user, refreshToken);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    AuthResponseDto.builder()
+                            .token(token)
+                            .refreshToken(refreshToken)
+                            .userDto(user)
+                            .build()
+            );
+        }
+        catch (ObjectNotFoundException e){
+            throw  new ObjectNotFoundException("Invalid login or password");
+        }
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                AuthResponseDto.builder()
-                        .token(token)
-                        .refreshToken(refreshToken)
-                        .userDto(user)
-                        .build()
-        );
+
     }
 
     @PostMapping("/refresh-token")

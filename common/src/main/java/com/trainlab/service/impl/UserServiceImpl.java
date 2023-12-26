@@ -75,10 +75,11 @@ public class UserServiceImpl implements UserService {
         );
 
         if (!isPasswordMatches)
-            throw new BadCredentialsException("Invalid email or password.");
+            throw new BadCredentialsException("Invalid login or password");
 
         return userMapper.toDto(user);
     }
+
 
 /*    @Override
     public void activateUser(String userEmail) {
