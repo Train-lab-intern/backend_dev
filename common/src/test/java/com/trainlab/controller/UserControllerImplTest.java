@@ -1,68 +1,96 @@
 package com.trainlab.controller;
 
 import com.trainlab.dto.UserCreateDto;
+import com.trainlab.exception.UsernameGenerationException;
+import com.trainlab.exception.ValidationException;
+import com.trainlab.security.TokenProvider;
+import com.trainlab.service.AuthService;
 import com.trainlab.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RequiredArgsConstructor
-@RunWith(value = MockitoJUnitRunner.class)
+@ExtendWith(value = SpringExtension.class)
+@SpringBootTest
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 public class UserControllerImplTest {
 
-    @InjectMocks
-    private UserControllerImpl userController;
+    @Autowired
+    private UserController userController;
 
-    private MockMvc mockMvc;
+    @MockBean
+    private UserService userService;
 
-    private UserCreateDto user;
-    @BeforeAll
-    void insertUser() {
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-        UserCreateDto correctUser = UserCreateDto.builder()
-                .email("trainlab@gmail.com")
-                .password("123456qW").build();
+    @MockBean
+    private AuthService authService;
 
-        UserCreateDto userWithEmptyEmail = UserCreateDto.builder()
+    @MockBean
+    private TokenProvider tokenProvider;
+
+    @MockBean
+    private BindingResult bindingResult;
+
+    @Test
+    void createUserShouldBeFailIfEmailIsEmpty() throws UsernameGenerationException {
+        UserCreateDto user = UserCreateDto.builder()
                 .email(" ")
                 .password("123456qW").build();
 
-        UserCreateDto userWithEmptyPassword = UserCreateDto.builder()
-                .email("trainlab@gmail.com")
-                .password(" ").build();
+        Mockito.when(bindingResult.hasErrors()).thenReturn(true);
+        FieldError fieldError = new FieldError("UserCreateDto", "email", "The email field is required.");
+        Mockito.when(bindingResult.getFieldError()).thenReturn(fieldError);
 
-        UserCreateDto userWithEmptyFields = UserCreateDto.builder()
-                .email(" ")
-                .password(" ").build();
+        assertThrows(ValidationException.class, () -> userController.createUser(user, bindingResult));
+
+        Mockito.verify(userService, Mockito.never()).create(user);
+        Mockito.verify(tokenProvider, Mockito.never()).generate(Mockito.any());
+        Mockito.verify(tokenProvider, Mockito.never()).generateRefreshToken();
+        Mockito.verify(authService, Mockito.never()).createRefreshSession(Mockito.any(), Mockito.any());
     }
 
     @Test
-    void userRegisterShouldThrowExceptionIfEmailIsEmpty() throws Exception {
-        user = UserCreateDto.builder()
-                .email(" ")
-                .password("123456qW").build();
+    void createUserShouldBeFailIfPasswordIsEmpty() throws UsernameGenerationException {
+        UserCreateDto user = UserCreateDto.builder()
+                .email("vladthedevj6@gmail.com")
+                .password(" ").build();
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .request(HttpMethod.POST, "/api/v1/users/register")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(user.toString()))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andReturn();
+        Mockito.when(bindingResult.hasErrors()).thenReturn(true);
+        FieldError fieldError = new FieldError("UserCreateDto", "password", "The password field is required.");
+        Mockito.when(bindingResult.getFieldError()).thenReturn(fieldError);
 
+        assertThrows(ValidationException.class, () -> userController.createUser(user, bindingResult));
+
+        Mockito.verify(userService, Mockito.never()).create(user);
+        Mockito.verify(tokenProvider, Mockito.never()).generate(Mockito.any());
+        Mockito.verify(tokenProvider, Mockito.never()).generateRefreshToken();
+        Mockito.verify(authService, Mockito.never()).createRefreshSession(Mockito.any(), Mockito.any());
     }
 
+    @Test
+    void createUserShouldBeFailIfPasswordAndEmailAreEmpty() throws UsernameGenerationException {
+        UserCreateDto user = UserCreateDto.builder()
+                .email(" ")
+                .password(" ").build();
+
+        Mockito.when(bindingResult.hasErrors()).thenReturn(true);
+        FieldError emailErrorField = new FieldError("UserCreateDto", "email", "ssword fields are required.");
+        FieldError passwordEmailField = new FieldError("UserCreateDto", "password", "Eand password fields are required.");
+        Mockito.when(bindingResult.getFieldError()).thenReturn(emailErrorField, passwordEmailField);
+
+        assertThrows(ValidationException.class, () -> userController.createUser(user, bindingResult));
+
+        Mockito.verify(userService, Mockito.never()).create(user);
+        Mockito.verify(tokenProvider, Mockito.never()).generate(Mockito.any());
+        Mockito.verify(tokenProvider, Mockito.never()).generateRefreshToken();
+        Mockito.verify(authService, Mockito.never()).createRefreshSession(Mockito.any(), Mockito.any());
+    }
 }
