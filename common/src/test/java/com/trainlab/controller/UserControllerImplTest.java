@@ -82,11 +82,31 @@ public class UserControllerImplTest {
                 .password(" ").build();
 
         Mockito.when(bindingResult.hasErrors()).thenReturn(true);
-        FieldError emailErrorField = new FieldError("UserCreateDto", "email", "ssword fields are required.");
-        FieldError passwordEmailField = new FieldError("UserCreateDto", "password", "Eand password fields are required.");
+        FieldError emailErrorField = new FieldError("UserCreateDto", "email", "Email and password fields are required.");
+        FieldError passwordEmailField = new FieldError("UserCreateDto", "password", "Email and password fields are required.");
         Mockito.when(bindingResult.getFieldError()).thenReturn(emailErrorField, passwordEmailField);
 
         assertThrows(ValidationException.class, () -> userController.createUser(user, bindingResult));
+
+        Mockito.verify(userService, Mockito.never()).create(user);
+        Mockito.verify(tokenProvider, Mockito.never()).generate(Mockito.any());
+        Mockito.verify(tokenProvider, Mockito.never()).generateRefreshToken();
+        Mockito.verify(authService, Mockito.never()).createRefreshSession(Mockito.any(), Mockito.any());
+    }
+
+    @Test
+    void createUserShouldBeFailIfPasswordLessThan8Characters() throws UsernameGenerationException {
+        UserCreateDto user = UserCreateDto.builder()
+                .email("vladthedevj6@gmail.com")
+                .password("1234qW").build();
+
+        Mockito.when(bindingResult.hasErrors()).thenReturn(true);
+        FieldError fieldError = new FieldError("UserCreateDto", "password", "User password must be between 8 and 256 characters");
+        Mockito.when(bindingResult.getFieldError()).thenReturn(fieldError);
+
+        assertThrows(ValidationException.class, () -> {
+            userController.createUser(user, bindingResult);
+        });
 
         Mockito.verify(userService, Mockito.never()).create(user);
         Mockito.verify(tokenProvider, Mockito.never()).generate(Mockito.any());
