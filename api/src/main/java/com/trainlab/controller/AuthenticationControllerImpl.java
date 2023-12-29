@@ -39,8 +39,8 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody AuthRequestDto request, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            if (request.isValid())
-                throw new ValidationException("Email and password fields are required.");
+            if (request.isFieldsBlank())
+                throw new ValidationException("Email and password fields are required");
 
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);
