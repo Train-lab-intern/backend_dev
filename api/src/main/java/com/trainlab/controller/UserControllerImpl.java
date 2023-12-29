@@ -47,7 +47,7 @@ public class UserControllerImpl implements UserController {
 
         if (bindingResult.hasErrors()) {
             if (userCreateDto.isValid())
-                throw new ValidationException("Email and password fields are required.");
+                throw new ValidationException("Email and password fields are required");
 
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);
