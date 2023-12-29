@@ -52,7 +52,10 @@ public class JwtTokenProvider implements TokenProvider {
                 .withExpiresAt(expiresAt)
                 .sign(jwtAlgorithm);
 
-        return new AccessToken(tokenValue, issuedAt, expiresAt);
+        return AccessToken.builder()
+                .value(tokenValue)
+                .issuedAt(issuedAt)
+                .expiresAt(expiresAt).build();
     }
 
     @Override
@@ -75,6 +78,9 @@ public class JwtTokenProvider implements TokenProvider {
         Instant expiredAt = issuedAt.plus(refreshProps.getTimeToLive());
 
         UUID uuid = UUID.randomUUID();
-        return new RefreshToken(uuid, issuedAt, expiredAt);
+        return RefreshToken.builder()
+                .value(uuid)
+                .issuedAt(issuedAt)
+                .expiredAt(expiredAt).build();
     }
 }
