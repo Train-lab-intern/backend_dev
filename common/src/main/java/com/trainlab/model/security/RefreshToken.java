@@ -11,6 +11,7 @@ import java.util.UUID;
 @Builder
 public class RefreshToken {
     UUID value;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Minsk")
     Instant issuedAt;
 

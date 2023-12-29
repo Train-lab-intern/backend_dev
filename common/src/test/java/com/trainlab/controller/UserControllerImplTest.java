@@ -1,5 +1,7 @@
 package com.trainlab.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
@@ -24,23 +26,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.*;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.SerializationFeature;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.module.SimpleModule;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjuster;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -154,7 +149,6 @@ public class UserControllerImplTest {
                 .value(UUID.fromString("7aebf344-73df-4ce1-ad91-a1e2c6a4bcdf"))
                 .issuedAt(Instant.now())
                 .expiredAt(Instant.now().plus(refreshProps.getTimeToLive())).build();
-
         AuthResponseDto expected = AuthResponseDto.builder()
                 .token(accessToken)
                 .refreshToken(refreshToken)
@@ -170,7 +164,7 @@ public class UserControllerImplTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(new ObjectMapper().registerModule(new SimpleModule())
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(new ObjectMapper().registerModule(new JavaTimeModule())
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .writeValueAsString(expected));
 
@@ -181,3 +175,4 @@ public class UserControllerImplTest {
 
     }
 }
+
