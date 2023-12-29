@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?!.*[а-яА-Я]).{8,}$")
 @ReportAsSingleViolation
 public @interface ValidPassword {
-    String message() default "Invalid password.";
+    String message() default "Invalid password";
 
     Class<?>[] groups() default {};
 
