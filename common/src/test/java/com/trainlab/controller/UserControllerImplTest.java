@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.module.SimpleModule;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -101,9 +102,9 @@ public class UserControllerImplTest {
                 Arguments.of(UserCreateDto.builder().email(" ").password("123456qW").build(), "The email field is required"),
                 Arguments.of(UserCreateDto.builder().email(" ").password(" ").build(), "Email and password fields are required"),
                 Arguments.of(UserCreateDto.builder().email("vladthedevj6@gmail.com").password("1234qW").build(), "User password must be between 8 and 256 characters"),
-                Arguments.of(UserCreateDto.builder().email("vladthedevj6@gmail.com").password("987654321").build(), "Invalid login or password"),
-                Arguments.of(UserCreateDto.builder().email("vladthedevj6@gmail.com").password("ABCDEFGH").build(), "Invalid login or password"),
-                Arguments.of(UserCreateDto.builder().email("vladthedevj6@gmail.com").password("ывн244р4").build(), "Invalid login or password"),
+                Arguments.of(UserCreateDto.builder().email("vladthedevj6@gmail.com").password("987654321").build(), "Invalid password"),
+                Arguments.of(UserCreateDto.builder().email("vladthedevj6@gmail.com").password("ABCDEFGH").build(), "Invalid password"),
+                Arguments.of(UserCreateDto.builder().email("vladthedevj6@gmail.com").password("ывн244р4").build(), "Invalid password"),
                 Arguments.arguments(UserCreateDto.builder().email("myemail@com").password("123456qW").build(), "Invalid email address"),
                 Arguments.arguments(UserCreateDto.builder().email("myemail%$^@domain").password("123456qW").build(), "Invalid email address"),
                 Arguments.arguments(UserCreateDto.builder().email("myemail@192.168.1.1").password("123456qW").build(), "Invalid email address"),
@@ -164,7 +165,7 @@ public class UserControllerImplTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(new ObjectMapper().registerModule(new JavaTimeModule())
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(new ObjectMapper().setDateFormat(new SimpleDateFormat("SSS")).registerModule(new JavaTimeModule())
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .writeValueAsString(expected));
 
