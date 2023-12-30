@@ -1,12 +1,10 @@
 package com.trainlab.service.impl;
 
-import com.trainlab.dto.AuthRequestDto;
-import com.trainlab.dto.UserCreateDto;
-import com.trainlab.dto.UserDto;
-import com.trainlab.dto.UserUpdateDto;
+import com.trainlab.dto.*;
 import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.exception.UsernameGenerationException;
+import com.trainlab.mapper.RoleMapper;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.Role;
 import com.trainlab.model.User;
@@ -35,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final RandomValuesGenerator generator;
 
     private final UserMapper userMapper;
+    private final RoleMapper roleMapper;
 
     private final PasswordEncode passwordEncoder;
 
@@ -52,14 +51,17 @@ public class UserServiceImpl implements UserService {
 
         checkUserEmailAndPasswordExist(user);
         setEncodedPassword(user);
-        setDefaultRole(user);
+        List<Role> userRoles = setDefaultRole(user);
         userRepository.saveAndFlush(user);
 
         user.setUsername(generateUsername(user.getId()));
         userRepository.save(user);
 
-/*        buildEmailMessage(user);*/
-        return userMapper.toDto(user);
+        List<RoleDto> roleDto = roleMapper.toListDto(userRoles);
+        /*        buildEmailMessage(user);*/
+        UserDto userDto = userMapper.toDto(user);
+        userDto.setRoles(roleDto);
+        return userDto;
     }
 
     @Override
@@ -152,13 +154,14 @@ public class UserServiceImpl implements UserService {
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
     }
 
-    private void setDefaultRole(User user) {
+    private List<Role> setDefaultRole(User user) {
         Role userRole = roleRepository.findByRoleName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("This role doesn't exist"));
 
         if (user.getRoles() == null) {
             user.setRoles(new ArrayList<>());
         }
         user.getRoles().add(userRole);
+        return user.getRoles();
     }
 
 /*    private void buildEmailMessage(User user) {

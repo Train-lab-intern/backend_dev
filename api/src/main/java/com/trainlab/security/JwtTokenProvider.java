@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.trainlab.dto.RoleDto;
 import com.trainlab.model.Role;
 import com.trainlab.security.model.AccessToken;
 import com.trainlab.model.security.RefreshToken;
@@ -22,6 +23,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Component
@@ -37,9 +39,10 @@ public class JwtTokenProvider implements TokenProvider {
         Instant issuedAt = Instant.now();
         Instant expiresAt = issuedAt.plus(jwtProps.getTimeToLive());
 
-        List<String> roles = principal.getRole().stream()
-                .map(Role::getRoleName)
-                .toList();
+        Stream<String> roles = principal.getRole().stream()
+                .map(RoleDto::getRoleName);
+
+        List<String> strings = roles.toList();
 
         String tokenValue = JWT.create()
                 .withHeader(Map.of(
@@ -47,7 +50,7 @@ public class JwtTokenProvider implements TokenProvider {
                         "alg", jwtAlgorithm.getName()))
                 .withJWTId(UUID.randomUUID().toString())
                 .withSubject(String.valueOf(principal.getId()))
-                .withClaim("role", roles)
+                .withClaim("role", strings)
                 .withIssuedAt(issuedAt)
                 .withExpiresAt(expiresAt)
                 .sign(jwtAlgorithm);
@@ -63,7 +66,7 @@ public class JwtTokenProvider implements TokenProvider {
         try {
             DecodedJWT jwt = jwtVerifier.verify(tokenValue);
             Long accountId = jwt.getClaim("sub").as(Long.class);
-            List<Role> roles = jwt.getClaim("role").asList(Role.class);
+            List<RoleDto> roles = jwt.getClaim("role").asList(RoleDto.class);
             return new UserPrincipal(accountId, roles);
         } catch (TokenExpiredException e) {
             throw new CredentialsExpiredException("JWT is expired", e);

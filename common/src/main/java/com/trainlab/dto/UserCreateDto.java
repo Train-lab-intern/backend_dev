@@ -27,14 +27,14 @@ import org.springframework.validation.annotation.Validated;
 @FieldNameConstants
 public class UserCreateDto {
 
-    @NotBlank(message = "The email field is required.", groups = {Group1.class})
+    @NotBlank(message = "The email field is required", groups = {Group1.class})
     @Size(message = "User email must be between 8 and 256 characters", min = 8, max = 256, groups = {Group3.class})
     @Email
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
             type = "string", description = "User email.")
     private String email;
 
-    @NotBlank(message = "The password field is required.", groups = {Group1.class})
+    @NotBlank(message = "The password field is required", groups = {Group1.class})
     @ValidPassword
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
             type = "string", description = "User password.")

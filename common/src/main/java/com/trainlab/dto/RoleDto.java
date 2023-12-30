@@ -21,5 +21,4 @@ public class RoleDto {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Minsk")
     private Timestamp changed;
-
 }
