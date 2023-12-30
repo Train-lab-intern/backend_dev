@@ -4,6 +4,8 @@ import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
+import com.trainlab.enums.Speciality;
+import com.trainlab.enums.UserLevel;
 import com.trainlab.exception.UsernameGenerationException;
 
 
@@ -23,4 +25,5 @@ public interface UserService {
     UserDto findUserByAuthenticationInfo(AuthRequestDto authRequestDto);
 
     void changePassword(Long id, UserUpdateDto userUpdateDto);
+
 }

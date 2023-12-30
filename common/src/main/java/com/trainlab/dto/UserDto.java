@@ -1,6 +1,8 @@
 package com.trainlab.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.trainlab.enums.Speciality;
+import com.trainlab.enums.UserLevel;
 import com.trainlab.model.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -27,4 +29,12 @@ public class UserDto {
     private Timestamp changed;
 
     private List<Role> roles;
+
+    private String firstName;
+
+    private  String secondName;
+
+    private UserLevel userLevel;
+
+    private Speciality speciality;
 }

@@ -30,5 +30,7 @@ public interface UserMapper {
 
     @Mapping(target = "email", source = "authenticationInfo.email")
     @Mapping(target = "roles", source = "roles")
+    @Mapping(target = "speciality", source = "speciality")
+    @Mapping(target = "userLevel", source = "userLevel")
     UserDto toDto(User user);
 }

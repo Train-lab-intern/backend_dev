@@ -1,19 +1,8 @@
 package com.trainlab.model;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.AttributeOverrides;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import com.trainlab.enums.Speciality;
+import com.trainlab.enums.UserLevel;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -69,5 +58,17 @@ public class User{
     )
     private List<Role> roles;
 
+    @Column(name = "firstName")
+    private String firstName;
+
+    @Column(name = "secondName")
+    private  String secondName;
+
+    @Column(name = "userLevel")
+    @Enumerated(EnumType.STRING)
+    private UserLevel userLevel;
+
+    @Column(name = "speciality")
+    private Speciality speciality;
 
 }

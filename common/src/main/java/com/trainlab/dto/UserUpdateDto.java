@@ -1,5 +1,7 @@
 package com.trainlab.dto;
 
+import com.trainlab.enums.Speciality;
+import com.trainlab.enums.UserLevel;
 import com.trainlab.validation.ValidPassword;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -29,5 +31,17 @@ public class UserUpdateDto {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
             type = "string", description = "User password")
     private String password;
+
+    @Schema(example = "Ivan",type = "string",description = "First Name")
+    @Size(message = "User first name must be between 1 and 256 characters", min = 1, max = 256)
+    private String firstName;
+
+    @Schema(example = "Ivanov", type = "string", description =  "Second Name")
+    @Size(message = "User second name must be between 1 and 256 characters", min = 1, max = 256)
+    private  String secondName;
+
+    private UserLevel userLevel;
+
+    private Speciality speciality;
 }
 

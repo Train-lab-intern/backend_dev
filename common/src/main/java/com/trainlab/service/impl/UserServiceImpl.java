@@ -4,6 +4,8 @@ import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
+import com.trainlab.enums.Speciality;
+import com.trainlab.enums.UserLevel;
 import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.exception.UsernameGenerationException;
@@ -146,6 +148,7 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(user);
         emailService.sendNewPassword(toAddress, newPassword);
     }
+
 
     private void setEncodedPassword(User user) {
         String encodedPassword = passwordEncoder.encodePassword(user.getAuthenticationInfo().getUserPassword());
