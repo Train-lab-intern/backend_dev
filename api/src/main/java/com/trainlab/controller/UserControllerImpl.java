@@ -46,7 +46,7 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody UserCreateDto userCreateDto, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            if (userCreateDto.isValid())
+            if (userCreateDto.isFieldsBlank())
                 throw new ValidationException("Email and password fields are required");
 
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
