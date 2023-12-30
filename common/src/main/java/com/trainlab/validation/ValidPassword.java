@@ -19,6 +19,5 @@ import java.lang.annotation.Target;
 public @interface ValidPassword {
     String message() default "Invalid password. The password must be typed in Latin letters, consist of at least 8 characters and contain at least one lowercase and one uppercase character";
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 }
