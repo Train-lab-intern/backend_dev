@@ -5,6 +5,7 @@ import com.trainlab.validation.Email;
 import com.trainlab.validation.ValidPassword;
 import com.trainlab.validation.groups.Group1;
 import com.trainlab.validation.groups.Group2;
+import com.trainlab.validation.groups.Group3;
 import com.trainlab.validation.validator.EmailValidator;
 import com.trainlab.validation.validator.PasswordValidator;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,12 +21,12 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @Builder
 @Validated
-@GroupSequence(value = {Group1.class, Group2.class, UserCreateDto.class})
+@GroupSequence(value = {Group1.class, Group2.class, Group3.class, UserCreateDto.class})
 @Schema(description = "User Request")
 public class UserCreateDto {
 
     @NotBlank(message = "The email field is required.", groups = {Group1.class})
-    @Size(message = "User email must be between 8 and 256 characters", min = 8, max = 256)
+    @Size(message = "User email must be between 8 and 256 characters", min = 8, max = 256, groups = {Group3.class})
     @Email
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
             type = "string", description = "User email.")
