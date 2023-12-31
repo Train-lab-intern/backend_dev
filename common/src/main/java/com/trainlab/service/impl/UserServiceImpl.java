@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
 //            throw new IllegalRequestException("User with this username is already exists.");
 //        }
          if (checkUserEmail.isPresent()) {
-            throw new IllegalRequestException("User with this email is already exists.");
+            throw new IllegalRequestException("User with this email is already exists");
         }
     }
 
