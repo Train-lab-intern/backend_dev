@@ -12,7 +12,7 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         return value.matches(
-                "^(?=.{8,256}$)[A-Za-z\\d$#&*/=^?{}~!|]+([.]?[A-Za-z\\d_%+\\-'`$#&*/=^?{}~!|])*@(" + IPv4_PATTERN
+                "^(?=.{1,256}$)[A-Za-z\\d$#&*/=^?{}~!|]+([.]?[A-Za-z\\d_%+\\-'`$#&*/=^?{}~!|])*@(" + IPv4_PATTERN
                         +  "|([A-Za-z\\d.-]+\\.[A-Za-z]{2,4}))$"
         );
     }
