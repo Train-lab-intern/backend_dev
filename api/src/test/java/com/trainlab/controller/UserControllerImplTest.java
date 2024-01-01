@@ -45,6 +45,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.TestInstance.*;
 import static org.junit.jupiter.params.ParameterizedTest.ARGUMENTS_PLACEHOLDER;
 import static org.mockito.Mockito.*;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -76,12 +77,41 @@ public class UserControllerImplTest {
 
     private ObjectMapper objectMapper;
 
+    private UserDto userDto;
+
     @BeforeAll
     void init() {
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
         objectMapper = new ObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .registerModule(new JavaTimeModule());
+        userDto = UserDto.builder()
+                .id(1L)
+                .username("user-1")
+                .email("vladthedevj6@gmail.com")
+                .created(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
+                .changed(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
+                .roles(List.of(
+                        RoleDto.builder()
+                                .id(1)
+                                .roleName("ROLE_USER")
+                                .created(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
+                                .changed(Timestamp.valueOf(LocalDateTime.now().withNano(0))).build())
+                ).build();
+    }
+
+    @Test
+    void getListOfUsers() throws Exception {
+        List<UserDto> expected = List.of(userDto, userDto);
+
+        when(userService.findAll()).thenReturn(expected);
+
+        MvcResult mvcResult = mockMvc.perform(request(GET, "/api/v1/users"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expected));
+        verify(userService, only()).findAll();
     }
 
     @Nested
@@ -153,19 +183,6 @@ public class UserControllerImplTest {
 
         @Test
         void createUserIfEmailAndPasswordCorrect() throws Exception {
-            UserDto userDto = UserDto.builder()
-                    .id(1L)
-                    .username("user-1")
-                    .email("vladthedevj6@gmail.com")
-                    .created(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
-                    .changed(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
-                    .roles(List.of(
-                            RoleDto.builder()
-                                    .id(1)
-                                    .roleName("ROLE_USER")
-                                    .created(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
-                                    .changed(Timestamp.valueOf(LocalDateTime.now().withNano(0))).build())
-                    ).build();
             UserPrincipal userPrincipal = new UserPrincipal(userDto.getId(), userDto.getRoles());
             AccessToken accessToken = AccessToken.builder()
                     .value("c15ddb54-7bd9-40ba-9713-a0ebc2af2c6d")
