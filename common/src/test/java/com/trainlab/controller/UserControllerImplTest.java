@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.trainlab.dto.RoleDto;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
+import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.exception.ValidationException;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.security.TokenProvider;
@@ -84,10 +85,21 @@ public class UserControllerImplTest {
     @Nested
     @DisplayName("User test registration functionality")
     @Tag(value = "registration")
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class RegistrationTest {
+
+        private UserCreateDto user;
+
+        @BeforeAll
+        void setUp() {
+            user = UserCreateDto.builder()
+                    .email("vladthedevj6@gmail.com")
+                    .password("123456Wq").build();
+        }
+
         @ParameterizedTest(name = ARGUMENTS_PLACEHOLDER)
         @MethodSource("paramsWithExceptions")
-        void createUserShouldBeFail(UserCreateDto user, String exceptionMessage) throws Exception {
+        void createUserShouldBeFailIfParametersInvalid(UserCreateDto user, String exceptionMessage) throws Exception {
             MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/users/register")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(user)))
@@ -124,7 +136,7 @@ public class UserControllerImplTest {
                             .email("test.trainlab+Sun_of_the_sleepless_Melancholy_star_Whose_tearful_beam_glows_tremulously_far" +
                                     "_That_showst_the_darkness_thou_canst_not_dispel_How_like_art_thou_to_joy_rememberd_well_" +
                                     "What_is_this_life_if_ful_of_care_We_have_no_time_to_stand_and_stare1@gmail.com") // 257
-                            .password("123456qW").build(), "User email must be between 8 and 256 characters"),
+                            .password("123456qW").build(), "Invalid email address"),
                     Arguments.of(UserCreateDto.builder()
                                     .email("vladthedevj6@gmail.com")
                                     .password("Wdj0lLfsiBWp0vQ0CocM2BnD7ZkqTeiELahreGsJgCBXR88diCoa7tAOf0nFUSufkmxRTFSQsCevZnhuQnse" +
@@ -139,9 +151,6 @@ public class UserControllerImplTest {
 
         @Test
         void createUserIfEmailAndPasswordCorrect() throws Exception {
-            UserCreateDto user = UserCreateDto.builder()
-                    .email("vladthedevj6@gmail.com")
-                    .password("123456Wq").build();
             UserDto userDto = UserDto.builder()
                     .id(1L)
                     .username("user-1")
@@ -183,6 +192,26 @@ public class UserControllerImplTest {
 
             verify(userService, only()).create(user);
             verify(authService, only()).createRefreshSession(userDto, refreshToken);
+        }
+
+        @Test
+        void userCreateShouldBeFailIfUserServiceThrowException() throws Exception {
+
+            AuthResponseDto authResponseDto = AuthResponseDto.builder().build();
+            when(userService.create(user)).thenThrow(UsernameGenerationException.class);
+
+            MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/users/register")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(user)))
+                    .andExpect(status().isInternalServerError())
+                    .andReturn();
+
+            assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(authResponseDto));
+
+            verify(userService, only()).create(user);
+            verify(tokenProvider, never()).generate(any());
+            verify(tokenProvider, never()).generateRefreshToken();
+            verify(authService, never()).createRefreshSession(any(), any());
         }
     }
 }
