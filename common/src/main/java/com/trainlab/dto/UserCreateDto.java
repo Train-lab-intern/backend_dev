@@ -14,6 +14,7 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 import org.springframework.validation.annotation.Validated;
 
 @Data
@@ -23,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @GroupSequence(value = {Group1.class, Group2.class, Group3.class, UserCreateDto.class})
 @Schema(description = "User Request")
+@FieldNameConstants
 public class UserCreateDto {
 
     @NotBlank(message = "The email field is required", groups = {Group1.class})

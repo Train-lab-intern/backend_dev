@@ -1,5 +1,6 @@
 package com.trainlab.security.principal;
 
+import com.trainlab.dto.RoleDto;
 import com.trainlab.model.Role;
 import lombok.Value;
 
@@ -9,9 +10,9 @@ import java.util.List;
 public class UserPrincipal implements AccountPrincipal {
 
     Long id;
-    List<Role> roles;
+    List<RoleDto> roles;
 
-    public List<Role> getRole() {
+    public List<RoleDto> getRole() {
         return roles;
     }
 }

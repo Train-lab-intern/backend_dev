@@ -1,7 +1,6 @@
 package com.trainlab.service.impl;
 
 import com.trainlab.dto.UserCreateDto;
-import com.trainlab.dto.UserDto;
 import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.AuthenticationInfo;
