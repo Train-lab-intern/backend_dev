@@ -82,6 +82,14 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
+    @Override
+    public UserDto findAuthorizedUser(Long id) {
+        User user = userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
+                () -> new ObjectNotFoundException("User could not be found")
+        );
+        return userMapper.toDto(user);
+    }
+
 
 /*    @Override
     public void activateUser(String userEmail) {
@@ -96,12 +104,6 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(userMapper.toEntity(user));
         log.info("User with email " + userEmail + " activate successfully!");
     }*/
-
-    @Override
-    public UserDto findAuthorizedUser(Long id) {
-        User user = findByIdAndIsDeletedFalse(id);
-            return userMapper.toDto(user);
-    }
 
     @Override
     public List<UserDto> findAll() {
@@ -138,7 +140,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(Long id, UserUpdateDto userUpdateDto) {
-        User user = findByIdAndIsDeletedFalse(id);
+        User user = userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
+                () -> new EntityNotFoundException("User could not be found")
+        );
+
         String toAddress = userUpdateDto.getEmail();
 
         String newPassword = generator.generateRandomPassword(8);
@@ -168,10 +173,6 @@ public class UserServiceImpl implements UserService {
         String toAddress = user.getAuthenticationInfo().getEmail();
         emailService.sendRegistrationConfirmationEmail(toAddress);
     }*/
-
-    private User findByIdAndIsDeletedFalse(Long id) {
-        return userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new EntityNotFoundException("User could not be found"));
-    }
 
     private boolean isAuthorized(User user, UserDetails userDetails) {
         String userEmail = user.getAuthenticationInfo().getEmail();
