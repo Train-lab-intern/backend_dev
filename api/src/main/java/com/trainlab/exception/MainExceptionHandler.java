@@ -22,10 +22,10 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleResourceNotFoundException(
             ObjectNotFoundException ex) {
         List<String> details = new ArrayList<>();
-        details.add(ex.getMessage());
+        details.add(Arrays.toString(ex.getStackTrace()));
         ApiError err = new ApiError(
                 LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.NOT_FOUND,
                 ex.getMessage(),
                 details);
         return ResponseEntityBuilder.build(err);

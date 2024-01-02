@@ -6,8 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.trainlab.dto.RoleDto;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
-import com.trainlab.exception.UsernameGenerationException;
-import com.trainlab.exception.ValidationException;
+import com.trainlab.exception.*;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.security.TokenProvider;
 import com.trainlab.security.dto.AuthResponseDto;
@@ -29,16 +28,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
@@ -101,7 +97,7 @@ public class UserControllerImplTest {
     }
 
     @Test
-    void getListOfUsers() throws Exception {
+    void getAllUsersShouldBeSuccess() throws Exception {
         List<UserDto> expected = List.of(userDto, userDto);
 
         when(userService.findAll()).thenReturn(expected);
@@ -112,6 +108,35 @@ public class UserControllerImplTest {
 
         assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expected));
         verify(userService, only()).findAll();
+    }
+
+    @Test
+    void findUserByIdShouldBeSuccessIfUserExists() throws Exception {
+        Long userId = 1L;
+        when(userService.findAuthorizedUser(userId)).thenReturn(userDto);
+
+        MvcResult mvcResult = mockMvc.perform(request(GET, "/api/v1/users/1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(userDto));
+        verify(userService, only()).findAuthorizedUser(userId);
+    }
+
+    @Test
+    void findUserByIdShouldBeFailIfUserNotExist() throws Exception {
+        Long userId = 2L;
+        when(userService.findAuthorizedUser(userId)).thenThrow(new ObjectNotFoundException("User could not be found"));
+
+        MvcResult mvcResult = mockMvc.perform(request(GET, "/api/v1/users/2"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        assertThat(mvcResult.getResolvedException()).isInstanceOf(ObjectNotFoundException.class);
+        assertThat(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()).isEqualTo(
+                "User could not be found"
+        );
+        verify(userService, only()).findAuthorizedUser(userId);
     }
 
     @Nested
@@ -201,7 +226,7 @@ public class UserControllerImplTest {
             when(tokenProvider.generate(userPrincipal)).thenReturn(accessToken);
             when(tokenProvider.generateRefreshToken()).thenReturn(refreshToken);
 
-            MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.request(POST, "/api/v1/users/register")
+            MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/users/register")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(user)))
                     .andExpect(status().isOk())
