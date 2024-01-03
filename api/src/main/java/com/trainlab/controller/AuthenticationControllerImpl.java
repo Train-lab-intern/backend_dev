@@ -2,7 +2,6 @@ package com.trainlab.controller;
 
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
-import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.exception.ValidationException;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.dto.AuthRequestDto;
@@ -40,31 +39,21 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody AuthRequestDto request, BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
-            if (request.isFieldsBlank())
-                throw new ValidationException("Email and password fields are required");
+        if (bindingResult.hasErrors())
+            throw new ValidationException("Invalid login or password");
 
-            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-            throw new ValidationException(errorMessage);
-        }
+        UserDto user = userService.findUserByAuthenticationInfo(request);
+        AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
+        RefreshToken refreshToken = tokenProvider.generateRefreshToken();
+        authService.createRefreshSession(user, refreshToken);
 
-        try {
-            UserDto user = userService.findUserByAuthenticationInfo(request);
-            AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
-            RefreshToken refreshToken = tokenProvider.generateRefreshToken();
-            authService.createRefreshSession(user, refreshToken);
-
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    AuthResponseDto.builder()
-                            .token(token)
-                            .refreshToken(refreshToken)
-                            .userDto(user)
-                            .build()
-            );
-        }
-        catch (ObjectNotFoundException e){
-            throw  new ObjectNotFoundException("Invalid login or password");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                AuthResponseDto.builder()
+                        .token(token)
+                        .refreshToken(refreshToken)
+                        .userDto(user)
+                        .build()
+        );
     }
 
     @Override

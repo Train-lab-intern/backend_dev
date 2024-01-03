@@ -67,9 +67,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findUserByAuthenticationInfo(AuthRequestDto authRequestDto) {
         User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(authRequestDto
-                .getUserEmail()
-                .toLowerCase())
-                .orElseThrow(() -> new ObjectNotFoundException("User not found with email: " + authRequestDto.getUserEmail()));
+                .getUserEmail().toLowerCase())
+                .orElseThrow(() -> new ObjectNotFoundException("Invalid login or password"));
 
         boolean isPasswordMatches = passwordEncoder.matches(
                 authRequestDto.getUserPassword(),
