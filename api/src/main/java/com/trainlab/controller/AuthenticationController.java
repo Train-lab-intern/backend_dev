@@ -1,9 +1,11 @@
 package com.trainlab.controller;
 
+import com.trainlab.dto.UserCreateDto;
 import com.trainlab.model.security.AuthRefreshToken;
 import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.security.dto.AuthResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,6 +34,31 @@ public interface AuthenticationController {
                 )}
     )
     ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request, BindingResult bindingResult);
+
+    @Operation(
+            summary = "Spring Data Create User",
+            description = "Creates a new user",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "CREATED",
+                            description = "User created",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(allOf = {UserCreateDto.class})
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "BAD_REQUEST",
+                            description = "Validation error"
+                    ),
+                    @ApiResponse(
+                            responseCode = "INTERNAL_SERVER_ERROR",
+                            description = "Username generation error"
+                    )
+            }
+    )
+    ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
+                                               UserCreateDto userCreateDto, BindingResult bindingResult);
 
     @Operation(
         summary = "Refresh old token.",

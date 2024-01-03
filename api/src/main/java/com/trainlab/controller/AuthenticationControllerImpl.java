@@ -1,12 +1,15 @@
 package com.trainlab.controller;
 
+import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.exception.ObjectNotFoundException;
+import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.security.dto.AuthResponseDto;
 import com.trainlab.security.TokenProvider;
 import com.trainlab.model.security.AuthRefreshToken;
+import com.trainlab.security.principal.AccountPrincipal;
 import com.trainlab.security.principal.UserPrincipal;
 import com.trainlab.security.model.AccessToken;
 import com.trainlab.service.AuthService;
@@ -63,8 +66,39 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         catch (ObjectNotFoundException e){
             throw  new ObjectNotFoundException("Invalid login or password");
         }
+    }
 
+    @Override
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody UserCreateDto userCreateDto, BindingResult bindingResult) {
 
+        if (bindingResult.hasErrors()) {
+            if (userCreateDto.isFieldsBlank())
+                throw new com.trainlab.exception.ValidationException("Email and password fields are required");
+
+            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+            throw new com.trainlab.exception.ValidationException(errorMessage);
+        }
+
+        try {
+            UserDto user = userService.create(userCreateDto);
+            AccountPrincipal principal = new UserPrincipal(user.getId(), user.getRoles());
+            AccessToken token = tokenProvider.generate(principal);
+            RefreshToken refreshToken = tokenProvider.generateRefreshToken();
+            authService.createRefreshSession(user, refreshToken);
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    AuthResponseDto.builder()
+                            .token(token)
+                            .refreshToken(refreshToken)
+                            .userDto(user)
+                            .build()
+            );
+        } catch (UsernameGenerationException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    AuthResponseDto.builder().build()
+            );
+        }
     }
 
     @PostMapping("/refresh-token")

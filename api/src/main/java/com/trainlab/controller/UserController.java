@@ -25,31 +25,6 @@ import java.util.List;
 
 @Tag(name = "UserRestController", description = "User management methods")
 public interface UserController {
-    @Operation(
-            summary = "Spring Data Create User",
-            description = "Creates a new user",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "CREATED",
-                            description = "User created",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(allOf = {UserCreateDto.class})
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "BAD_REQUEST",
-                            description = "Validation error"
-                    ),
-                    @ApiResponse(
-                            responseCode = "INTERNAL_SERVER_ERROR",
-                            description = "Username generation error"
-                    )
-            }
-    )
-    ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
-                                               UserCreateDto userCreateDto, BindingResult bindingResult);
-
 
 /*    @Operation(
             summary = "Complete Registration",
