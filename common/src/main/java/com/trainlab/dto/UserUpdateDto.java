@@ -34,13 +34,13 @@ public class UserUpdateDto {
 
     @Schema(example = "Ivan",type = "string",description = "First Name")
     @Size(message = "User first name must be between 1 and 256 characters", min = 1, max = 256)
-    private String firstName;
+    private String firstname;
 
     @Schema(example = "Ivanov", type = "string", description =  "Second Name")
     @Size(message = "User second name must be between 1 and 256 characters", min = 1, max = 256)
-    private  String secondName;
+    private  String secondname;
 
-    private UserLevel userLevel;
+    private UserLevel userlevel;
 
     private Speciality speciality;
 }

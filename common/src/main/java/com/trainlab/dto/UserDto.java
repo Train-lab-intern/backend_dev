@@ -30,11 +30,11 @@ public class UserDto {
 
     private List<Role> roles;
 
-    private String firstName;
+    private String firstname;
 
-    private  String secondName;
+    private  String secondname;
 
-    private UserLevel userLevel;
+    private UserLevel userlevel;
 
     private Speciality speciality;
 }

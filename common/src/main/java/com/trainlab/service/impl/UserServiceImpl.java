@@ -55,9 +55,10 @@ public class UserServiceImpl implements UserService {
         checkUserEmailAndPasswordExist(user);
         setEncodedPassword(user);
         setDefaultRole(user);
-        userRepository.saveAndFlush(user);
-
+        setData(user);
+        userRepository.save(user);
         user.setUsername(generateUsername(user.getId()));
+
         userRepository.save(user);
 
 /*        buildEmailMessage(user);*/
@@ -111,17 +112,24 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    @Override
-    public UserDto update(UserUpdateDto userUpdateDto, Long id) {
-        UserDto userDto = findAuthorizedUser(id);
-        User user = userMapper.toEntity(userDto);
+//    @Override
+//    public UserDto update(UserUpdateDto userUpdateDto, Long id) {
+//        UserDto userDto = findAuthorizedUser(id);
+//        User user = userMapper.toEntity(userDto);
+//
+//        User updated = userMapper.partialUpdateToEntity(userUpdateDto, user);
+//        setEncodedPassword(updated);
+//
+//        checkUserEmailAndPasswordExist(updated);
+//
+//        return userMapper.toDto(userRepository.saveAndFlush(updated));
+//    }
 
+        @Override
+    public User update(UserUpdateDto userUpdateDto, Long id) {
+        User user = userRepository.findById(id).orElseThrow();
         User updated = userMapper.partialUpdateToEntity(userUpdateDto, user);
-        setEncodedPassword(updated);
-
-        checkUserEmailAndPasswordExist(updated);
-
-        return userMapper.toDto(userRepository.saveAndFlush(updated));
+        return userRepository.saveAndFlush(updated);
     }
 
     private void checkUserEmailAndPasswordExist(User updated) {
@@ -162,6 +170,13 @@ public class UserServiceImpl implements UserService {
             user.setRoles(new ArrayList<>());
         }
         user.getRoles().add(userRole);
+    }
+
+    private void setData(User user) {
+        user.setSpeciality(Speciality.BACK);
+        user.setUserlevel(UserLevel.RAW);
+        user.setFirstname("First Name");
+        user.setSecondname("Second Name");
     }
 
 /*    private void buildEmailMessage(User user) {

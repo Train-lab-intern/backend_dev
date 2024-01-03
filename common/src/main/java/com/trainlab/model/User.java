@@ -58,17 +58,16 @@ public class User{
     )
     private List<Role> roles;
 
-    @Column(name = "firstName")
-    private String firstName;
+    @Column(name = "firstname", nullable = false, unique = true)
+    private String firstname;
 
-    @Column(name = "secondName")
-    private  String secondName;
+    @Column(name = "secondname", nullable = false, unique = true)
+    private  String secondname;
 
-    @Column(name = "userLevel")
     @Enumerated(EnumType.STRING)
-    private UserLevel userLevel;
+    private UserLevel userlevel;
 
-    @Column(name = "speciality")
+    @Enumerated(EnumType.STRING)
     private Speciality speciality;
 
 }

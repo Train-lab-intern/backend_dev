@@ -4,6 +4,7 @@ import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.ClientData;
+import com.trainlab.model.User;
 import com.trainlab.security.dto.AuthResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -101,9 +102,9 @@ public interface UserController {
                     )
             }
     )
-    ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
-                                       @Valid @RequestBody UserUpdateDto userUpdateDto,
-                                       BindingResult bindingResult);
+    ResponseEntity<User> updateUser(@PathVariable("id") Long id,
+                                    @Valid @RequestBody UserUpdateDto userUpdateDto,
+                                    BindingResult bindingResult);
 
     @Operation(
             summary = "Spring Data User Search by user Id",

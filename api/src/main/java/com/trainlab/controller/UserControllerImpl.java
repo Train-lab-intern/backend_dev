@@ -5,6 +5,7 @@ import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.exception.ValidationException;
+import com.trainlab.model.User;
 import com.trainlab.security.TokenProvider;
 import com.trainlab.security.dto.AuthResponseDto;
 import com.trainlab.model.security.RefreshToken;
@@ -91,11 +92,23 @@ public class UserControllerImpl implements UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
 
+//    @Override
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
+//                                              @Valid @RequestBody UserUpdateDto userUpdateDto,
+//                                              BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()) {
+//            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+//            throw new ValidationException(errorMessage);
+//        }
+//        return ResponseEntity.ok(userService.update(userUpdateDto, id));
+//    }
+
     @Override
     @PatchMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
-                                              @Valid @RequestBody UserUpdateDto userUpdateDto,
-                                              BindingResult bindingResult) {
+    public ResponseEntity<User> updateUser(@PathVariable("id") Long id,
+                                           @Valid @RequestBody UserUpdateDto userUpdateDto,
+                                           BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);

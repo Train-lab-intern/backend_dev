@@ -7,6 +7,7 @@ import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.enums.Speciality;
 import com.trainlab.enums.UserLevel;
 import com.trainlab.exception.UsernameGenerationException;
+import com.trainlab.model.User;
 
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface UserService {
 
     List<UserDto> findAll();
 
-    UserDto update(UserUpdateDto userUpdateDto, Long id);
+    User update(UserUpdateDto userUpdateDto, Long id);
 
     UserDto findUserByAuthenticationInfo(AuthRequestDto authRequestDto);
 

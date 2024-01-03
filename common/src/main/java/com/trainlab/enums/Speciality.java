@@ -1,6 +1,9 @@
 package com.trainlab.enums;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public enum Speciality {
 //1. BA / SA
 //2. Front-end
@@ -18,13 +21,6 @@ public enum Speciality {
     QA("QA"),
     PM("PM");
 
-    private  final  String spec;
-
-    Speciality(String spec) {
-        this.spec = spec;
-    }
-
-    public  String getSpeciality(){
-        return  spec;
-    }
+    @Getter
+    private final String val;
 }
