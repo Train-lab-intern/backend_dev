@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @Validated
 @Builder
-@Schema(description = "User Update Response")
+@Schema(description = "User update response")
 public class UserUpdateDto {
 
     @Schema(example = "SvetaPiven", type = "string", description = "Username")

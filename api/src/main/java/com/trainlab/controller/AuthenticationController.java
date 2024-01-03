@@ -18,19 +18,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface AuthenticationController {
 
     @Operation(
-        summary = "Login user by email and password.",
+        summary = "Login user by email and password",
         description = "Get user data by email and password. The response is AuthResponse object with token, refresh token" +
-                " and user object.",
+                " and user object",
         responses ={
                 @ApiResponse(
                     responseCode = "CREATED",
-                    description = "Login successful.",
+                    description = "Login successful",
                     content = @Content(schema = @Schema(implementation = AuthRequestDto.class),
                                        mediaType = "application/json")
                 ),
                 @ApiResponse(
                         responseCode = "BAD_REQUEST",
-                        description = "Validation error."
+                        description = "Validation error"
                 )}
     )
     ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request, BindingResult bindingResult);
@@ -61,23 +61,23 @@ public interface AuthenticationController {
                                                UserCreateDto userCreateDto, BindingResult bindingResult);
 
     @Operation(
-        summary = "Refresh old token.",
+        summary = "Refresh old token",
         description = "When the front verified jwt token and it expired. Client sends refresh token to this controller" +
-                "and if refresh token is valid and has not expired, controller sends to the client new jwt and refresh token.",
+                "and if refresh token is valid and has not expired, controller sends to the client new jwt and refresh token",
         responses = {
                 @ApiResponse(
                         responseCode = "CREATED",
-                        description = "Refresh token successful.",
+                        description = "Refresh token successful",
                         content = @Content(schema = @Schema(implementation = AuthRefreshToken.class),
                                            mediaType = "application/json")
                 ),
                 @ApiResponse(
                         responseCode = "BAD_REQUEST",
-                        description = "Validation error."
+                        description = "Validation error"
                 ),
                 @ApiResponse(
                         responseCode = "UNAUTHORIZED",
-                        description = "The RefreshToken doesn't exist or has expired."
+                        description = "The RefreshToken doesn't exist or has expired"
                 )}
     )
     ResponseEntity<AuthResponseDto> refreshToken(@Valid @RequestBody AuthRefreshToken authRefreshToken,
@@ -85,19 +85,19 @@ public interface AuthenticationController {
 
 
     @Operation(
-        summary = "User logout.",
+        summary = "User logout",
         description = "When a client sends a request to this controller and refresh token is valid, the refresh token" +
-                    " will removed from the DB.",
+                    " will removed from the DB",
         responses = {
                 @ApiResponse(
                         responseCode = "OK",
-                        description = "Logout successful.",
+                        description = "Logout successful",
                         content = @Content(schema = @Schema(implementation = AuthRefreshToken.class),
                                            mediaType = "application/json")
                         ),
                 @ApiResponse(
                         responseCode = "BAD_REQUEST",
-                        description = "Validation error."
+                        description = "Validation error"
                 )}
     )
     ResponseEntity<HttpStatus> logout(@Valid @RequestBody AuthRefreshToken authRefreshToken,

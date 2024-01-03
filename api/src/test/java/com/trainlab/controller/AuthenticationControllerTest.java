@@ -199,9 +199,7 @@ public class AuthenticationControllerTest {
 
         @Test
         void userCreateShouldBeFailIfUserServiceThrowException() throws Exception {
-
-            AuthResponseDto authResponseDto = AuthResponseDto.builder().build();
-            when(userService.create(user)).thenThrow(UsernameGenerationException.class);
+            when(userService.create(user)).thenThrow(new UsernameGenerationException("Username generation failed. User's id more then expected"));
 
             MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/auth/register")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -209,7 +207,10 @@ public class AuthenticationControllerTest {
                     .andExpect(status().isInternalServerError())
                     .andReturn();
 
-            assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(authResponseDto));
+            assertThat(mvcResult.getResolvedException()).isInstanceOf(UsernameGenerationException.class);
+            assertThat(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()).isEqualTo(
+                    "Username generation failed. User's id more then expected"
+            );
 
             verify(userService, only()).create(user);
             verify(tokenProvider, never()).generate(any());

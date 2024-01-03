@@ -31,6 +31,19 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntityBuilder.build(err);
     }
 
+    @ExceptionHandler(UsernameGenerationException.class)
+    public ResponseEntity<Object> handleUsernameGenerationException(
+            UsernameGenerationException ex
+    ) {
+        List<String> details = List.of(Arrays.toString(ex.getStackTrace()));
+        ApiError error = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getMessage(),
+                details);
+        return ResponseEntityBuilder.build(error);
+    }
+
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex,
             HttpHeaders headers,

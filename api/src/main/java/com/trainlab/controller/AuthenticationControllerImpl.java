@@ -3,7 +3,7 @@ package com.trainlab.controller;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.exception.ObjectNotFoundException;
-import com.trainlab.exception.UsernameGenerationException;
+import com.trainlab.exception.ValidationException;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.security.dto.AuthResponseDto;
@@ -16,7 +16,6 @@ import com.trainlab.service.AuthService;
 import com.trainlab.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,13 +73,12 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
         if (bindingResult.hasErrors()) {
             if (userCreateDto.isFieldsBlank())
-                throw new com.trainlab.exception.ValidationException("Email and password fields are required");
+                throw new ValidationException("Email and password fields are required");
 
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-            throw new com.trainlab.exception.ValidationException(errorMessage);
+            throw new ValidationException(errorMessage);
         }
 
-        try {
             UserDto user = userService.create(userCreateDto);
             AccountPrincipal principal = new UserPrincipal(user.getId(), user.getRoles());
             AccessToken token = tokenProvider.generate(principal);
@@ -94,11 +92,6 @@ public class AuthenticationControllerImpl implements AuthenticationController {
                             .userDto(user)
                             .build()
             );
-        } catch (UsernameGenerationException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    AuthResponseDto.builder().build()
-            );
-        }
     }
 
     @PostMapping("/refresh-token")

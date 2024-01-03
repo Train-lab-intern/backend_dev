@@ -10,7 +10,7 @@ import com.trainlab.exception.UsernameGenerationException;
 import java.util.List;
 
 public interface UserService {
-    UserDto create(UserCreateDto userCreateDto) throws UsernameGenerationException;
+    UserDto create(UserCreateDto userCreateDto);
 
 /*    void activateUser(String userEmail);*/
 
