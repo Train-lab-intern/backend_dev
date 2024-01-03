@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
 
     @Override
-    public UserDto create(UserCreateDto userCreateDto) throws UsernameGenerationException {
+    public UserDto create(UserCreateDto userCreateDto) {
         User user = userMapper.toEntity(userCreateDto);
         String email = user.getAuthenticationInfo().getEmail().toLowerCase();
         user.getAuthenticationInfo().setEmail(email);
@@ -90,6 +90,13 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
+    @Override
+    public List<UserDto> findAll() {
+        List<User> users = userRepository.findAllByIsDeletedFalseOrderById();
+        return users.stream()
+                .map(userMapper::toDto)
+                .toList();
+    }
 
 /*    @Override
     public void activateUser(String userEmail) {
@@ -104,14 +111,6 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(userMapper.toEntity(user));
         log.info("User with email " + userEmail + " activate successfully!");
     }*/
-
-    @Override
-    public List<UserDto> findAll() {
-        List<User> users = userRepository.findAllByIsDeletedFalseOrderById();
-        return users.stream()
-                .map(userMapper::toDto)
-                .toList();
-    }
 
     @Override
     public UserDto update(UserUpdateDto userUpdateDto, Long id) {
@@ -181,8 +180,7 @@ public class UserServiceImpl implements UserService {
         return userEmail.equalsIgnoreCase(username);
     }
 
-
-    private String generateUsername(Long id) throws UsernameGenerationException {
+    private String generateUsername(Long id) {
         if (id < 10) {
             return  "user-0000" + id;
         } else if (id<100) {

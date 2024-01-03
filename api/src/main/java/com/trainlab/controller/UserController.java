@@ -1,12 +1,8 @@
 package com.trainlab.controller;
 
-import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserUpdateDto;
-import com.trainlab.model.ClientData;
-import com.trainlab.security.dto.AuthResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,8 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,35 +17,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@Tag(name = "UserRestController", description = "User management methods")
+@Tag(name = "UserController", description = "User management methods")
 public interface UserController {
     @Operation(
-            summary = "Spring Data Create User",
-            description = "Creates a new user",
+            summary = "Find all users",
+            description = "Find all users without limitations",
+            responses =
+                    @ApiResponse(
+                        responseCode = "OK",
+                        description = "Successfully loaded users",
+                        content = @Content(
+                                mediaType = "application/json",
+                                array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))
+                    )
+    )
+    ResponseEntity<List<UserDto>> getAllUsers();
+
+    @Operation(
+            summary = "User search by user id",
+            description = "Receive user by id",
             responses = {
                     @ApiResponse(
-                            responseCode = "CREATED",
-                            description = "User created",
+                            responseCode = "OK",
+                            description = "Successfully loaded user",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(allOf = {UserCreateDto.class})
-                            )
+                                    array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))
                     ),
                     @ApiResponse(
-                            responseCode = "BAD_REQUEST",
-                            description = "Validation error"
-                    ),
-                    @ApiResponse(
-                            responseCode = "INTERNAL_SERVER_ERROR",
-                            description = "Username generation error"
+                            responseCode = "NOT_FOUND",
+                            description = "User not found"
                     )
             }
     )
-    ResponseEntity<AuthResponseDto> createUser(@Valid @RequestBody @Parameter(description = "User information", required = true)
-                                               UserCreateDto userCreateDto, BindingResult bindingResult);
+    ResponseEntity<UserDto> findUserById(@PathVariable Long id);
 
-
-/*    @Operation(
+    /*    @Operation(
             summary = "Complete Registration",
             description = "Completes the user registration process",
             responses = {
@@ -66,23 +67,6 @@ public interface UserController {
             }
     )
     ResponseEntity<String> completeRegistration(@RequestParam("userEmail") String userEmail);*/
-
-    @Operation(
-            summary = "Spring Data User Find All Search",
-            description = "Find All Users without limitations",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "OK",
-                            description = "Successfully loaded Users",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))
-
-                    ),
-                    @ApiResponse(responseCode = "INTERNAL_SERVER_ERROR", description = "Internal Server Error")
-            }
-    )
-    ResponseEntity<List<UserDto>> getAllUsers();
 
     @Operation(
             summary = "Spring Data Update User",
@@ -104,25 +88,6 @@ public interface UserController {
     ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
                                        @Valid @RequestBody UserUpdateDto userUpdateDto,
                                        BindingResult bindingResult);
-
-    @Operation(
-            summary = "Spring Data User Search by user Id",
-            description = "Receive user by Id",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "OK",
-                            description = "Successfully loaded User",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))
-                    ),
-                    @ApiResponse(
-                            responseCode = "NOT_FOUND",
-                            description = "User not found"
-                    )
-            }
-    )
-    ResponseEntity<UserDto> findUserById(@PathVariable Long id);
 
     @PatchMapping("/change-password/{id}")
     @Operation(
