@@ -74,7 +74,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             RefreshToken refreshToken = tokenProvider.generateRefreshToken();
             authService.createRefreshSession(user, refreshToken);
 
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.CREATED).body(
                     AuthResponseDto.builder()
                             .token(token)
                             .refreshToken(refreshToken)

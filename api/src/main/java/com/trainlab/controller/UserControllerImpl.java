@@ -19,6 +19,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
     private final UserService userService;
+
     @Override
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
