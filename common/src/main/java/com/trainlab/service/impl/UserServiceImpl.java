@@ -17,7 +17,6 @@ import com.trainlab.util.RandomValuesGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -76,7 +75,7 @@ public class UserServiceImpl implements UserService {
         );
 
         if (!isPasswordMatches)
-            throw new BadCredentialsException("Invalid login or password");
+            throw new ObjectNotFoundException("Invalid login or password");
 
         return userMapper.toDto(user);
     }

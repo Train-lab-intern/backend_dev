@@ -7,6 +7,7 @@ import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.dto.RoleDto;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
+import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.exception.ValidationException;
 import com.trainlab.model.security.RefreshToken;
@@ -78,6 +79,13 @@ public class AuthenticationControllerTest {
 
     private UserDto userDto;
 
+    private UserPrincipal userPrincipal;
+
+    private AccessToken accessToken;
+
+    private RefreshToken refreshToken;
+
+    private AuthResponseDto expected;
     @BeforeAll
     void init() {
         mockMvc = MockMvcBuilders.standaloneSetup(authenticationController).build();
@@ -97,6 +105,19 @@ public class AuthenticationControllerTest {
                                 .created(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
                                 .changed(Timestamp.valueOf(LocalDateTime.now().withNano(0))).build())
                 ).build();
+        userPrincipal = new UserPrincipal(userDto.getId(), userDto.getRoles());
+        accessToken = AccessToken.builder()
+                .value("c15ddb54-7bd9-40ba-9713-a0ebc2af2c6d")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plus(jwtProps.getTimeToLive())).build();
+        refreshToken = RefreshToken.builder()
+                .value(UUID.fromString("7aebf344-73df-4ce1-ad91-a1e2c6a4bcdf"))
+                .issuedAt(Instant.now())
+                .expiredAt(Instant.now().plus(refreshProps.getTimeToLive())).build();
+        expected = AuthResponseDto.builder()
+                .token(accessToken)
+                .refreshToken(refreshToken)
+                .userDto(userDto).build();
     }
 
     @Nested
@@ -111,9 +132,10 @@ public class AuthenticationControllerTest {
                     .userEmail("vladthedevj6@gmail.com")
                     .userPassword("123456Wq").build();
         }
-/*        @ParameterizedTest(name = ARGUMENTS_PLACEHOLDER)
+        @ParameterizedTest(name = ARGUMENTS_PLACEHOLDER)
         @MethodSource("loginInvalidParams")
-        void loginUserShouldBeFailIfInvalidParam(AuthRequestDto authRequestDto, String errorMessage) throws Exception {
+        void loginUserShouldBeFailIfInvalidParam(AuthRequestDto authRequestDto) throws Exception {
+            String errorMessage = "Invalid login or password";
             MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/auth/login")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(authRequestDto)))
@@ -132,53 +154,22 @@ public class AuthenticationControllerTest {
         // Parameters of UserCreateDto in registration method can be changed over time (DRY)
         static Stream<Arguments> loginInvalidParams() {
             return Stream.of(
-                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword(" ").build(), "The password field is required"),
-                    Arguments.of(AuthRequestDto.builder().userEmail(" ").userPassword("123456qW").build(), "The email field is required"),
-                    Arguments.of(AuthRequestDto.builder().userEmail(" ").userPassword(" ").build(), "Email and password fields are required"),
-                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("1234qW").build(), "Invalid password." +
-                            " The password must be typed in Latin letters, consist of at least 8 characters and contain at least one lowercase and one uppercase character"),
-                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("987654321").build(), "Invalid password." +
-                            " The password must be typed in Latin letters, consist of at least 8 characters and contain at least one lowercase and one uppercase character"),
-                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("ABCDEFGH").build(), "Invalid password." +
-                            " The password must be typed in Latin letters, consist of at least 8 characters and contain at least one lowercase and one uppercase character"),
-                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("ывн244р4").build(), "Invalid password." +
-                            " The password must be typed in Latin letters, consist of at least 8 characters and contain at least one lowercase and one uppercase character"),
-                    Arguments.arguments(AuthRequestDto.builder().userEmail("myemail@com").userPassword("123456qW").build(), "Invalid email address"),
-                    Arguments.arguments(AuthRequestDto.builder().userEmail("myemail%$^@domain").userPassword("123456qW").build(), "Invalid email address"),
-                    Arguments.arguments(AuthRequestDto.builder().userEmail("myemail@192.168.1.1").userPassword("123456qW").build(), "Invalid email address"),
-                    Arguments.arguments(AuthRequestDto.builder().userEmail(".myemail@1gmail.com").userPassword("123456qW").build(), "Invalid email address"),
-                    Arguments.of(AuthRequestDto.builder()
-                            .userEmail("test.trainlab+Sun_of_the_sleepless_Melancholy_star_Whose_tearful_beam_glows_tremulously_far" +
-                                    "_That_showst_the_darkness_thou_canst_not_dispel_How_like_art_thou_to_joy_rememberd_well_" +
-                                    "What_is_this_life_if_ful_of_care_We_have_no_time_to_stand_and_stare1@gmail.com") // 257
-                            .userPassword("123456qW").build(), "Invalid email address"),
-                    Arguments.of(AuthRequestDto.builder()
-                                    .userEmail("vladthedevj6@gmail.com")
-                                    .userPassword("Wdj0lLfsiBWp0vQ0CocM2BnD7ZkqTeiELahreGsJgCBXR88diCoa7tAOf0nFUSufkmxRTFSQsCevZnhuQnse" +
-                                            "9MCZ4d6K2fD3iDe0eRRv3Dn1r2RN21Q76k9AeHksffPn7fCjMgbSo3ApbxgH3VxWK7BMKYgFpUQ60efQwz96vI" +
-                                            "VoQGww0OBpJzloOKy44nb977HDrL2Bi439ScEWa7Nkohq5PI18si5OX9ISzV8S87qIBbfpZGRpapsW292ic7d5d")
-                                    .build(), //257
-                            "Invalid password. The password must be typed in Latin letters, consist of at least 8 characters and contain at least one lowercase and one uppercase character"),
-                    Arguments.of(AuthRequestDto.builder().userEmail("vlad@gmailcom").userPassword("1234a").build(),
-                            "Invalid email and password. The password must be typed in Latin letters, consist of at least 8 characters and contain at least one lowercase and one uppercase character")
+                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword(" ").build()),
+                    Arguments.of(AuthRequestDto.builder().userEmail(" ").userPassword("123456qW").build()),
+                    Arguments.of(AuthRequestDto.builder().userEmail(" ").userPassword(" ").build()),
+                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("1234qW").build()),
+                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("987654321").build()),
+                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("ABCDEFGH").build()),
+                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("ывн244р4").build()),
+                    Arguments.arguments(AuthRequestDto.builder().userEmail("myemail@com").userPassword("123456qW").build()),
+                    Arguments.arguments(AuthRequestDto.builder().userEmail("myemail%$^@domain").userPassword("123456qW").build()),
+                    Arguments.arguments(AuthRequestDto.builder().userEmail("myemail@192.168.1.1").userPassword("123456qW").build()),
+                    Arguments.arguments(AuthRequestDto.builder().userEmail(".myemail@1gmail.com").userPassword("123456qW").build())
             );
-        }*/
+        }
 
         @Test
         void loginUserShouldBeSuccessIfEmailAndPasswordCorrect() throws Exception {
-            UserPrincipal userPrincipal = new UserPrincipal(userDto.getId(), userDto.getRoles());
-            AccessToken accessToken = AccessToken.builder()
-                    .value("c15ddb54-7bd9-40ba-9713-a0ebc2af2c6d")
-                    .issuedAt(Instant.now())
-                    .expiresAt(Instant.now().plus(jwtProps.getTimeToLive())).build();
-            RefreshToken refreshToken = RefreshToken.builder()
-                    .value(UUID.fromString("7aebf344-73df-4ce1-ad91-a1e2c6a4bcdf"))
-                    .issuedAt(Instant.now())
-                    .expiredAt(Instant.now().plus(refreshProps.getTimeToLive())).build();
-            AuthResponseDto expected = AuthResponseDto.builder()
-                    .token(accessToken)
-                    .refreshToken(refreshToken)
-                    .userDto(userDto).build();
             when(userService.findUserByAuthenticationInfo(authRequestDto)).thenReturn(userDto);
             when(tokenProvider.generate(userPrincipal)).thenReturn(accessToken);
             when(tokenProvider.generateRefreshToken()).thenReturn(refreshToken);
@@ -195,6 +186,29 @@ public class AuthenticationControllerTest {
 
             verify(userService, only()).findUserByAuthenticationInfo(authRequestDto);
             verify(authService, only()).createRefreshSession(userDto, refreshToken);
+        }
+
+        @Test
+        void loginUserShouldBeFailIfUserNotExists() throws Exception {
+            when(userService.findUserByAuthenticationInfo(authRequestDto)).thenThrow(
+                    new ObjectNotFoundException("Invalid login or password")
+            );
+
+            MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/auth/login")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(authRequestDto)))
+                    .andExpect(status().isNotFound())
+                    .andReturn();
+
+            assertThat(mvcResult.getResolvedException()).isInstanceOf(ObjectNotFoundException.class);
+            assertThat(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()).isEqualTo(
+                    "Invalid login or password"
+            );
+
+            verify(userService, only()).findUserByAuthenticationInfo(authRequestDto);
+            verify(tokenProvider, never()).generate(any());
+            verify(tokenProvider, never()).generateRefreshToken();
+            verify(authService, never()).createRefreshSession(any(), any());
         }
     }
 
@@ -268,20 +282,6 @@ public class AuthenticationControllerTest {
 
         @Test
         void createUserIfEmailAndPasswordCorrect() throws Exception {
-            UserPrincipal userPrincipal = new UserPrincipal(userDto.getId(), userDto.getRoles());
-            AccessToken accessToken = AccessToken.builder()
-                    .value("c15ddb54-7bd9-40ba-9713-a0ebc2af2c6d")
-                    .issuedAt(Instant.now())
-                    .expiresAt(Instant.now().plus(jwtProps.getTimeToLive())).build();
-            RefreshToken refreshToken = RefreshToken.builder()
-                    .value(UUID.fromString("7aebf344-73df-4ce1-ad91-a1e2c6a4bcdf"))
-                    .issuedAt(Instant.now())
-                    .expiredAt(Instant.now().plus(refreshProps.getTimeToLive())).build();
-            AuthResponseDto expected = AuthResponseDto.builder()
-                    .token(accessToken)
-                    .refreshToken(refreshToken)
-                    .userDto(userDto).build();
-
             when(userService.create(user)).thenReturn(userDto);
             when(tokenProvider.generate(userPrincipal)).thenReturn(accessToken);
             when(tokenProvider.generateRefreshToken()).thenReturn(refreshToken);
