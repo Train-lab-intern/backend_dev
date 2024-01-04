@@ -197,7 +197,7 @@ public class AuthenticationControllerTest {
             MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/auth/login")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(authRequestDto)))
-                    .andExpect(status().isNotFound())
+                    .andExpect(status().isBadRequest())
                     .andReturn();
 
             assertThat(mvcResult.getResolvedException()).isInstanceOf(ObjectNotFoundException.class);
@@ -289,7 +289,7 @@ public class AuthenticationControllerTest {
             MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/auth/register")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(user)))
-                    .andExpect(status().isOk())
+                    .andExpect(status().isCreated())
                     .andReturn();
 
             assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expected));

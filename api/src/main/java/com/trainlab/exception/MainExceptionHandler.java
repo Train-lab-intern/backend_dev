@@ -25,7 +25,7 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
         details.add(Arrays.toString(ex.getStackTrace()));
         ApiError err = new ApiError(
                 LocalDateTime.now(),
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 details);
         return ResponseEntityBuilder.build(err);

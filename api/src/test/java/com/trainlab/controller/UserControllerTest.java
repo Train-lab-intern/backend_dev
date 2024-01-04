@@ -100,7 +100,7 @@ public class UserControllerTest {
         when(userService.findAuthorizedUser(userId)).thenThrow(new ObjectNotFoundException("User could not be found"));
 
         MvcResult mvcResult = mockMvc.perform(request(GET, "/api/v1/users/2"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isBadRequest())
                 .andReturn();
 
         assertThat(mvcResult.getResolvedException()).isInstanceOf(ObjectNotFoundException.class);
