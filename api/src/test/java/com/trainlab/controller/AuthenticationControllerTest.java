@@ -132,8 +132,9 @@ public class AuthenticationControllerTest {
                     .userEmail("vladthedevj6@gmail.com")
                     .userPassword("123456Wq").build();
         }
+
         @ParameterizedTest(name = ARGUMENTS_PLACEHOLDER)
-        @MethodSource("loginInvalidParams")
+        @MethodSource("loginUserInvalidParams")
         void loginUserShouldBeFailIfInvalidParam(AuthRequestDto authRequestDto) throws Exception {
             String errorMessage = "Invalid login or password";
             MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/auth/login")
@@ -152,7 +153,7 @@ public class AuthenticationControllerTest {
         }
 
         // Parameters of UserCreateDto in registration method can be changed over time (DRY)
-        static Stream<Arguments> loginInvalidParams() {
+        static Stream<Arguments> loginUserInvalidParams() {
             return Stream.of(
                     Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword(" ").build()),
                     Arguments.of(AuthRequestDto.builder().userEmail(" ").userPassword("123456qW").build()),
@@ -190,8 +191,9 @@ public class AuthenticationControllerTest {
 
         @Test
         void loginUserShouldBeFailIfUserNotExists() throws Exception {
+            String errorMessage = "Invalid login or password";
             when(userService.findUserByAuthenticationInfo(authRequestDto)).thenThrow(
-                    new ObjectNotFoundException("Invalid login or password")
+                    new ObjectNotFoundException(errorMessage)
             );
 
             MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/auth/login")
@@ -201,9 +203,7 @@ public class AuthenticationControllerTest {
                     .andReturn();
 
             assertThat(mvcResult.getResolvedException()).isInstanceOf(ObjectNotFoundException.class);
-            assertThat(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()).isEqualTo(
-                    "Invalid login or password"
-            );
+            assertThat(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()).isEqualTo(errorMessage);
 
             verify(userService, only()).findUserByAuthenticationInfo(authRequestDto);
             verify(tokenProvider, never()).generate(any());
@@ -300,7 +300,8 @@ public class AuthenticationControllerTest {
 
         @Test
         void userCreateShouldBeFailIfUserServiceThrowException() throws Exception {
-            when(userService.create(user)).thenThrow(new UsernameGenerationException("Username generation failed. User's id more then expected"));
+            String errorMessage = "Username generation failed. User's id more then expected";
+            when(userService.create(user)).thenThrow(new UsernameGenerationException(errorMessage));
 
             MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/auth/register")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -309,9 +310,7 @@ public class AuthenticationControllerTest {
                     .andReturn();
 
             assertThat(mvcResult.getResolvedException()).isInstanceOf(UsernameGenerationException.class);
-            assertThat(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()).isEqualTo(
-                    "Username generation failed. User's id more then expected"
-            );
+            assertThat(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()).isEqualTo(errorMessage);
 
             verify(userService, only()).create(user);
             verify(tokenProvider, never()).generate(any());
