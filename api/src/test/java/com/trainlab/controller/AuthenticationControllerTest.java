@@ -18,18 +18,16 @@ import com.trainlab.security.principal.UserPrincipal;
 import com.trainlab.service.AuthService;
 import com.trainlab.service.UserService;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -50,19 +48,20 @@ import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(value = SpringExtension.class)
-@WebMvcTest(AuthenticationController.class)
 @TestInstance(Lifecycle.PER_CLASS)
+@WebMvcTest(AuthenticationController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class AuthenticationControllerTest {
-    @Autowired
-    private AuthenticationController authenticationController;
     @MockBean
     private UserService userService;
+
     @MockBean
     private AuthService authService;
+
     @MockBean
     private TokenProvider tokenProvider;
 
+    @Autowired
     private MockMvc mockMvc;
 
     private ObjectMapper objectMapper;
@@ -78,7 +77,6 @@ public class AuthenticationControllerTest {
     private AuthResponseDto expected;
     @BeforeAll
     void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(authenticationController).build();
         objectMapper = new ObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .registerModule(new JavaTimeModule());
