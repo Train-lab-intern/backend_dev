@@ -10,7 +10,7 @@ import com.trainlab.service.UserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,20 +30,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(value = SpringExtension.class)
-@SpringBootTest
 @TestInstance(value = Lifecycle.PER_CLASS)
+@WebMvcTest(UserController.class)
 public class UserControllerTest {
-
     @Autowired
     private UserController userController;
-
     @MockBean
     private UserService userService;
-
     private MockMvc mockMvc;
-
     private ObjectMapper objectMapper;
-
     private UserDto userDto;
 
     @BeforeAll

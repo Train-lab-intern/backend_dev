@@ -14,8 +14,6 @@ import com.trainlab.model.security.RefreshToken;
 import com.trainlab.security.TokenProvider;
 import com.trainlab.security.dto.AuthResponseDto;
 import com.trainlab.security.model.AccessToken;
-import com.trainlab.security.model.JwtTokenProperties;
-import com.trainlab.security.model.RefreshTokenProperties;
 import com.trainlab.security.principal.UserPrincipal;
 import com.trainlab.service.AuthService;
 import com.trainlab.service.UserService;
@@ -25,7 +23,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -35,6 +33,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,6 +42,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.TestInstance.*;
 import static org.junit.jupiter.params.ParameterizedTest.ARGUMENTS_PLACEHOLDER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -51,27 +51,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(value = SpringExtension.class)
-@SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@WebMvcTest(AuthenticationController.class)
+@TestInstance(Lifecycle.PER_CLASS)
 public class AuthenticationControllerTest {
-
     @Autowired
     private AuthenticationController authenticationController;
-
     @MockBean
     private UserService userService;
-
     @MockBean
     private AuthService authService;
-
     @MockBean
     private TokenProvider tokenProvider;
-
-    @Autowired
-    private JwtTokenProperties jwtProps;
-
-    @Autowired
-    private RefreshTokenProperties refreshProps;
 
     private MockMvc mockMvc;
 
@@ -109,11 +99,11 @@ public class AuthenticationControllerTest {
         accessToken = AccessToken.builder()
                 .value("c15ddb54-7bd9-40ba-9713-a0ebc2af2c6d")
                 .issuedAt(Instant.now())
-                .expiresAt(Instant.now().plus(jwtProps.getTimeToLive())).build();
+                .expiresAt(Instant.now().plus(Duration.ofMinutes(30L))).build();
         refreshToken = RefreshToken.builder()
                 .value(UUID.fromString("7aebf344-73df-4ce1-ad91-a1e2c6a4bcdf"))
                 .issuedAt(Instant.now())
-                .expiredAt(Instant.now().plus(refreshProps.getTimeToLive())).build();
+                .expiredAt(Instant.now().plus(Duration.ofDays(90L))).build();
         expected = AuthResponseDto.builder()
                 .token(accessToken)
                 .refreshToken(refreshToken)
@@ -123,7 +113,7 @@ public class AuthenticationControllerTest {
     @Nested
     @DisplayName(value = "User test login functionality")
     @Tag(value = "login")
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @TestInstance(Lifecycle.PER_CLASS)
     class LoginTest {
         private AuthRequestDto authRequestDto;
         @BeforeAll
@@ -214,7 +204,7 @@ public class AuthenticationControllerTest {
     @Nested
     @DisplayName("User test registration functionality")
     @Tag(value = "registration")
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @TestInstance(Lifecycle.PER_CLASS)
     class RegistrationTest {
 
         private UserCreateDto user;
