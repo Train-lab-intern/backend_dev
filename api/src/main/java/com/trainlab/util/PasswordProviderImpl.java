@@ -1,5 +1,6 @@
 package com.trainlab.util;
 
+import com.trainlab.util.password.PasswordProvider;
 import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

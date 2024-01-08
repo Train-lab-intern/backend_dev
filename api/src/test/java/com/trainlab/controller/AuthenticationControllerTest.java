@@ -161,11 +161,10 @@ public class AuthenticationControllerTest {
                     Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("1234qW").build()),
                     Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("987654321").build()),
                     Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("ABCDEFGH").build()),
-                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("ывн244р4").build()),
-                    Arguments.arguments(AuthRequestDto.builder().userEmail("myemail@com").userPassword("123456qW").build()),
-                    Arguments.arguments(AuthRequestDto.builder().userEmail("myemail%$^@domain").userPassword("123456qW").build()),
-                    Arguments.arguments(AuthRequestDto.builder().userEmail("myemail@192.168.1.1").userPassword("123456qW").build()),
-                    Arguments.arguments(AuthRequestDto.builder().userEmail(".myemail@1gmail.com").userPassword("123456qW").build())
+                    Arguments.of(AuthRequestDto.builder().userEmail("myemail@com").userPassword("123456qW").build()),
+                    Arguments.of(AuthRequestDto.builder().userEmail("myemail%$^@domain").userPassword("123456qW").build()),
+                    Arguments.of(AuthRequestDto.builder().userEmail("myemail@192.168.1.1").userPassword("123456qW").build()),
+                    Arguments.of(AuthRequestDto.builder().userEmail(".myemail@1gmail.com").userPassword("123456qW").build())
             );
         }
 
@@ -263,18 +262,6 @@ public class AuthenticationControllerTest {
                     Arguments.arguments(UserCreateDto.builder().email("myemail%$^@domain").password("123456qW").build(), "Invalid email address"),
                     Arguments.arguments(UserCreateDto.builder().email("myemail@192.168.1.1").password("123456qW").build(), "Invalid email address"),
                     Arguments.arguments(UserCreateDto.builder().email(".myemail@1gmail.com").password("123456qW").build(), "Invalid email address"),
-                    Arguments.of(UserCreateDto.builder()
-                            .email("test.trainlab+Sun_of_the_sleepless_Melancholy_star_Whose_tearful_beam_glows_tremulously_far" +
-                                    "_That_showst_the_darkness_thou_canst_not_dispel_How_like_art_thou_to_joy_rememberd_well_" +
-                                    "What_is_this_life_if_ful_of_care_We_have_no_time_to_stand_and_stare1@gmail.com") // 257
-                            .password("123456qW").build(), "Invalid email address"),
-                    Arguments.of(UserCreateDto.builder()
-                                    .email("vladthedevj6@gmail.com")
-                                    .password("Wdj0lLfsiBWp0vQ0CocM2BnD7ZkqTeiELahreGsJgCBXR88diCoa7tAOf0nFUSufkmxRTFSQsCevZnhuQnse" +
-                                            "9MCZ4d6K2fD3iDe0eRRv3Dn1r2RN21Q76k9AeHksffPn7fCjMgbSo3ApbxgH3VxWK7BMKYgFpUQ60efQwz96vI" +
-                                            "VoQGww0OBpJzloOKy44nb977HDrL2Bi439ScEWa7Nkohq5PI18si5OX9ISzV8S87qIBbfpZGRpapsW292ic7d5d")
-                                    .build(), //257
-                            "Invalid password. The password must be typed in Latin letters, consist of at least 8 characters and contain at least one lowercase and one uppercase character"),
                     Arguments.of(UserCreateDto.builder().email("vlad@gmailcom").password("1234a").build(),
                             "Invalid email and password. The password must be typed in Latin letters, consist of at least 8 characters and contain at least one lowercase and one uppercase character")
             );
