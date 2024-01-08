@@ -1,4 +1,4 @@
-package com.trainlab.util;
+package com.trainlab.util.password;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PasswordEncode {
+public class CustomPasswordEncoder {
 
     private final PasswordEncoder passwordEncoder;
     private final PasswordProvider passwordProvider;

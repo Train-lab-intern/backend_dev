@@ -9,7 +9,7 @@ import com.trainlab.model.User;
 import com.trainlab.repository.RoleRepository;
 import com.trainlab.repository.UserRepository;
 import com.trainlab.service.EmailService;
-import com.trainlab.util.PasswordEncode;
+import com.trainlab.util.password.CustomPasswordEncoder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,7 +37,7 @@ class UserServiceImplTest {
     UserMapper userMapper;
 
     @Mock
-    private PasswordEncode passwordEncode;
+    private CustomPasswordEncoder passwordEncode;
 
     @Mock
     RoleRepository roleRepository;
