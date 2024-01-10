@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class TokenExpiredException extends RuntimeException {
-    public TokenExpiredException(String message) {
+public class RefreshTokenNotFoundException extends RuntimeException {
+    public RefreshTokenNotFoundException(String message) {
         super(message);
     }
 }

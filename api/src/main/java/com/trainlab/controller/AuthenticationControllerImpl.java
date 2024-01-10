@@ -91,8 +91,6 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);
         }
-
-        try {
             UserDto user = authService.validateAndRemoveRefreshToken(authRefreshToken);
             RefreshToken refreshToken = tokenProvider.generateRefreshToken();
             authService.createRefreshSession(user, refreshToken);
@@ -104,11 +102,6 @@ public class AuthenticationControllerImpl implements AuthenticationController {
                             .userDto(user)
                             .build()
             );
-        } catch(Exception exception) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    AuthResponseDto.builder().build()
-            );
-        }
     }
 
     @PostMapping("/logout")

@@ -1,13 +1,10 @@
 package com.trainlab.exception;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
@@ -44,35 +41,36 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntityBuilder.build(error);
     }
 
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
+    public ResponseEntity<Object> handleTokenNotFoundException(
+            RefreshTokenNotFoundException ex
+    ) {
         List<String> details = new ArrayList<>();
-        details.add(ex.getMessage());
-        ApiError err = new ApiError(
+        details.add(Arrays.toString(ex.getStackTrace()));
+
+        ApiError apiError = new ApiError(
                 LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.UNAUTHORIZED,
                 ex.getMessage(),
                 details);
-        return ResponseEntityBuilder.build(err);
+
+        return ResponseEntityBuilder.build(apiError);
     }
 
-    protected ResponseEntity<Object> handleNoHandlerFoundException(
-            NoHandlerFoundException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<Object> handleTokenNotFoundException(
+            TokenExpiredException ex
+    ) {
         List<String> details = new ArrayList<>();
-        details.add(String.format("Could not find the %s method for URL %s", ex.getHttpMethod(), ex.getRequestURL()));
-        ApiError err = new ApiError(
+        details.add(Arrays.toString(ex.getStackTrace()));
+
+        ApiError apiError = new ApiError(
                 LocalDateTime.now(),
-                HttpStatus.NOT_FOUND,
+                HttpStatus.UNAUTHORIZED,
                 ex.getMessage(),
                 details);
-        return ResponseEntityBuilder.build(err);
 
+        return ResponseEntityBuilder.build(apiError);
     }
 
     @ExceptionHandler({Exception.class})

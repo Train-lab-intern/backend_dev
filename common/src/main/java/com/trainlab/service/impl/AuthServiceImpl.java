@@ -1,6 +1,7 @@
 package com.trainlab.service.impl;
 
 import com.trainlab.dto.UserDto;
+import com.trainlab.exception.RefreshTokenNotFoundException;
 import com.trainlab.exception.TokenExpiredException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.RefreshSessions;
@@ -40,10 +41,10 @@ public class AuthServiceImpl implements AuthService {
     public UserDto validateAndRemoveRefreshToken(AuthRefreshToken authRefreshToken) throws TokenExpiredException {
         RefreshSessions refreshSession = authRepository.findByRefreshToken(UUID.fromString(
                 authRefreshToken.getRefreshToken())
-        ).orElseThrow(() -> new IllegalArgumentException("Refresh token doesn't exist."));
+        ).orElseThrow(() -> new RefreshTokenNotFoundException("Refresh token doesn't exist"));
 
         if (refreshSession.getExpiredAt().isBefore(Instant.now()))
-            throw new TokenExpiredException("Token has expired.");
+            throw new TokenExpiredException("Token has expired");
 
         authRepository.delete(refreshSession);
         return userMapper.toDto(refreshSession.getUser());
@@ -53,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
     public void deleteRefreshSession(AuthRefreshToken authRefreshToken) {
         RefreshSessions refreshSession = authRepository.findByRefreshToken(UUID.fromString(
                 authRefreshToken.getRefreshToken())
-        ).orElseThrow(() -> new IllegalArgumentException("Refresh token doesn't exist."));
+        ).orElseThrow(() -> new RefreshTokenNotFoundException("Refresh token doesn't exist"));
 
         authRepository.delete(refreshSession);
     }

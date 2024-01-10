@@ -77,7 +77,11 @@ public interface AuthenticationController {
                 ),
                 @ApiResponse(
                         responseCode = "UNAUTHORIZED",
-                        description = "The RefreshToken doesn't exist or has expired"
+                        description = "The RefreshToken doesn't exist"
+                ),
+                @ApiResponse(
+                        responseCode = "UNAUTHORIZED",
+                        description = "Token has expired"
                 )}
     )
     ResponseEntity<AuthResponseDto> refreshToken(@Valid @RequestBody AuthRefreshToken authRefreshToken,
