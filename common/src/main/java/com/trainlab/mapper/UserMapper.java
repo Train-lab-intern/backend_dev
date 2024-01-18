@@ -26,8 +26,10 @@ public interface UserMapper {
     User partialUpdateToEntity(UserUpdateDto userUpdateDto, @MappingTarget User user);
 
     @Mapping(target = "authenticationInfo.email", source = "email")
+    @Mapping(target = "authenticationInfo.userPassword", source = "userPassword")
     User toEntity(UserDto userDto);
 
     @Mapping(target = "email", source = "authenticationInfo.email")
+    @Mapping(target = "userPassword", source = "authenticationInfo.userPassword")
     UserDto toDto(User user);
 }

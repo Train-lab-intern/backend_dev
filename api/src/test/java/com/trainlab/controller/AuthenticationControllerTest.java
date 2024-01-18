@@ -84,6 +84,7 @@ public class AuthenticationControllerTest {
                 .id(1L)
                 .username("user-1")
                 .email("vladthedevj6@gmail.com")
+                .userPassword("123456Qw")
                 .created(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
                 .changed(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
                 .roles(List.of(
