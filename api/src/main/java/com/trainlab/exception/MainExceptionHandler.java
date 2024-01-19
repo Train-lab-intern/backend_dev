@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
@@ -73,10 +72,20 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntityBuilder.build(apiError);
     }
 
+    @ExceptionHandler({LoginValidationException.class})
+    public ResponseEntity<Object> handleLoginValidationException(
+            LoginValidationException ex
+    ) {
+        ArrayList<String> details = new ArrayList<>();
+        details.add(Arrays.toString(ex.getStackTrace()));
+        ApiError apiError = new ApiError(LocalDateTime.now(), HttpStatus.UNAUTHORIZED, ex.getMessage(), details);
+
+        return ResponseEntityBuilder.build(apiError);
+    }
+
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(
-            Exception ex,
-            WebRequest request) {
+            Exception ex) {
         List<String> details = new ArrayList<>();
         details.add(Arrays.toString(ex.getStackTrace()));
         ApiError err = new ApiError(

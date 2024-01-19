@@ -29,7 +29,7 @@ public interface AuthenticationController {
                                        mediaType = "application/json")
                 ),
                 @ApiResponse(
-                        responseCode = "BAD_REQUEST",
+                        responseCode = "UNAUTHORIZED",
                         description = "Validation error"
                 )}
     )

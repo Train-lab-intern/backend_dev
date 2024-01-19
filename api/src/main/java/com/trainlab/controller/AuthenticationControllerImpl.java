@@ -2,6 +2,7 @@ package com.trainlab.controller;
 
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
+import com.trainlab.exception.LoginValidationException;
 import com.trainlab.exception.ValidationException;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.dto.AuthRequestDto;
@@ -40,7 +41,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody AuthRequestDto request, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors())
-            throw new ValidationException("Invalid login or password");
+            throw new LoginValidationException("Invalid login or password");
 
         UserDto user = userService.findUserByAuthenticationInfo(request);
         AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));

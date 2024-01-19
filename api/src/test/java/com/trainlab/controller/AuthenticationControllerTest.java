@@ -7,6 +7,7 @@ import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.dto.RoleDto;
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
+import com.trainlab.exception.LoginValidationException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.exception.ValidationException;
@@ -129,10 +130,10 @@ public class AuthenticationControllerTest {
             MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/auth/login")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(authRequestDto)))
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isUnauthorized())
                     .andReturn();
 
-            assertThat(mvcResult.getResolvedException()).isInstanceOf(ValidationException.class);
+            assertThat(mvcResult.getResolvedException()).isInstanceOf(LoginValidationException.class);
             assertThat(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()).isEqualTo(errorMessage);
 
             verify(userService, never()).create(any());
