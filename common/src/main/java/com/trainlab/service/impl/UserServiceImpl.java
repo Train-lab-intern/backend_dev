@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
 
     @Override
-    public UserDto create(UserCreateDto userCreateDto) {
+    public UserPageDto create(UserCreateDto userCreateDto) {
         User user = userMapper.toEntity(userCreateDto);
 
         checkIsEmailExist(user);
@@ -47,10 +47,10 @@ public class UserServiceImpl implements UserService {
         setDefaultRole(user);
         userRepository.saveAndFlush(user);
 
-        user.setUsername(usernameGenerator.generate(user.getId()));
+        user.setGeneratedName(usernameGenerator.generate(user.getId()));
         userRepository.save(user);
 
-        return userMapper.toDto(user);
+        return userMapper.toPageDto(user);
     }
 
     private void checkIsEmailExist(User user) {

@@ -15,7 +15,7 @@ import com.trainlab.model.security.RefreshToken;
 import com.trainlab.security.TokenProvider;
 import com.trainlab.security.dto.AuthResponseDto;
 import com.trainlab.security.model.AccessToken;
-import com.trainlab.security.principal.UserPrincipal;
+import com.trainlab.principal.UserPrincipal;
 import com.trainlab.service.AuthService;
 import com.trainlab.service.UserService;
 import org.junit.jupiter.api.*;

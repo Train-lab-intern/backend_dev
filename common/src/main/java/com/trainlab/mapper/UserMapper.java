@@ -2,6 +2,7 @@ package com.trainlab.mapper;
 
 import com.trainlab.dto.UserCreateDto;
 import com.trainlab.dto.UserDto;
+import com.trainlab.dto.UserPageDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.model.User;
 import org.mapstruct.BeanMapping;
@@ -32,4 +33,8 @@ public interface UserMapper {
     @Mapping(target = "email", source = "authenticationInfo.email")
     @Mapping(target = "userPassword", source = "authenticationInfo.userPassword")
     UserDto toDto(User user);
+
+    @Mapping(target = "userLevel", source = "userLevel.level")
+    @Mapping(target = "speciality", source = "speciality.specialityName")
+    UserPageDto toPageDto(User user);
 }

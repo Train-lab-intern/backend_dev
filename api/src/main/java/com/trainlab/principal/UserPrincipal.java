@@ -1,7 +1,6 @@
-package com.trainlab.security.principal;
+package com.trainlab.principal;
 
 import com.trainlab.dto.RoleDto;
-import com.trainlab.model.Role;
 import lombok.Value;
 
 import java.util.List;

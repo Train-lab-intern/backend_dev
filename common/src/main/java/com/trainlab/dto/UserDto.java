@@ -1,10 +1,6 @@
 package com.trainlab.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.trainlab.model.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 

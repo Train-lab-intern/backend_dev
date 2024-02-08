@@ -1,6 +1,7 @@
 package com.trainlab.security.dto;
 
 import com.trainlab.dto.UserDto;
+import com.trainlab.dto.UserPageDto;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.security.model.AccessToken;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,5 +17,5 @@ public class AuthResponseDto {
     RefreshToken refreshToken;
 
     @Schema
-    UserDto userDto;
+    UserPageDto userPageDto;
 }

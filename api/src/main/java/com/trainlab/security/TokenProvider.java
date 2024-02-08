@@ -2,7 +2,7 @@ package com.trainlab.security;
 
 import com.trainlab.security.model.AccessToken;
 import com.trainlab.model.security.RefreshToken;
-import com.trainlab.security.principal.AccountPrincipal;
+import com.trainlab.principal.AccountPrincipal;
 
 public interface TokenProvider {
 

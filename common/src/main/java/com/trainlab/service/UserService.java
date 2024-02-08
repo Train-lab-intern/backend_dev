@@ -1,16 +1,13 @@
 package com.trainlab.service;
 
-import com.trainlab.dto.AuthRequestDto;
-import com.trainlab.dto.UserCreateDto;
-import com.trainlab.dto.UserDto;
-import com.trainlab.dto.UserUpdateDto;
+import com.trainlab.dto.*;
 import com.trainlab.exception.UsernameGenerationException;
 
 
 import java.util.List;
 
 public interface UserService {
-    UserDto create(UserCreateDto userCreateDto);
+    UserPageDto create(UserCreateDto userCreateDto);
 
 /*    void activateUser(String userEmail);*/
 
