@@ -30,6 +30,10 @@ public interface UserMapper {
     @Mapping(target = "authenticationInfo.userPassword", source = "userPassword")
     User toEntity(UserDto userDto);
 
+    @Mapping(target = "userLevel.level", source = "userLevel")
+    @Mapping(target = "speciality.specialityName", source = "speciality")
+    User toEntitiy(UserPageDto userPageDto);
+
     @Mapping(target = "email", source = "authenticationInfo.email")
     @Mapping(target = "userPassword", source = "authenticationInfo.userPassword")
     UserDto toDto(User user);

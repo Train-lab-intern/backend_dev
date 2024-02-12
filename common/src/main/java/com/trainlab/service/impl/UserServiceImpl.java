@@ -45,11 +45,11 @@ public class UserServiceImpl implements UserService {
         checkIsEmailExist(user);
         setEncodedPassword(user);
         setDefaultRole(user);
-        userRepository.saveAndFlush(user);
 
+        user.setGeneratedName("user-");
+        userRepository.saveAndFlush(user);
         user.setGeneratedName(usernameGenerator.generate(user.getId()));
         userRepository.save(user);
-
         return userMapper.toPageDto(user);
     }
 
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findUserByAuthenticationInfo(AuthRequestDto authRequestDto) {
+    public UserPageDto findUserByAuthenticationInfo(AuthRequestDto authRequestDto) {
         User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(authRequestDto
                 .getUserEmail().toLowerCase())
                 .orElseThrow(() -> new ObjectNotFoundException("Invalid login or password"));
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
         if (!isPasswordMatches)
             throw new ObjectNotFoundException("Invalid login or password");
 
-        return userMapper.toDto(user);
+        return userMapper.toPageDto(user);
     }
 
     @Override

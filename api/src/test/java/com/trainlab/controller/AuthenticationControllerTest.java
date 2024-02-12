@@ -3,10 +3,7 @@ package com.trainlab.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.trainlab.dto.AuthRequestDto;
-import com.trainlab.dto.RoleDto;
-import com.trainlab.dto.UserCreateDto;
-import com.trainlab.dto.UserDto;
+import com.trainlab.dto.*;
 import com.trainlab.exception.LoginValidationException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.exception.UsernameGenerationException;
@@ -76,18 +73,20 @@ public class AuthenticationControllerTest {
     private RefreshToken refreshToken;
 
     private AuthResponseDto expected;
+
+    private UserPageDto userPageDto;
     @BeforeAll
     void init() {
         objectMapper = new ObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .registerModule(new JavaTimeModule());
-        userDto = UserDto.builder()
+        userPageDto = UserPageDto.builder()
                 .id(1L)
-                .username("user-1")
-                .email("vladthedevj6@gmail.com")
-                .userPassword("123456Qw")
-                .created(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
-                .changed(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
+                .generatedName("user-1")
+                .username("Ivan")
+                .surname("Ivanov")
+                .userLevel("Senior")
+                .speciality("PM")
                 .roles(List.of(
                         RoleDto.builder()
                                 .id(1)
@@ -107,7 +106,7 @@ public class AuthenticationControllerTest {
         expected = AuthResponseDto.builder()
                 .token(accessToken)
                 .refreshToken(refreshToken)
-                .userDto(userDto).build();
+                .userPageDto(userDto).build();
     }
 
     @Nested
@@ -160,7 +159,7 @@ public class AuthenticationControllerTest {
 
         @Test
         void loginUserShouldBeSuccessIfEmailAndPasswordCorrect() throws Exception {
-            when(userService.findUserByAuthenticationInfo(authRequestDto)).thenReturn(userDto);
+            when(userService.findUserByAuthenticationInfo(authRequestDto)).thenReturn(userPageDto);
             when(tokenProvider.generate(userPrincipal)).thenReturn(accessToken);
             when(tokenProvider.generateRefreshToken()).thenReturn(refreshToken);
 

@@ -5,6 +5,8 @@ import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserPageDto;
 import com.trainlab.exception.LoginValidationException;
 import com.trainlab.exception.ValidationException;
+import com.trainlab.mapper.UserMapper;
+import com.trainlab.model.User;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.security.dto.AuthResponseDto;
@@ -36,6 +38,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     private final TokenProvider tokenProvider;
     private final UserService userService;
     private final AuthService authService;
+    private  final UserMapper userMapper;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody AuthRequestDto request, BindingResult bindingResult) {
@@ -43,16 +46,17 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         if (bindingResult.hasErrors())
             throw new LoginValidationException("Invalid login or password");
 
-        UserDto user = userService.findUserByAuthenticationInfo(request);
-        AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
+        UserPageDto userDto = userService.findUserByAuthenticationInfo(request);
+
+        AccessToken token = tokenProvider.generate(new UserPrincipal(userDto.getId(), userDto.getRoles()));
         RefreshToken refreshToken = tokenProvider.generateRefreshToken();
-        authService.createRefreshSession(user, refreshToken);
+        authService.createRefreshSession(userDto, refreshToken);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 AuthResponseDto.builder()
                         .token(token)
                         .refreshToken(refreshToken)
-                        .userDto(user)
+                        .userPageDto(userDto)
                         .build()
         );
     }
@@ -91,7 +95,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             throw new ValidationException(errorMessage);
         }
-            UserDto user = authService.validateAndRemoveRefreshToken(authRefreshToken);
+            UserPageDto user = authService.validateAndRemoveRefreshToken(authRefreshToken);
             RefreshToken refreshToken = tokenProvider.generateRefreshToken();
             authService.createRefreshSession(user, refreshToken);
             AccessToken accessToken = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
@@ -99,7 +103,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
                     AuthResponseDto.builder()
                             .token(accessToken)
                             .refreshToken(refreshToken)
-                            .userDto(user)
+                            .userPageDto(user)
                             .build()
             );
     }
