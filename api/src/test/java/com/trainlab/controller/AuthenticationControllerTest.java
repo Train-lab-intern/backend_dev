@@ -92,7 +92,7 @@ public class AuthenticationControllerTest {
                 .generatedName("user-1")
                 .username("Ivan")
                 .surname("Ivanov")
-                .userLevel(eUserLevel.MIDDLE)
+                .userLevel(eUserLevel.MEDIUM)
                 .specialty(eSpecialty.QA)
                 .roles(List.of(
                         RoleDto.builder()
