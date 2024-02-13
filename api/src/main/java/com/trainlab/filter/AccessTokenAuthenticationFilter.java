@@ -1,7 +1,7 @@
 package com.trainlab.filter;
 
 import com.trainlab.security.TokenProvider;
-import com.trainlab.security.principal.AccountPrincipal;
+import com.trainlab.principal.AccountPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

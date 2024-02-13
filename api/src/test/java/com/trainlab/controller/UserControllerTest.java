@@ -6,6 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.trainlab.dto.RoleDto;
 import com.trainlab.dto.UserDto;
 import com.trainlab.exception.*;
+import com.trainlab.mapper.UserMapper;
+import com.trainlab.model.User;
 import com.trainlab.service.UserService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,10 @@ public class UserControllerTest {
 
     private UserDto userDto;
 
+    private UserMapper userMapper;
+
+    private User user;
+
     @BeforeAll
     void init() {
         objectMapper = new ObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
@@ -48,7 +54,7 @@ public class UserControllerTest {
                 .registerModule(new JavaTimeModule());
         userDto = UserDto.builder()
                 .id(1L)
-                .username("user-1")
+                .generatedName("user-1")
                 .email("vladthedevj6@gmail.com")
                 .created(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
                 .changed(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
@@ -59,6 +65,8 @@ public class UserControllerTest {
                                 .created(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
                                 .changed(Timestamp.valueOf(LocalDateTime.now().withNano(0))).build())
                 ).build();
+
+          user = userMapper.toEntity(userDto);
     }
 
     @Test
@@ -78,13 +86,13 @@ public class UserControllerTest {
     @Test
     void findUserByIdShouldBeSuccessIfUserExists() throws Exception {
         Long userId = 1L;
-        when(userService.findAuthorizedUser(userId)).thenReturn(userDto);
+        when(userService.findAuthorizedUser(userId)).thenReturn(user);
 
         MvcResult mvcResult = mockMvc.perform(request(GET, "/api/v1/users/1"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(userDto));
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(user));
         verify(userService, only()).findAuthorizedUser(userId);
     }
 

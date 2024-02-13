@@ -79,7 +79,7 @@ public class AuthServiceImplTest {
                 .expiredAt(Instant.now().plus(Duration.ofDays(90L))).build();
         userDto = UserDto.builder()
                 .id(1L)
-                .username("user-1")
+                .generatedName("user-1")
                 .email("vladthedevj6@gmail.com")
                 .created(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
                 .changed(Timestamp.valueOf(LocalDateTime.now().withNano(0)))
@@ -126,7 +126,7 @@ public class AuthServiceImplTest {
         when(userMapper.toEntity(userDto)).thenReturn(user);
         when(authRepository.saveAndFlush(any(RefreshSessions.class))).thenReturn(expectedRefreshSession);
 
-        authService.createRefreshSession(userDto, refreshToken);
+        authService.createRefreshSession(user, refreshToken);
 
         verify(userMapper, times(1)).toEntity(userDto);
         verify(authRepository, times(1)).saveAndFlush(any(RefreshSessions.class));

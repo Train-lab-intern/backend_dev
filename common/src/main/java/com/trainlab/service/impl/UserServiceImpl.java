@@ -39,18 +39,18 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
 
     @Override
-    public UserDto create(UserCreateDto userCreateDto) {
+    public User create(UserCreateDto userCreateDto) {
         User user = userMapper.toEntity(userCreateDto);
 
         checkIsEmailExist(user);
         setEncodedPassword(user);
         setDefaultRole(user);
+
+        user.setGeneratedName("user-");
         userRepository.saveAndFlush(user);
+        user.setGeneratedName(usernameGenerator.generate(user.getId()));
 
-        user.setUsername(usernameGenerator.generate(user.getId()));
-        userRepository.save(user);
-
-        return userMapper.toDto(user);
+        return userRepository.saveAndFlush(user);
     }
 
     private void checkIsEmailExist(User user) {
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findUserByAuthenticationInfo(AuthRequestDto authRequestDto) {
+    public User findUserByAuthenticationInfo(AuthRequestDto authRequestDto) {
         User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(authRequestDto
                 .getUserEmail().toLowerCase())
                 .orElseThrow(() -> new ObjectNotFoundException("Invalid login or password"));
@@ -91,15 +91,14 @@ public class UserServiceImpl implements UserService {
         if (!isPasswordMatches)
             throw new ObjectNotFoundException("Invalid login or password");
 
-        return userMapper.toDto(user);
+        return user;
     }
 
     @Override
-    public UserDto findAuthorizedUser(Long id) {
-        User user = userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
+    public User findAuthorizedUser(Long id) {
+        return userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ObjectNotFoundException("User could not be found")
         );
-        return userMapper.toDto(user);
     }
 
     @Override
@@ -125,16 +124,16 @@ public class UserServiceImpl implements UserService {
     }*/
 
     @Override
-    public UserDto update(UserUpdateDto userUpdateDto, Long id) {
-        UserDto userDto = findAuthorizedUser(id);
-        User user = userMapper.toEntity(userDto);
+    public UserPageDto update(UserPageUpdateDto userUpdateDto, Long id) {
+        System.out.println(userUpdateDto.getSpecialty());
+        User user = findAuthorizedUser(id);
+        user.setUsername(userUpdateDto.getUsername());
+        user.setSurname(userUpdateDto.getSurname());
+        user.setSpecialty(userUpdateDto.getSpecialty());
+        user.setUserLevel(userUpdateDto.getUserLevel());
 
-        User updated = userMapper.partialUpdateToEntity(userUpdateDto, user);
-        setEncodedPassword(updated);
-
-        checkIsEmailExist(updated);
-
-        return userMapper.toDto(userRepository.saveAndFlush(updated));
+        userRepository.saveAndFlush(user);
+        return userMapper.toUserPageDto(user);
     }
 
     @Override

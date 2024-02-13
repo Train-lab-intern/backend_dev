@@ -15,9 +15,6 @@ import org.springframework.validation.annotation.Validated;
 @Schema(description = "User update response")
 public class UserUpdateDto {
 
-    @Schema(example = "SvetaPiven", type = "string", description = "Username")
-    private String username;
-
     @Size(message = "User email must be between 8 and 256 characters", min = 8, max = 256)
     @Email(message = "Invalid email address")
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
