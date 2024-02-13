@@ -3,11 +3,15 @@ package com.trainlab.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.trainlab.Enum.eSpecialty;
+import com.trainlab.Enum.eUserLevel;
 import com.trainlab.dto.*;
 import com.trainlab.exception.LoginValidationException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.exception.UsernameGenerationException;
 import com.trainlab.exception.ValidationException;
+import com.trainlab.mapper.UserMapper;
+import com.trainlab.model.User;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.security.TokenProvider;
 import com.trainlab.security.dto.AuthResponseDto;
@@ -75,6 +79,9 @@ public class AuthenticationControllerTest {
     private AuthResponseDto expected;
 
     private UserPageDto userPageDto;
+
+    private UserMapper userMapper;
+    private User user;
     @BeforeAll
     void init() {
         objectMapper = new ObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
@@ -85,8 +92,8 @@ public class AuthenticationControllerTest {
                 .generatedName("user-1")
                 .username("Ivan")
                 .surname("Ivanov")
-                .userLevel("Senior")
-                .speciality("PM")
+                .userLevel(eUserLevel.MIDDLE)
+                .specialty(eSpecialty.QA)
                 .roles(List.of(
                         RoleDto.builder()
                                 .id(1)
@@ -106,7 +113,8 @@ public class AuthenticationControllerTest {
         expected = AuthResponseDto.builder()
                 .token(accessToken)
                 .refreshToken(refreshToken)
-                .userPageDto(userDto).build();
+                .userPageDto(userPageDto).build();
+        user = userMapper.toEntity(userDto);
     }
 
     @Nested
@@ -159,7 +167,7 @@ public class AuthenticationControllerTest {
 
         @Test
         void loginUserShouldBeSuccessIfEmailAndPasswordCorrect() throws Exception {
-            when(userService.findUserByAuthenticationInfo(authRequestDto)).thenReturn(userPageDto);
+            when(userService.findUserByAuthenticationInfo(authRequestDto)).thenReturn(user);
             when(tokenProvider.generate(userPrincipal)).thenReturn(accessToken);
             when(tokenProvider.generateRefreshToken()).thenReturn(refreshToken);
 
@@ -174,7 +182,7 @@ public class AuthenticationControllerTest {
             );
 
             verify(userService, only()).findUserByAuthenticationInfo(authRequestDto);
-            verify(authService, only()).createRefreshSession(userDto, refreshToken);
+            verify(authService, only()).createRefreshSession(user, refreshToken);
         }
 
         @Test
@@ -206,11 +214,11 @@ public class AuthenticationControllerTest {
     @TestInstance(Lifecycle.PER_CLASS)
     class RegistrationTest {
 
-        private UserCreateDto user;
+        private UserCreateDto userCreateDto;
 
         @BeforeAll
         void setUp() {
-            user = UserCreateDto.builder()
+            userCreateDto = UserCreateDto.builder()
                     .email("vladthedevj6@gmail.com")
                     .password("123456Wq").build();
         }
@@ -258,7 +266,7 @@ public class AuthenticationControllerTest {
 
         @Test
         void createUserIfEmailAndPasswordCorrect() throws Exception {
-            when(userService.create(user)).thenReturn(userDto);
+            when(userService.create(userCreateDto)).thenReturn(user);
             when(tokenProvider.generate(userPrincipal)).thenReturn(accessToken);
             when(tokenProvider.generateRefreshToken()).thenReturn(refreshToken);
 
@@ -270,14 +278,14 @@ public class AuthenticationControllerTest {
 
             assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expected));
 
-            verify(userService, only()).create(user);
-            verify(authService, only()).createRefreshSession(userDto, refreshToken);
+            verify(userService, only()).create(userCreateDto);
+            verify(authService, only()).createRefreshSession(user, refreshToken);
         }
 
         @Test
         void userCreateShouldBeFailIfUserServiceThrowException() throws Exception {
             String errorMessage = "Username generation failed. User's id more then expected";
-            when(userService.create(user)).thenThrow(new UsernameGenerationException(errorMessage));
+            when(userService.create(userCreateDto)).thenThrow(new UsernameGenerationException(errorMessage));
 
             MvcResult mvcResult = mockMvc.perform(request(POST, "/api/v1/auth/register")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -288,7 +296,7 @@ public class AuthenticationControllerTest {
             assertThat(mvcResult.getResolvedException()).isInstanceOf(UsernameGenerationException.class);
             assertThat(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()).isEqualTo(errorMessage);
 
-            verify(userService, only()).create(user);
+            verify(userService, only()).create(userCreateDto);
             verify(tokenProvider, never()).generate(any());
             verify(tokenProvider, never()).generateRefreshToken();
             verify(authService, never()).createRefreshSession(any(), any());

@@ -18,7 +18,7 @@ import org.springframework.validation.annotation.Validated;
 @Schema(description = "User auth request.")
 public class AuthRequestDto {
 
-    @NotBlank(groups = {Group1.class})
+   @NotBlank(groups = {Group1.class})
     @Email
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
             type = "string", description = "User Email")

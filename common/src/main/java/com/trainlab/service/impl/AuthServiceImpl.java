@@ -6,6 +6,7 @@ import com.trainlab.exception.RefreshTokenNotFoundException;
 import com.trainlab.exception.TokenExpiredException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.RefreshSessions;
+import com.trainlab.model.User;
 import com.trainlab.model.security.AuthRefreshToken;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.repository.AuthRepository;
@@ -27,9 +28,9 @@ public class AuthServiceImpl implements AuthService {
     private final AuthRepository authRepository;
 
     @Override
-    public void createRefreshSession(UserPageDto userDto, RefreshToken refreshToken) {
+    public void createRefreshSession(User user, RefreshToken refreshToken) {
         RefreshSessions refreshSessions = RefreshSessions.builder()
-                .user(userMapper.toEntitiy(userDto))
+                .user(user)
                 .refreshToken(refreshToken.getValue())
                 .issuedAt(refreshToken.getIssuedAt())
                 .expiredAt(refreshToken.getExpiredAt())
@@ -48,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
             throw new TokenExpiredException("Token has expired");
 
         authRepository.delete(refreshSession);
-        return userMapper.toPageDto(refreshSession.getUser());
+        return userMapper.toUserPageDto(refreshSession.getUser());
     }
 
     @Override

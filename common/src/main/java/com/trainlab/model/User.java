@@ -1,5 +1,8 @@
 package com.trainlab.model;
 
+import com.trainlab.Enum.eSpecialty;
+import com.trainlab.Enum.eUserLevel;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -62,11 +65,22 @@ public class User{
     )
     private List<Role> roles;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "speciality_id")
-    private Speciality speciality;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "level_id")
-    private UserLevel userLevel;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_level")
+    @Nullable
+    private eUserLevel userLevel;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "specialty")
+    @Nullable
+    private eSpecialty specialty;
 }
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "speciality_id")
+//    private Speciality speciality;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "level_id")
+//    private UserLevel userLevel;

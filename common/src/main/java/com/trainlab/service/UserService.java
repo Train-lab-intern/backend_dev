@@ -2,22 +2,23 @@ package com.trainlab.service;
 
 import com.trainlab.dto.*;
 import com.trainlab.exception.UsernameGenerationException;
+import com.trainlab.model.User;
 
 
 import java.util.List;
 
 public interface UserService {
-    UserPageDto create(UserCreateDto userCreateDto);
+    User create(UserCreateDto userCreateDto);
 
 /*    void activateUser(String userEmail);*/
 
-    UserDto findAuthorizedUser(Long id);
+    User findAuthorizedUser(Long id);
 
     List<UserDto> findAll();
 
-    UserDto update(UserUpdateDto userUpdateDto, Long id);
+    UserPageDto update(UserPageUpdateDto userUpdateDto, Long id);
 
-    UserPageDto findUserByAuthenticationInfo(AuthRequestDto authRequestDto);
+    User findUserByAuthenticationInfo(AuthRequestDto authRequestDto);
 
     void changePassword(Long id, UserUpdateDto userUpdateDto);
 }

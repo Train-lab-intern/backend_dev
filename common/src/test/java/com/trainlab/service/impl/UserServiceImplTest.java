@@ -87,7 +87,7 @@ class UserServiceImplTest {
         when(passwordEncode.encodePassword(userRequest.getPassword())).thenReturn("");
         when(roleRepository.findByRoleName("ROLE_USER")).thenReturn(Optional.of(role));
         doNothing().when(emailService).sendRegistrationConfirmationEmail(userRequest.getEmail());
-        User actual = userMapper.toEntity(userService.create(userRequest));
+        User actual = userService.create(userRequest);
         assertEquals(expected, actual);
     }
 

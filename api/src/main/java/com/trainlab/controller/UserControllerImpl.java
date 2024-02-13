@@ -1,8 +1,12 @@
 package com.trainlab.controller;
 
 import com.trainlab.dto.UserDto;
+import com.trainlab.dto.UserPageDto;
+import com.trainlab.dto.UserPageUpdateDto;
 import com.trainlab.dto.UserUpdateDto;
 import com.trainlab.exception.*;
+import com.trainlab.mapper.UserMapper;
+import com.trainlab.model.User;
 import com.trainlab.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
     private final UserService userService;
+    private  final UserMapper userMapper;
 
     @Override
     @GetMapping
@@ -29,31 +34,16 @@ public class UserControllerImpl implements UserController {
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> findUserById(@PathVariable Long id) {
-        UserDto userDto = userService.findAuthorizedUser(id);
-        return ResponseEntity.status(HttpStatus.OK).body(userDto);
+        User user = userService.findAuthorizedUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(userMapper.toDto(user));
     }
 
-/*    @Override
-    @GetMapping("/complete-registration")
-    public ResponseEntity<String> completeRegistration(@RequestParam("userEmail") String userEmail) {
-        try {
-            userService.activateUser(userEmail);
-            return ResponseEntity.status(HttpStatus.OK).body("Registration completed successfully!");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error occurred during registration completion: " + e.getMessage());
-        }
-    }*/
-
     @Override
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
-                                              @Valid @RequestBody UserUpdateDto userUpdateDto,
-                                              BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-            throw new ValidationException(errorMessage);
-        }
-        return ResponseEntity.ok(userService.update(userUpdateDto, id));
+    @GetMapping("/page/{id}")
+    public ResponseEntity<UserPageDto> userPageById(@PathVariable Long id){
+
+        User user = userService.findAuthorizedUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(userMapper.toUserPageDto(user));
     }
 
     @Override
@@ -62,5 +52,17 @@ public class UserControllerImpl implements UserController {
                                                  @Valid @RequestBody UserUpdateDto userUpdateDto) {
         userService.changePassword(id, userUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body("You changed password");
+    }
+
+    @Override
+    @PatchMapping("/page/{id}")
+    public ResponseEntity<UserPageDto> updateUserPage(@PathVariable("id") Long id,
+                                                      @Valid @RequestBody UserPageUpdateDto userUpdateDto,
+                                                      BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+            throw new ValidationException(errorMessage);
+        }
+        return ResponseEntity.ok(userService.update(userUpdateDto, id));
     }
 }

@@ -42,15 +42,14 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody AuthRequestDto request, BindingResult bindingResult) {
-
         if (bindingResult.hasErrors())
             throw new LoginValidationException("Invalid login or password");
 
-        UserPageDto userDto = userService.findUserByAuthenticationInfo(request);
-
+        User user =  userService.findUserByAuthenticationInfo(request);
+        UserPageDto userDto = userMapper.toUserPageDto(user);
         AccessToken token = tokenProvider.generate(new UserPrincipal(userDto.getId(), userDto.getRoles()));
         RefreshToken refreshToken = tokenProvider.generateRefreshToken();
-        authService.createRefreshSession(userDto, refreshToken);
+        authService.createRefreshSession(user, refreshToken);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 AuthResponseDto.builder()
@@ -73,16 +72,17 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             throw new ValidationException(errorMessage);
         }
 
-        UserPageDto user = userService.create(userCreateDto);
+        User user = userService.create(userCreateDto);
+        UserPageDto userPageDto = userMapper.toUserPageDto(user);
         RefreshToken refreshToken = tokenProvider.generateRefreshToken();
         authService.createRefreshSession(user, refreshToken);
-        AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
+        AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), userPageDto.getRoles()));
 
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     AuthResponseDto.builder()
                             .token(token)
                             .refreshToken(refreshToken)
-                            .userPageDto(user)
+                            .userPageDto(userMapper.toUserPageDto(user))
                             .build()
             );
     }
@@ -97,7 +97,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         }
             UserPageDto user = authService.validateAndRemoveRefreshToken(authRefreshToken);
             RefreshToken refreshToken = tokenProvider.generateRefreshToken();
-            authService.createRefreshSession(user, refreshToken);
+            authService.createRefreshSession(userMapper.toEntity(user), refreshToken);
             AccessToken accessToken = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
             return ResponseEntity.status(HttpStatus.OK).body(
                     AuthResponseDto.builder()

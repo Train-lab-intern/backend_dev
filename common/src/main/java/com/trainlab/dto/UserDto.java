@@ -15,7 +15,7 @@ import java.util.List;
 public class UserDto {
     private Long id;
 
-    private String username;
+    private String generatedName;
 
     private String email;
 

@@ -1,6 +1,8 @@
 package com.trainlab.controller;
 
 import com.trainlab.dto.UserDto;
+import com.trainlab.dto.UserPageDto;
+import com.trainlab.dto.UserPageUpdateDto;
 import com.trainlab.dto.UserUpdateDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -52,6 +54,25 @@ public interface UserController {
     )
     ResponseEntity<UserDto> findUserById(@PathVariable Long id);
 
+    @Operation(
+            summary = "Get user page by user id",
+            description = "Receive user page by id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "OK",
+                            description = "Successfully loaded user",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = UserPageDto.class)))
+                    ),
+                    @ApiResponse(
+                            responseCode = "NOT_FOUND",
+                            description = "User not found"
+                    )
+            }
+    )
+    ResponseEntity<UserPageDto> userPageById(@PathVariable Long id);
+
     /*    @Operation(
             summary = "Complete Registration",
             description = "Completes the user registration process",
@@ -77,7 +98,7 @@ public interface UserController {
                             description = "Successfully updated User",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = UserUpdateDto.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserPageUpdateDto.class)))
                     ),
                     @ApiResponse(
                             responseCode = "BAD_REQUEST",
@@ -85,9 +106,9 @@ public interface UserController {
                     )
             }
     )
-    ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
-                                       @Valid @RequestBody UserUpdateDto userUpdateDto,
-                                       BindingResult bindingResult);
+    ResponseEntity<UserPageDto> updateUserPage(@PathVariable("id") Long id,
+                                               @Valid @RequestBody UserPageUpdateDto userUpdateDto,
+                                               BindingResult bindingResult);
 
     @PatchMapping("/change-password/{id}")
     @Operation(

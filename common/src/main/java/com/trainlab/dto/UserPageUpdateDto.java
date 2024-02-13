@@ -7,19 +7,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import org.springframework.validation.annotation.Validated;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Validated
 @Builder
-@Schema(description = "UserPage response")
-public class UserPageDto {
-
-    private Long id;
-
-    private String generatedName;
+@Schema(description = "UserPage update response")
+public class UserPageUpdateDto {
 
     private String username;
 
@@ -28,6 +24,5 @@ public class UserPageDto {
     private eUserLevel userLevel;
 
     private eSpecialty specialty;
-
-    private List<RoleDto> roles;
 }
+
