@@ -125,17 +125,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserPageDto update(UserPageUpdateDto userUpdateDto, Long id) {
-        System.out.println(userUpdateDto.getSpecialty());
         User user = findAuthorizedUser(id);
-        user.setUsername(userUpdateDto.getUsername());
-        user.setSurname(userUpdateDto.getSurname());
-        user.setSpecialty(userUpdateDto.getSpecialty());
-        user.setUserLevel(userUpdateDto.getUserLevel());
+
+        if(userUpdateDto.getUsername() != null ){
+            user.setUsername(userUpdateDto.getUsername());
+        }
+        if(userUpdateDto.getSurname() != null){
+            user.setSurname(userUpdateDto.getSurname());
+        }
+        if(userUpdateDto.getSpecialty() != null){
+            user.setSpecialty(userUpdateDto.getSpecialty());
+        }
+        if(userUpdateDto.getUserLevel() != null){
+            user.setUserLevel(userUpdateDto.getUserLevel());
+        }
 
         userRepository.saveAndFlush(user);
         return userMapper.toUserPageDto(user);
     }
-
     @Override
     public void changePassword(Long id, UserUpdateDto userUpdateDto) {
         User user = userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
@@ -151,7 +158,6 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(user);
         emailService.sendNewPassword(toAddress, newPassword);
     }
-
     private boolean isAuthorized(User user, UserDetails userDetails) {
         String userEmail = user.getAuthenticationInfo().getEmail();
         String username = userDetails.getUsername();
