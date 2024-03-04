@@ -110,7 +110,7 @@ public interface UserController {
                                                @Valid @RequestBody UserPageUpdateDto userUpdateDto,
                                                BindingResult bindingResult);
 
-    @PatchMapping("/change-password/{id}")
+
     @Operation(
             summary = "Changing the user's password when user forgot it",
             description = "Changing user password by using user's Id",
