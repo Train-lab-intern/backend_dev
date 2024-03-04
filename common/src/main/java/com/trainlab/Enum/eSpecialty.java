@@ -4,11 +4,19 @@ import lombok.Getter;
 
 @Getter
 public enum eSpecialty {
-    BA,
-    FRONTEND,
-    BACKEND,
-    DESIGN,
-    AQA,
-    QA,
-    PM
+    QA_manual,
+    AQA_Python,
+    QA_AQA,
+    UI_UX_designer,
+    Business_analysis,
+    Java_developer,
+    JS_developer,
+    Project_manager,
+    Project,
+    manager_Product,
+    owner,
+    Manager_Business,
+    Analysis,
+    System,
+    Analyst_Business;
 }

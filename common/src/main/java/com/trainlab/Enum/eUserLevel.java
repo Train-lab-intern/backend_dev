@@ -4,10 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum eUserLevel {
-    RAW,
-    RARE,
-    MEDIUM_RARE,
-    MEDIUM,
-    MEDIUM_WELL,
-    WELL_DONE
+    Rare,
+    Medium_rare,
+    Medium_well,
+    Medium_done,
+    Well_done
 }
