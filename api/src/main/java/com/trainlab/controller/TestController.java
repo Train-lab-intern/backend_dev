@@ -22,7 +22,11 @@ public interface TestController {
 
     ResponseEntity<TestDTO> createTest(@Valid @RequestBody TestCreateDTO createTestDTO);
 
-    ResponseEntity<TestDTO> addQuestion (@PathVariable Long testId ,@Valid @RequestBody QuestionCreateDTO questionDTO);
+    ResponseEntity<QuestionDTO> addQuestion (@PathVariable Long testId ,@Valid @RequestBody QuestionCreateDTO questionDTO);
 
-    ResponseEntity<TestDTO> addAnswer (@PathVariable Long questionId, @Valid @RequestBody AnswerDTO answerDTO);
+    ResponseEntity<AnswerDTO> addAnswer (@PathVariable Long questionId, @Valid @RequestBody AnswerCreateDTO answerDTO);
+
+    ResponseEntity<QuestionDTO> updateQuestion (@PathVariable Long questionId, @RequestBody QuestionCreateDTO questionCreateDTO);
+
+    ResponseEntity<AnswerDTO> updateAnswer (@PathVariable Long answerId, @RequestBody AnswerCreateDTO answerCreateDTO);
 }

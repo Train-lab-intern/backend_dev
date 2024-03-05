@@ -61,6 +61,7 @@ public class WebSecurityConfiguration {
                             .requestMatchers("/api/v1/roles").permitAll()
                             .requestMatchers("/api/v1/users/register").permitAll()
                             .requestMatchers("/api/v1/users/change-password/**").permitAll()
+                            .requestMatchers("/api/v1/tests").permitAll()
                             .requestMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
                             .requestMatchers("/api/v1/admin/users/**").hasAnyRole("ADMIN")
                             .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
