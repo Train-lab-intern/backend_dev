@@ -37,11 +37,14 @@ public interface UserMapper {
 
     User toEntity(UserPageDto dto);
 
+
     UserPageDto toUserPageDto(User entity);
 
     @Mapping(target = "id", ignore = true) // Поле id сущности UserPageUpdateDto не используется при обновлении
     User toEntity(UserPageUpdateDto dto, eUserLevel userLevel, eSpecialty speciality);
 
+    @Mapping(target = "email", source = "authenticationInfo.email")
+    @Mapping(target = "userPassword", source = "authenticationInfo.userPassword")
     UserPageUpdateDto toPageUpdateDto(User entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

@@ -136,8 +136,13 @@ public class UserServiceImpl implements UserService {
         if(userUpdateDto.getSpecialty() != null){
             user.setSpecialty(userUpdateDto.getSpecialty());
         }
-        if(userUpdateDto.getUserLevel() != null){
-            user.setUserLevel(userUpdateDto.getUserLevel());
+        if(userUpdateDto.getEmail() != null){
+            user.getAuthenticationInfo().setEmail(userUpdateDto.getEmail());
+        }
+        if(userUpdateDto.getPassword() != null){
+            String newPassword = userUpdateDto.getPassword();
+            String encodedPassword = passwordEncoder.encodePassword(newPassword);
+            user.getAuthenticationInfo().setUserPassword(encodedPassword);
         }
 
         userRepository.saveAndFlush(user);
