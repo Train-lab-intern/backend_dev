@@ -61,6 +61,14 @@ public class UserServiceImpl implements UserService {
             throw new IllegalRequestException("User with this email is already exists");
     }
 
+    private  void  checkEmail(String email){
+        Optional<User> userByEmail = userRepository.findByAuthenticationInfoEmail(
+                email
+        );
+        if (userByEmail.isPresent())
+            throw new IllegalRequestException("User with this email is already exists");
+    }
+
     private void setEncodedPassword(User user) {
         String encodedPassword = passwordEncoder.encodePassword(user.getAuthenticationInfo().getUserPassword());
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
@@ -137,6 +145,7 @@ public class UserServiceImpl implements UserService {
             user.setSpecialty(userUpdateDto.getSpecialty());
         }
         if(userUpdateDto.getEmail() != null){
+            checkEmail(userUpdateDto.getEmail());
             user.getAuthenticationInfo().setEmail(userUpdateDto.getEmail());
         }
         if(userUpdateDto.getPassword() != null){
