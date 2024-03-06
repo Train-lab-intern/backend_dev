@@ -31,7 +31,7 @@ public class TestControllerImpl implements TestController {
     }
 
     @Override
-    @GetMapping("/{specialty}")
+    @GetMapping("/category/{specialty}")
     public ResponseEntity<List<TestDTO>> getAllTestsBySpeciality(@PathVariable eSpecialty specialty) {
         return ResponseEntity.status(HttpStatus.OK).body(testService.getAllBySpeciality(specialty));
     }
@@ -43,13 +43,13 @@ public class TestControllerImpl implements TestController {
     }
 
     @Override
-    @PostMapping("/test/{testId}")
+    @PostMapping("/question/{testId}")
     public ResponseEntity<QuestionDTO> addQuestion(@PathVariable Long testId ,@Valid @RequestBody  QuestionCreateDTO questionDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(testService.addQuestion(testId,questionDTO));
     }
 
     @Override
-    @PostMapping("/question/{questionId}")
+    @PostMapping("/answer/{questionId}")
     public ResponseEntity<AnswerDTO> addAnswer(@PathVariable Long questionId, @Valid @RequestBody AnswerCreateDTO answerDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(testService.addAnswer(questionId,answerDTO));
     }

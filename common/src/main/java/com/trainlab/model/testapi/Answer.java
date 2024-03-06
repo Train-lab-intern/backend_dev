@@ -23,6 +23,7 @@ public class Answer {
     private String answerTxt;
 
     @NotNull
+    @Builder.Default
     @Column(name = "is_correct")
     private boolean isCorrect = false;
 

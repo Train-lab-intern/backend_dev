@@ -67,6 +67,7 @@ public class TestServiceImpl implements TestService {
     public AnswerDTO addAnswer(Long questionId, AnswerCreateDTO answerDTO) {
         Question question = questionRepository.findById(questionId).orElseThrow();
         Answer answer = testMapper.toEntity(answerDTO);
+        System.out.println(answerDTO.isCorrect());
         answerRepository.saveAndFlush(answer);
         question.getAnswers().add(answer);
         questionRepository.saveAndFlush(question);
