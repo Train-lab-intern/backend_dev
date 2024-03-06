@@ -51,7 +51,7 @@ public class UserControllerImpl implements UserController {
     @PutMapping("/change-password/{id}")
     public ResponseEntity<String> changePassword(@PathVariable ("id") Long id,
                                                  @Valid  @RequestBody UserUpdateDto userUpdateDto) {
-        userService.changePassword(id,userUpdateDto);
+        userService.changePassword(userUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body("You changed password");
     }
 
