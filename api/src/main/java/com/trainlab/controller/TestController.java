@@ -24,9 +24,9 @@ public interface TestController {
 
     ResponseEntity<QuestionDTO> addQuestion (@PathVariable Long testId ,@Valid @RequestBody QuestionCreateDTO questionDTO);
 
-    ResponseEntity<AnswerDTO> addAnswer (@PathVariable Long questionId, @Valid @RequestBody AnswerCreateDTO answerDTO);
+    ResponseEntity<AnswerDTO> addAnswer (@PathVariable Long testId, int questionNum, @Valid @RequestBody AnswerCreateDTO answerDTO);
 
-    ResponseEntity<QuestionDTO> updateQuestion (@PathVariable Long questionId, @RequestBody QuestionCreateDTO questionCreateDTO);
+    ResponseEntity<QuestionDTO> updateQuestion (@PathVariable Long testId, int questionNum, @RequestBody QuestionCreateDTO questionCreateDTO);
 
-    ResponseEntity<AnswerDTO> updateAnswer (@PathVariable Long answerId, @RequestBody AnswerCreateDTO answerCreateDTO);
+    ResponseEntity<AnswerDTO> updateAnswer (@PathVariable Long testId, int questionNum, int answerNum, @RequestBody AnswerCreateDTO answerCreateDTO);
 }

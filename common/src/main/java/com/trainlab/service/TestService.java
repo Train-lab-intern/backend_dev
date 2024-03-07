@@ -15,9 +15,9 @@ public interface TestService {
     TestDTO create(TestCreateDTO createTestDTO);
 
     QuestionDTO addQuestion (Long testId, QuestionCreateDTO questionDTO);
-    AnswerDTO addAnswer (Long questionId, AnswerCreateDTO answerDTO);
+    AnswerDTO addAnswer (Long testId, int questionNum, AnswerCreateDTO answerDTO);
 
-    QuestionDTO updateQuestion(Long questionId, QuestionCreateDTO questionDTO);
-    AnswerDTO updateAnswer(Long answerId, AnswerCreateDTO answerDTO);
+    QuestionDTO updateQuestion(Long testId, int questionNum, QuestionCreateDTO questionDTO);
+    AnswerDTO updateAnswer(Long testId, int questionNum, int answerNum, AnswerCreateDTO answerDTO);
 
 }

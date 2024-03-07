@@ -8,7 +8,6 @@ import lombok.*;
 import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -22,9 +21,17 @@ public class Answer {
     @Column(name = "answer_txt")
     private String answerTxt;
 
-    @NotNull
-    @Builder.Default
-    @Column(name = "is_correct")
-    private boolean isCorrect = false;
+    @Column(name = "answer_num")
+    private int answerNum;
 
+    @Column(name = "is_correct")
+    private boolean isCorrect;
+
+    public void setCorrect(boolean correct) {
+        isCorrect = correct;
+    }
+    public boolean isCorrect() {
+        return isCorrect;
+    }
 }
+

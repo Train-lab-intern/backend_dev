@@ -18,7 +18,10 @@ public class Question {
     private Long id;
 
     @Column(name = "question_txt")
-    String questionTxt;
+    private String questionTxt;
+
+    @Column(name = "question_num")
+    private int questionNum;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

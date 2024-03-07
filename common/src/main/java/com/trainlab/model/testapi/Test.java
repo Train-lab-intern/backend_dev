@@ -35,6 +35,7 @@ public class Test {
     )
     private List<Question> questions;
 
+
     @Enumerated(EnumType.STRING)
     @Column(name = "specialty")
     private eSpecialty specialty;

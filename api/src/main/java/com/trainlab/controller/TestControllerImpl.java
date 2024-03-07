@@ -49,20 +49,20 @@ public class TestControllerImpl implements TestController {
     }
 
     @Override
-    @PostMapping("/answer/{questionId}")
-    public ResponseEntity<AnswerDTO> addAnswer(@PathVariable Long questionId, @Valid @RequestBody AnswerCreateDTO answerDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(testService.addAnswer(questionId,answerDTO));
+    @PostMapping("/{testId}/{questionNum}/")
+    public ResponseEntity<AnswerDTO> addAnswer(@PathVariable Long testId, @PathVariable int questionNum, @Valid @RequestBody AnswerCreateDTO answerDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(testService.addAnswer(testId,questionNum,answerDTO));
     }
 
     @Override
-    @PatchMapping("/question/{questionId}")
-    public ResponseEntity<QuestionDTO> updateQuestion(@PathVariable Long questionId, @RequestBody QuestionCreateDTO questionCreateDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(testService.updateQuestion(questionId,questionCreateDTO));
+    @PatchMapping("/{testId}/{questionNum}/")
+    public ResponseEntity<QuestionDTO> updateQuestion(@PathVariable Long testId,@PathVariable  int questionNum, @RequestBody QuestionCreateDTO questionCreateDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(testService.updateQuestion(testId,questionNum,questionCreateDTO));
     }
 
     @Override
-    @PatchMapping("/answer/{answerId}")
-    public ResponseEntity<AnswerDTO> updateAnswer(@PathVariable Long answerId, @RequestBody AnswerCreateDTO answerCreateDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(testService.updateAnswer(answerId,answerCreateDTO));
+    @PatchMapping("/{testId}/{questionNum}/{answerNum}/")
+    public ResponseEntity<AnswerDTO> updateAnswer(@PathVariable Long testId, @PathVariable int questionNum,@PathVariable  int answerNum,@RequestBody AnswerCreateDTO answerCreateDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(testService.updateAnswer(testId,questionNum,answerNum,answerCreateDTO));
     }
 }

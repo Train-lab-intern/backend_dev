@@ -57,6 +57,11 @@ public class TestServiceImpl implements TestService {
     public QuestionDTO addQuestion(Long testId, QuestionCreateDTO questionDTO) {
         Test test = testRepository.findById(testId).orElseThrow();
         Question question = testMapper.toEntity(questionDTO);
+        if(test.getQuestions().isEmpty()){
+            question.setQuestionNum(1);
+        }else{
+            question.setQuestionNum(test.getQuestions().size()+1);
+        }
         questionRepository.saveAndFlush(question);
         test.getQuestions().add(question);
         testRepository.saveAndFlush(test);
@@ -64,10 +69,15 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public AnswerDTO addAnswer(Long questionId, AnswerCreateDTO answerDTO) {
-        Question question = questionRepository.findById(questionId).orElseThrow();
+    public AnswerDTO addAnswer(Long testId, int questionNum, AnswerCreateDTO answerDTO) {
+        Question question = findQuestionByNum(testId,questionNum);
         Answer answer = testMapper.toEntity(answerDTO);
-        System.out.println(answerDTO.isCorrect());
+        answer.setCorrect(true);
+        if(question.getAnswers().isEmpty()){
+            answer.setAnswerNum(1);
+        }else{
+            answer.setAnswerNum(question.getAnswers().size()+1);
+        }
         answerRepository.saveAndFlush(answer);
         question.getAnswers().add(answer);
         questionRepository.saveAndFlush(question);
@@ -75,8 +85,8 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public QuestionDTO updateQuestion(Long questionId, QuestionCreateDTO questionDTO) {
-        Question question = questionRepository.findById(questionId).orElseThrow();
+    public QuestionDTO updateQuestion(Long testId, int questionNum, QuestionCreateDTO questionDTO) {
+        Question question = findQuestionByNum(testId,questionNum);
         if(questionDTO.getQuestionTxt() != null){
             question.setQuestionTxt(questionDTO.getQuestionTxt());
         }
@@ -85,8 +95,8 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public AnswerDTO updateAnswer(Long answerId, AnswerCreateDTO answerDTO) {
-        Answer answer = answerRepository.findById(answerId).orElseThrow();
+    public AnswerDTO updateAnswer(Long testId, int questionNum, int answerNum, AnswerCreateDTO answerDTO) {
+        Answer answer = findQuestionByNum(testId,questionNum).getAnswers().get(answerNum);
         if(answerDTO.getAnswerTxt() != null){
             answer.setAnswerTxt(answerDTO.getAnswerTxt());
         }
@@ -95,5 +105,10 @@ public class TestServiceImpl implements TestService {
         }
         answerRepository.saveAndFlush(answer);
         return testMapper.toDTO(answer);
+    }
+
+    private  Question findQuestionByNum(Long testId, int questionNum){
+        Test test = testRepository.findById(testId).orElseThrow();
+        return test.getQuestions().get(questionNum-1);
     }
 }

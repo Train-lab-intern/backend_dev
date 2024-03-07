@@ -18,5 +18,6 @@ import java.util.List;
 public class QuestionDTO {
     private Long id;
     String questionTxt;
+    int questionNum;
     List<AnswerDTO> answers;
 }

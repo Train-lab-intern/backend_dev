@@ -158,10 +158,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserPageDto(user);
     }
     @Override
-    public void changePassword(Long id, UserUpdateDto userUpdateDto) {
-        User user = userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
-                () -> new EntityNotFoundException("User could not be found")
-        );
+    public void changePassword(UserUpdateDto userUpdateDto) {
+        User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(userUpdateDto.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("User could not be found"));
 
         String toAddress = userUpdateDto.getEmail();
 

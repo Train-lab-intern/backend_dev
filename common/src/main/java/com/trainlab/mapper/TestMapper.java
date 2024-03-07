@@ -16,13 +16,14 @@ public interface TestMapper {
     Test toEntity(TestCreateDTO testCreateDTO);
     @Mapping(target = "id", ignore = true)
     Answer toEntity (AnswerDTO answerDTO);
+
     Answer toEntity (AnswerCreateDTO answerCreateDTO);
     @Mapping(target = "id", ignore = true)
     Question toEntity(QuestionDTO questionDTO);
+
     Question toEntity(QuestionCreateDTO questionCreateDTO);
 
     TestDTO toDTO(Test test);
-
     AnswerDTO toDTO(Answer answer);
     QuestionDTO toDTO(Question question);
 
