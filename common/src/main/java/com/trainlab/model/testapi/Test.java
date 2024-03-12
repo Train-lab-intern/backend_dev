@@ -6,7 +6,10 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -40,4 +43,14 @@ public class Test {
     @Column(name = "specialty")
     private eSpecialty specialty;
 
+
+    static private List<Answer> rightAnswers = new ArrayList<>();
+
+    public  void  addRightAnswer(Answer answer){
+        rightAnswers.add(answer);
+    }
+
+    public List<Answer> getRightAnswers(){
+        return rightAnswers;
+    }
 }

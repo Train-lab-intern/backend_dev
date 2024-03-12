@@ -23,12 +23,7 @@ public class Question {
     @Column(name = "question_num")
     private int questionNum;
 
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "question_answers",
-            joinColumns = @JoinColumn(name = "question_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "answer_id", referencedColumnName = "id")
-    )
+
+    @OneToMany(mappedBy = "question",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Answer> answers;
 }

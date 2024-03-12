@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/tests")
@@ -64,5 +65,11 @@ public class TestControllerImpl implements TestController {
     @PatchMapping("/{testId}/{questionNum}/{answerNum}/")
     public ResponseEntity<AnswerDTO> updateAnswer(@PathVariable Long testId, @PathVariable int questionNum,@PathVariable  int answerNum,@RequestBody AnswerCreateDTO answerCreateDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(testService.updateAnswer(testId,questionNum,answerNum,answerCreateDTO));
+    }
+
+    @PostMapping("/submit/{testId}")
+    public ResponseEntity<?> submitQuiz(@PathVariable Long testId, @RequestBody Map<Long, Long> results, long time) {
+
+        return ResponseEntity.ok(testService.processResult(testId,results,time));
     }
 }

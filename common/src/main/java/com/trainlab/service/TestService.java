@@ -2,8 +2,10 @@ package com.trainlab.service;
 
 import com.trainlab.Enum.eSpecialty;
 import com.trainlab.dto.*;
+import com.trainlab.model.testapi.UserTestResult;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TestService {
 
@@ -19,5 +21,7 @@ public interface TestService {
 
     QuestionDTO updateQuestion(Long testId, int questionNum, QuestionCreateDTO questionDTO);
     AnswerDTO updateAnswer(Long testId, int questionNum, int answerNum, AnswerCreateDTO answerDTO);
+
+   UserTestResult processResult(Long testId, Map<Long, Long> results, long time);
 
 }
