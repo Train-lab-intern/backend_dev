@@ -34,10 +34,10 @@ public interface UserMapper {
 //    @Mapping(target = "userLevel", source = "userLevel.level")
 
     @Mapping(target = "id", ignore = true) // Поле id сущности User генерируется автоматически
-
+    @Mapping(target = "authenticationInfo.email", source = "email")
     User toEntity(UserPageDto dto);
 
-
+    @Mapping(target = "email", source = "authenticationInfo.email")
     UserPageDto toUserPageDto(User entity);
 
     @Mapping(target = "id", ignore = true) // Поле id сущности UserPageUpdateDto не используется при обновлении

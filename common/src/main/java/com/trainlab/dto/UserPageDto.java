@@ -25,6 +25,8 @@ public class UserPageDto {
 
     private String surname;
 
+    private String email;
+
     private eUserLevel userLevel;
 
     private eSpecialty specialty;

@@ -162,14 +162,14 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(userUpdateDto.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("User could not be found"));
 
-        String toAddress = userUpdateDto.getEmail();
+        String toAdress = userUpdateDto.getEmail();
 
         String newPassword = generator.generateRandomPassword(8);
         String encodedPassword = passwordEncoder.encodePassword(newPassword);
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
 
         userRepository.saveAndFlush(user);
-        emailService.sendNewPassword(toAddress, newPassword);
+        emailService.sendNewPassword(toAdress, newPassword);
     }
     private boolean isAuthorized(User user, UserDetails userDetails) {
         String userEmail = user.getAuthenticationInfo().getEmail();

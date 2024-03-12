@@ -4,6 +4,7 @@ import com.trainlab.Enum.eSpecialty;
 import com.trainlab.Enum.eUserLevel;
 import com.trainlab.validation.ValidName;
 import com.trainlab.validation.ValidPassword;
+import com.trainlab.validation.ValidPasswordNull;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -41,7 +42,7 @@ public class UserPageUpdateDto {
     private String email;
 
     @Size(message = "User password must be between 8 and 256 characters", min = 8, max = 256)
-    @ValidPassword
+    @ValidPasswordNull
     @Schema(example = "123456qW",
             type = "string", description = "User password")
     private String password;
