@@ -2,6 +2,7 @@ package com.trainlab.model;
 
 import com.trainlab.Enum.eSpecialty;
 import com.trainlab.Enum.eUserLevel;
+import com.trainlab.model.testapi.UserTestResult;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -76,6 +77,9 @@ public class User{
     @Column(name = "specialty")
     @Nullable
     private eSpecialty specialty;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserTestResult> userTestResults;
 }
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "speciality_id")

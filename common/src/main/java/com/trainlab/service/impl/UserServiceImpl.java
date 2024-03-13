@@ -61,6 +61,14 @@ public class UserServiceImpl implements UserService {
             throw new IllegalRequestException("User with this email is already exists");
     }
 
+    private  void  checkEmail(String email){
+        Optional<User> userByEmail = userRepository.findByAuthenticationInfoEmail(
+                email
+        );
+        if (userByEmail.isPresent())
+            throw new IllegalRequestException("User with this email is already exists");
+    }
+
     private void setEncodedPassword(User user) {
         String encodedPassword = passwordEncoder.encodePassword(user.getAuthenticationInfo().getUserPassword());
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
@@ -136,8 +144,14 @@ public class UserServiceImpl implements UserService {
         if(userUpdateDto.getSpecialty() != null){
             user.setSpecialty(userUpdateDto.getSpecialty());
         }
-        if(userUpdateDto.getUserLevel() != null){
-            user.setUserLevel(userUpdateDto.getUserLevel());
+        if(userUpdateDto.getEmail() != null){
+            checkEmail(userUpdateDto.getEmail());
+            user.getAuthenticationInfo().setEmail(userUpdateDto.getEmail());
+        }
+        if(userUpdateDto.getPassword() != null){
+            String newPassword = userUpdateDto.getPassword();
+            String encodedPassword = passwordEncoder.encodePassword(newPassword);
+            user.getAuthenticationInfo().setUserPassword(encodedPassword);
         }
 
         userRepository.saveAndFlush(user);
@@ -146,18 +160,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changePassword(UserUpdateDto userUpdateDto) {
         User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(userUpdateDto.getEmail())
-                .orElseThrow(
-                () -> new EntityNotFoundException("User could not be found")
-        );
+                .orElseThrow(() -> new EntityNotFoundException("User could not be found"));
 
-        String toAddress = userUpdateDto.getEmail();
+
+        String toAdress = userUpdateDto.getEmail();
 
         String newPassword = generator.generateRandomPassword(8);
         String encodedPassword = passwordEncoder.encodePassword(newPassword);
         user.getAuthenticationInfo().setUserPassword(encodedPassword);
 
         userRepository.saveAndFlush(user);
-        emailService.sendNewPassword(toAddress, newPassword);
+        emailService.sendNewPassword(toAdress, newPassword);
     }
     private boolean isAuthorized(User user, UserDetails userDetails) {
         String userEmail = user.getAuthenticationInfo().getEmail();

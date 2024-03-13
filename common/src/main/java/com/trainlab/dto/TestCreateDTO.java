@@ -1,35 +1,23 @@
 package com.trainlab.dto;
 
 import com.trainlab.Enum.eSpecialty;
-import com.trainlab.Enum.eUserLevel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Validated
 @Builder
-@Schema(description = "UserPage response")
-public class UserPageDto {
-
-    private Long id;
-
-    private String generatedName;
-
-    private String username;
-
-    private String surname;
-
-    private String email;
-
-    private eUserLevel userLevel;
-
+@Schema(description = "Test create")
+public class TestCreateDTO {
+    private String title;
+    private String description;
     private eSpecialty specialty;
-
-    private List<RoleDto> roles;
 }
