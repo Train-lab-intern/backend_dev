@@ -27,4 +27,9 @@ CREATE TABLE IF NOT EXISTS public.test_questions (
                                        PRIMARY KEY (test_id, question_id)
 );
 
+CREATE TABLE IF NOT EXISTS public.right_answers(
+                                                     test_id INT REFERENCES public.test(id),
+                                                     answer_id INT REFERENCES public.answer(id),
+                                                     PRIMARY KEY (test_id, answer_id)
+);
 

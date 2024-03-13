@@ -81,7 +81,7 @@ public class TestServiceImpl implements TestService {
         Answer answer = testMapper.toEntity(answerDTO);
         answer.setQuestion(question);
         if(answerDTO.isCorrect() == true){
-            test.addRightAnswer(answer);
+            test.getRightAnswers().add(answer);
         }
         if(question.getAnswers().isEmpty()){
             answer.setAnswerNum(1);
@@ -91,6 +91,7 @@ public class TestServiceImpl implements TestService {
         answerRepository.saveAndFlush(answer);
         question.getAnswers().add(answer);
         questionRepository.saveAndFlush(question);
+        testRepository.saveAndFlush(test);
         return testMapper.toDTO(answer);
     }
 
@@ -130,10 +131,9 @@ public class TestServiceImpl implements TestService {
             long questionId = answer.getQuestion().getId();
             long userAnswerId =answer.getId();
 
-            if(results.get(questionId) == userAnswerId)
+            if(results.get(questionId) != null && results.get(questionId) == userAnswerId )
                 correctAnswers++;
         }
-
 
         UserTestResult userTestResult = UserTestResult.builder()
                 //todo убрать заглушку

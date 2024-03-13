@@ -2,6 +2,7 @@ package com.trainlab.controller;
 
 import com.trainlab.Enum.eSpecialty;
 import com.trainlab.dto.*;
+import com.trainlab.model.testapi.UserTestResult;
 import com.trainlab.service.TestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,8 +69,8 @@ public class TestControllerImpl implements TestController {
     }
 
     @PostMapping("/submit/{testId}")
-    public ResponseEntity<?> submitQuiz(@PathVariable Long testId, @RequestBody Map<Long, Long> results, long time) {
-
-        return ResponseEntity.ok(testService.processResult(testId,results,time));
+    public ResponseEntity<Integer> submitQuiz(@PathVariable Long testId, @RequestBody SubmitDTO submitDTO) {
+       UserTestResult userTestResult = testService.processResult(testId,submitDTO.getResults(),submitDTO.getTime());
+        return ResponseEntity.ok(userTestResult.getScore());
     }
 }

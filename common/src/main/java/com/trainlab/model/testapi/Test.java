@@ -43,14 +43,18 @@ public class Test {
     @Column(name = "specialty")
     private eSpecialty specialty;
 
-
-    static private List<Answer> rightAnswers = new ArrayList<>();
+    @Getter
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "right_answers",
+            joinColumns = @JoinColumn(name = "test_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "answer_id", referencedColumnName = "id")
+    )
+    private List<Answer> rightAnswers = new ArrayList<>();
 
     public  void  addRightAnswer(Answer answer){
         rightAnswers.add(answer);
     }
 
-    public List<Answer> getRightAnswers(){
-        return rightAnswers;
-    }
 }
