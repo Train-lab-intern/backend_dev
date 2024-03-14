@@ -29,4 +29,8 @@ public interface TestController {
     ResponseEntity<QuestionDTO> updateQuestion (@PathVariable Long testId, int questionNum, @RequestBody QuestionCreateDTO questionCreateDTO);
 
     ResponseEntity<AnswerDTO> updateAnswer (@PathVariable Long testId, int questionNum, int answerNum, @RequestBody AnswerCreateDTO answerCreateDTO);
+    ResponseEntity<Integer> submitQuiz(@PathVariable Long testId, @RequestBody SubmitDTO submitDTO);
+    ResponseEntity<String> deleteTest(@PathVariable Long testId);
+    ResponseEntity<TestDTO> updateAndRefreshTest(@PathVariable Long testId, TestCreateDTO testCreateDTO);
+    ResponseEntity<TestDTO> refreshTest(@PathVariable Long id);
 }

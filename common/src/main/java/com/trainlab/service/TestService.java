@@ -23,5 +23,8 @@ public interface TestService {
     AnswerDTO updateAnswer(Long testId, int questionNum, int answerNum, AnswerCreateDTO answerDTO);
 
    UserTestResult processResult(Long testId, Map<Long, Long> results, long time);
+    String deleteTest(Long id);
+    TestDTO updateAndRefreshTest(Long id, TestCreateDTO update);
+    TestDTO refreshTest(Long id);
 
 }
