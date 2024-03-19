@@ -1,5 +1,6 @@
 package com.trainlab.service.impl;
 
+import com.trainlab.Enum.eSpecialty;
 import com.trainlab.dto.*;
 import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
@@ -141,17 +142,15 @@ public class UserServiceImpl implements UserService {
         if(userUpdateDto.getSurname() != null){
             user.setSurname(userUpdateDto.getSurname());
         }
-        if(userUpdateDto.getSpecialty() != null){
-            user.setSpecialty(userUpdateDto.getSpecialty());
+        if(userUpdateDto.getSpecialties() != null){
+            user.setSpecialties(new ArrayList<>());
+            for(eSpecialty sp : userUpdateDto.getSpecialties()){
+                user.getSpecialties().add(sp);
+            }
         }
         if(userUpdateDto.getEmail() != null){
             checkEmail(userUpdateDto.getEmail());
             user.getAuthenticationInfo().setEmail(userUpdateDto.getEmail());
-        }
-        if(userUpdateDto.getPassword() != null){
-            String newPassword = userUpdateDto.getPassword();
-            String encodedPassword = passwordEncoder.encodePassword(newPassword);
-            user.getAuthenticationInfo().setUserPassword(encodedPassword);
         }
 
         userRepository.saveAndFlush(user);
@@ -172,11 +171,16 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(user);
         emailService.sendNewPassword(toAdress, newPassword);
     }
+
     private boolean isAuthorized(User user, UserDetails userDetails) {
         String userEmail = user.getAuthenticationInfo().getEmail();
         String username = userDetails.getUsername();
 
         return userEmail.equalsIgnoreCase(username);
     }
+
+
+
 }
-    
+
+

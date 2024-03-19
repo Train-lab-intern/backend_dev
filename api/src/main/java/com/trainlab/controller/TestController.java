@@ -3,6 +3,8 @@ package com.trainlab.controller;
 import com.trainlab.Enum.eSpecialty;
 import com.trainlab.dto.*;
 import com.trainlab.model.Role;
+import com.trainlab.model.testapi.Answer;
+import com.trainlab.model.testapi.Question;
 import com.trainlab.model.testapi.Test;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -264,4 +266,44 @@ public interface TestController {
             }
     )
     ResponseEntity<TestDTO> refreshTest(@PathVariable Long id);
+
+    @Operation(
+            summary = "Delete question",
+            description = "Delete question by id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "DELETED",
+                            description = "Question deleted",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(allOf = {Question.class})
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "BAD_REQUEST",
+                            description = "Validation error"
+                    )
+            }
+    )
+    ResponseEntity<String> deleteQuestion(@PathVariable Long questionId);
+
+    @Operation(
+            summary = "Delete answer",
+            description = "Delete answer by id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "DELETED",
+                            description = "Answer deleted",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(allOf = {Answer.class})
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "BAD_REQUEST",
+                            description = "Validation error"
+                    )
+            }
+    )
+    ResponseEntity<String> deleteAnswer(@PathVariable Long answerId);
 }

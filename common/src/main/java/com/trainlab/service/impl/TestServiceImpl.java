@@ -151,7 +151,7 @@ public class TestServiceImpl implements TestService {
         return test.getQuestions().get(questionNum-1);
     }
 
-    public  UserTestResult processResult(Long testId, Map<Long, Long> results, long time) {
+    public  UserTestResult processResult(Long testId, Map<Long, Long> results, long time, long userId) {
         Test test = testRepository.findById(testId).orElseThrow();
 
         int correctAnswers = 0;
@@ -165,7 +165,7 @@ public class TestServiceImpl implements TestService {
 
         UserTestResult userTestResult = UserTestResult.builder()
                 //todo убрать заглушку
-                .user(userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse("trainlab@gmail.com").orElseThrow(() -> new EntityNotFoundException("User could not be found")))
+                .user(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User could not be found")))
                 .test(testRepository.findById(testId).orElseThrow(() -> new EntityNotFoundException("no tests")))
                 .score(correctAnswers)
                 .completeTime(time)
@@ -181,5 +181,16 @@ public class TestServiceImpl implements TestService {
         Test test = testRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Test not found"));
         testRepository.save(test);
         return testMapper.toDTO(test);
+    }
+
+    public  String deleteQuestion (Long id){
+        questionRepository.deleteById(id);
+        return "Question removed";
+    }
+
+    @Override
+    public String deleteAnswer (Long id){
+        answerRepository.deleteById(id);
+        return "Answer removed";
     }
 }

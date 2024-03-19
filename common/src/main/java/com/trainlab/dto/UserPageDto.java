@@ -29,7 +29,7 @@ public class UserPageDto {
 
     private eUserLevel userLevel;
 
-    private eSpecialty specialty;
+    private List<eSpecialty> specialties;
 
     private List<RoleDto> roles;
 }

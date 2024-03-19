@@ -14,6 +14,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,7 +35,7 @@ public class UserPageUpdateDto {
     private String surname;
 
 
-    private eSpecialty specialty;
+    private List<eSpecialty> specialties;
 
     @Size(message = "User email must be between 8 and 256 characters", min = 8, max = 256)
     @Email(message = "Invalid email address")
@@ -41,10 +43,5 @@ public class UserPageUpdateDto {
             type = "string", description = "User email")
     private String email;
 
-    @Size(message = "User password must be between 8 and 256 characters", min = 8, max = 256)
-    @ValidPasswordNull
-    @Schema(example = "123456qW",
-            type = "string", description = "User password")
-    private String password;
 }
 

@@ -71,7 +71,7 @@ public class TestControllerImpl implements TestController {
     @Override
     @PostMapping("/submit/{testId}")
     public ResponseEntity<Integer> submitQuiz(@PathVariable Long testId, @RequestBody SubmitDTO submitDTO) {
-       UserTestResult userTestResult = testService.processResult(testId,submitDTO.getResults(),submitDTO.getTime());
+       UserTestResult userTestResult = testService.processResult(testId,submitDTO.getResults(),submitDTO.getTime(),submitDTO.getUserId());
         return ResponseEntity.ok(userTestResult.getScore());
     }
 
@@ -91,5 +91,17 @@ public class TestControllerImpl implements TestController {
     @PutMapping("/cache/{id}")
     public  ResponseEntity<TestDTO> refreshTest(@PathVariable Long id){
         return ResponseEntity.ok(testService.refreshTest(id));
+    }
+
+    @Override
+    @DeleteMapping("/answer/{answerId}")
+    public ResponseEntity<String> deleteAnswer(@PathVariable Long answerId){
+        return ResponseEntity.ok(testService.deleteAnswer(answerId));
+    }
+
+    @Override
+    @DeleteMapping("/question/{questionId}")
+    public ResponseEntity<String> deleteQuestion(@PathVariable Long questionId){
+        return ResponseEntity.ok(testService.deleteQuestion(questionId));
     }
 }
