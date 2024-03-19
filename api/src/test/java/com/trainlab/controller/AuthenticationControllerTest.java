@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -93,7 +94,7 @@ public class AuthenticationControllerTest {
                 .username("Ivan")
                 .surname("Ivanov")
                 .userLevel(eUserLevel.Rare)
-                .specialty(eSpecialty.QA_AQA)
+                .specialties(List.of(eSpecialty.QA_AQA, eSpecialty.AQA_Python))
                 .roles(List.of(
                         RoleDto.builder()
                                 .id(1)

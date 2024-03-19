@@ -190,7 +190,8 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public String deleteAnswer (Long id){
-        answerRepository.deleteById(id);
+        Answer answer = answerRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Answer not found"));
+        answerRepository.delete(answer);
         return "Answer removed";
     }
 }
