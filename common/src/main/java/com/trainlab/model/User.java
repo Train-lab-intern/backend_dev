@@ -73,18 +73,17 @@ public class User{
     @Nullable
     private eUserLevel userLevel;
 
+    @ElementCollection(targetClass = eSpecialty.class)
     @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_specialties", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "specialty")
-    @Nullable
-    private eSpecialty specialty;
+    private List<eSpecialty> specialties;
+
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "specialty")
+//    @Nullable
+//    private eSpecialty specialty;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserTestResult> userTestResults;
 }
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "speciality_id")
-//    private Speciality speciality;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "level_id")
-//    private UserLevel userLevel;

@@ -15,4 +15,5 @@ import java.util.Map;
 public class SubmitDTO {
     private Map<Long, Long> results;
     private long time;
+    private long userId;
 }

@@ -57,20 +57,53 @@ public class TestControllerImpl implements TestController {
     }
 
     @Override
-    @PatchMapping("/{testId}/{questionNum}/")
+    @PutMapping("/{testId}/{questionNum}/")
     public ResponseEntity<QuestionDTO> updateQuestion(@PathVariable Long testId,@PathVariable  int questionNum, @RequestBody QuestionCreateDTO questionCreateDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(testService.updateQuestion(testId,questionNum,questionCreateDTO));
     }
 
     @Override
-    @PatchMapping("/{testId}/{questionNum}/{answerNum}/")
+    @PutMapping("/{testId}/{questionNum}/{answerNum}/")
     public ResponseEntity<AnswerDTO> updateAnswer(@PathVariable Long testId, @PathVariable int questionNum,@PathVariable  int answerNum,@RequestBody AnswerCreateDTO answerCreateDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(testService.updateAnswer(testId,questionNum,answerNum,answerCreateDTO));
     }
 
+    @Override
     @PostMapping("/submit/{testId}")
     public ResponseEntity<Integer> submitQuiz(@PathVariable Long testId, @RequestBody SubmitDTO submitDTO) {
-       UserTestResult userTestResult = testService.processResult(testId,submitDTO.getResults(),submitDTO.getTime());
+       UserTestResult userTestResult = testService.processResult(testId,submitDTO.getResults(),submitDTO.getTime(),submitDTO.getUserId());
         return ResponseEntity.ok(userTestResult.getScore());
+    }
+
+    @Override
+    @DeleteMapping("/{testId}")
+    public  ResponseEntity<String> deleteTest(@PathVariable Long testId){
+        return ResponseEntity.ok(testService.deleteTest(testId));
+    }
+
+    @Override
+    @PutMapping("/{testId}")
+    public  ResponseEntity<TestDTO> updateAndRefreshTest(@PathVariable Long testId, TestCreateDTO testCreateDTO){
+        return ResponseEntity.ok(testService.updateAndRefreshTest(testId,testCreateDTO));
+    }
+
+    @Override
+    @PutMapping("/cache/{id}")
+    public  ResponseEntity<TestDTO> refreshTest(@PathVariable Long id){
+        return ResponseEntity.ok(testService.refreshTest(id));
+    }
+
+    @Override
+    @DeleteMapping("/answer/{answerId}")
+    public ResponseEntity<String> deleteAnswer(@PathVariable Long answerId){
+        return ResponseEntity.ok(testService.deleteAnswer(answerId));
+    }
+
+    @Override
+    @DeleteMapping("/question/{questionId}")
+    public ResponseEntity<String> deleteQuestion(@PathVariable Long questionId){
+
+
+        return ResponseEntity.ok(testService.deleteQuestion(questionId));
     }
 }
