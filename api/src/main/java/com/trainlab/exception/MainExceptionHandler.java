@@ -95,4 +95,5 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
                 details);
         return ResponseEntityBuilder.build(err);
     }
+
 }

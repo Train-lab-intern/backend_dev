@@ -2,6 +2,7 @@ package com.trainlab.service.impl;
 
 import com.trainlab.Enum.eSpecialty;
 import com.trainlab.dto.*;
+import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.mapper.TestMapper;
 import com.trainlab.model.testapi.Answer;
 import com.trainlab.model.testapi.Question;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -39,7 +41,7 @@ public class TestServiceImpl implements TestService {
     @Cacheable(key = "#id")
     public TestDTO getTest(Long id) {
         log.info("got test from DB with id" + id);
-        Test test = testRepository.findById(id).orElseThrow();
+        Test test = testRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException("Test not found"));
         return  testMapper.toDTO(test);
     }
 
@@ -89,7 +91,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public QuestionDTO addQuestion(Long testId, QuestionCreateDTO questionDTO) {
-        Test test = testRepository.findById(testId).orElseThrow();
+        Test test = testRepository.findById(testId).orElseThrow(()-> new EntityNotFoundException("Test not found"));
         Question question = testMapper.toEntity(questionDTO);
         if(test.getQuestions().isEmpty()){
             question.setQuestionNum(1);
@@ -104,8 +106,8 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public AnswerDTO addAnswer(Long testId, int questionNum, AnswerCreateDTO answerDTO) {
-        Test test = testRepository.findById(testId).orElseThrow();
-        Question question = findQuestionByNum(testId,questionNum);
+        Test test = testRepository.findById(testId).orElseThrow(()-> new EntityNotFoundException("Test not found"));
+        Question question = findQuestionByNum(testId,questionNum).orElseThrow(()-> new EntityNotFoundException("Question not found"));
         Answer answer = testMapper.toEntity(answerDTO);
         answer.setQuestion(question);
         if(answerDTO.isCorrect() == true){
@@ -125,7 +127,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public QuestionDTO updateQuestion(Long id, int questionNum, QuestionCreateDTO questionDTO) {
-        Question question = findQuestionByNum(id,questionNum);
+        Question question = findQuestionByNum(id,questionNum).orElseThrow(()-> new EntityNotFoundException("Question not found"));
         if(questionDTO.getQuestionTxt() != null){
             question.setQuestionTxt(questionDTO.getQuestionTxt());
         }
@@ -135,7 +137,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public AnswerDTO updateAnswer(Long testId, int questionNum, int answerNum, AnswerCreateDTO answerDTO) {
-        Answer answer = findQuestionByNum(testId,questionNum).getAnswers().get(answerNum);
+        Answer answer = findQuestionByNum(testId,questionNum).orElseThrow(()-> new EntityNotFoundException("Question not found")).getAnswers().get(answerNum);
         if(answerDTO.getAnswerTxt() != null){
             answer.setAnswerTxt(answerDTO.getAnswerTxt());
         }
@@ -146,9 +148,9 @@ public class TestServiceImpl implements TestService {
         return testMapper.toDTO(answer);
     }
 
-    private  Question findQuestionByNum(Long testId, int questionNum){
+    private Optional<Question>  findQuestionByNum(Long testId, int questionNum){
         Test test = testRepository.findById(testId).orElseThrow();
-        return test.getQuestions().get(questionNum-1);
+        return Optional.ofNullable(test.getQuestions().get(questionNum - 1));
     }
 
     public  UserTestResult processResult(Long testId, Map<Long, Long> results, long time, long userId) {
