@@ -9,7 +9,7 @@ import com.trainlab.model.security.RefreshToken;
 
 public interface AuthService {
 
-    void createRefreshSession(User user, RefreshToken refreshToken);
+    void createRefreshSession(UserPageDto user, RefreshToken refreshToken);
 
     UserPageDto validateAndRemoveRefreshToken(AuthRefreshToken authRefreshToken) throws TokenExpiredException;
 

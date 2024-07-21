@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
+    private static final String FROM_EMAIL = "it.roast.trainlab@gmail.com";
     public final JavaMailSender emailSender;
     private final SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-    private void sendEmail(String address, String subject, String message){
-        mailMessage.setTo(address);
+    private void sendEmail(String toAddress, String subject, String message) {
+        mailMessage.setTo(toAddress);
+        mailMessage.setFrom(FROM_EMAIL);
         mailMessage.setSubject(subject);
         mailMessage.setText(message);
         emailSender.send(mailMessage);
@@ -31,10 +33,10 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendNewPassword(String toAddress, String newPassword) {
+    public void sendNewPassword(String toAddress, String code) {
         String emailSubject = "Вы забыли пароль";
         String message = "Вы захотели изменить пароль, потому что забыли старый.\n" +
-                "Вот ваш новый пароль, пожалуйста, не забывайте!\n" + newPassword +
+                "Вот ваш код подтверждения!\n" + code +
                 "\nС наилучшими пожеланиями,\nКоманда Trainlab";
 
         sendEmail(toAddress, emailSubject, message);

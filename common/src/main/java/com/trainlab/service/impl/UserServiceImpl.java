@@ -9,10 +9,7 @@ import com.trainlab.model.Role;
 import com.trainlab.model.User;
 import com.trainlab.model.testapi.UserStats;
 import com.trainlab.model.testapi.UserTestResult;
-import com.trainlab.repository.RoleRepository;
-import com.trainlab.repository.UserRepository;
-import com.trainlab.repository.UserStatsRepository;
-import com.trainlab.repository.UserTestResultRepository;
+import com.trainlab.repository.*;
 import com.trainlab.service.EmailService;
 import com.trainlab.service.UserService;
 import com.trainlab.util.UsernameGenerator;
@@ -45,6 +42,7 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final UserStatsRepository userStatsRepository;
     private final UserTestResultRepository userTestResultRepository;
+    private final RecoveryCodeRepository recoveryCodeRepository;
 
     @Override
     public User create(UserCreateDto userCreateDto) {
@@ -161,18 +159,6 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(user);
         return userMapper.toUserPageDto(user);
     }
-    @Override
-    public void resetPassword(ResetPasswordDto resetPasswordDto) {
-        User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(resetPasswordDto.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("User could not be found"));
-        String toAddress = resetPasswordDto.getEmail();
-        String newPassword = generator.generateRandomPassword(8);
-        String encodedPassword = passwordEncoder.encodePassword(newPassword);
-        user.getAuthenticationInfo().setUserPassword(encodedPassword);
-
-        userRepository.saveAndFlush(user);
-        emailService.sendNewPassword(toAddress, newPassword);
-    }
 
     @Override
     public void changePassword(Long id,UserUpdateDto userUpdateDto) {
@@ -226,7 +212,6 @@ public class UserServiceImpl implements UserService {
                         .collect(Collectors.toList())
                 )
                 .build();
-
     }
 }
 

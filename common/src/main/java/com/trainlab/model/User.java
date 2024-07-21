@@ -2,6 +2,7 @@ package com.trainlab.model;
 
 import com.trainlab.Enum.eSpecialty;
 import com.trainlab.Enum.eUserLevel;
+import com.trainlab.model.recovery.RecoveryCode;
 import com.trainlab.model.testapi.UserTestResult;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -17,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "users", schema = "public")
-public class User{
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

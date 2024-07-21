@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS recovery_code (
+    id BIGSERIAL PRIMARY KEY,
+    code VARCHAR(10) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    expired_at TIMESTAMP NOT NULL,
+    user_id BIGINT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE
+);

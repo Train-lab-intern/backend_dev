@@ -53,8 +53,8 @@ CREATE INDEX frontend_data_created_index ON frontend_data(created desc);
 CREATE INDEX frontend_data_front_id_index ON frontend_data (front_id);
 
 
-create index roles_changed_id_index
-    on public.roles (changed asc, id desc);
+/*create index roles_changed_id_index
+    on public.roles (changed asc, id desc);*/
 
 create table if not exists public.users_roles
 (
@@ -71,7 +71,7 @@ create table if not exists public.users_roles
 alter table public.users_roles
     owner to trainlab;
 
-create table public.frontend_data
+create table if not exists public.frontend_data
 (
     id         serial
         primary key,
@@ -86,8 +86,8 @@ create table public.frontend_data
 alter table public.frontend_data
     owner to trainlab;
 
-create index frontend_data_created_index
+/*create index frontend_data_created_index
     on public.frontend_data (created desc);
 
 create index frontend_data_front_id_index
-    on public.frontend_data (front_id);
+    on public.frontend_data (front_id);*/

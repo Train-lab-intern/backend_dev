@@ -1,7 +1,7 @@
 package com.trainlab.controller;
 
-import com.trainlab.dto.ResetPasswordDto;
 import com.trainlab.dto.UserCreateDto;
+import com.trainlab.dto.recovery.EmailRequestDto;
 import com.trainlab.model.security.AuthRefreshToken;
 import com.trainlab.dto.AuthRequestDto;
 import com.trainlab.security.dto.AuthResponseDto;
@@ -124,6 +124,6 @@ public interface AuthenticationController {
                     )
             }
     )
-    ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto);
+    ResponseEntity<String> resetPassword(@Valid @RequestBody EmailRequestDto emailRequestDto);
 
 }

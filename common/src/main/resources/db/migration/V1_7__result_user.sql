@@ -15,8 +15,9 @@ ALTER TABLE public.users
     ADD CONSTRAINT fk_user_test_result
         FOREIGN KEY (user_test_result_id) REFERENCES public.user_test_result(id);
 
+/*
 ALTER TABLE public.question
     add column question_num INT;
 
 alter table public.answer
-    add column answer_num INT;
+    add column answer_num INT;*/

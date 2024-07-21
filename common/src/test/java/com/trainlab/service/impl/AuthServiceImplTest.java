@@ -126,7 +126,7 @@ public class AuthServiceImplTest {
         when(userMapper.toEntity(userDto)).thenReturn(user);
         when(authRepository.saveAndFlush(any(RefreshSessions.class))).thenReturn(expectedRefreshSession);
 
-        authService.createRefreshSession(user, refreshToken);
+        authService.createRefreshSession(userMapper.toUserPageDto(user), refreshToken);
 
         verify(userMapper, times(1)).toEntity(userDto);
         verify(authRepository, times(1)).saveAndFlush(any(RefreshSessions.class));

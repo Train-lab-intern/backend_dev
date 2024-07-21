@@ -183,7 +183,7 @@ public class AuthenticationControllerTest {
             );
 
             verify(userService, only()).findUserByAuthenticationInfo(authRequestDto);
-            verify(authService, only()).createRefreshSession(user, refreshToken);
+            verify(authService, only()).createRefreshSession(userMapper.toUserPageDto(user), refreshToken);
         }
 
         @Test
@@ -280,7 +280,7 @@ public class AuthenticationControllerTest {
             assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expected));
 
             verify(userService, only()).create(userCreateDto);
-            verify(authService, only()).createRefreshSession(user, refreshToken);
+            verify(authService, only()).createRefreshSession(userMapper.toUserPageDto(user), refreshToken);
         }
 
         @Test
