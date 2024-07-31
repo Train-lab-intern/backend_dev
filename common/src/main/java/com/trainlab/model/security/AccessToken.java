@@ -1,4 +1,4 @@
-package com.trainlab.security.model;
+package com.trainlab.model.security;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

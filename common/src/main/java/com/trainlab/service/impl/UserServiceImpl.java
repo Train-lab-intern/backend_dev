@@ -2,6 +2,7 @@ package com.trainlab.service.impl;
 
 import com.trainlab.Enum.eSpecialty;
 import com.trainlab.dto.*;
+import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.mapper.UserMapper;
@@ -10,7 +11,8 @@ import com.trainlab.model.User;
 import com.trainlab.model.testapi.UserStats;
 import com.trainlab.model.testapi.UserTestResult;
 import com.trainlab.repository.*;
-import com.trainlab.service.EmailService;
+import com.trainlab.repository.recovery.RecoveryCodeRepository;
+import com.trainlab.service.email.EmailService;
 import com.trainlab.service.UserService;
 import com.trainlab.util.UsernameGenerator;
 import com.trainlab.util.password.CustomPasswordEncoder;
@@ -92,11 +94,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByAuthenticationInfo(AuthRequestDto authRequestDto) {
         User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(authRequestDto
-                .getUserEmail().toLowerCase())
+                .getEmail().toLowerCase())
                 .orElseThrow(() -> new ObjectNotFoundException("Invalid login or password"));
 
         boolean isPasswordMatches = passwordEncoder.matches(
-                authRequestDto.getUserPassword(),
+                authRequestDto.getPassword(),
                 user.getAuthenticationInfo().getUserPassword()
         );
 

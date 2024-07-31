@@ -1,6 +1,5 @@
-package com.trainlab.service.impl;
+package com.trainlab.service.email;
 
-import com.trainlab.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

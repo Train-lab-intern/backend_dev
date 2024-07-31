@@ -1,21 +1,16 @@
 package com.trainlab.controller;
 
 import com.trainlab.dto.*;
-import com.trainlab.dto.recovery.EmailRequestDto;
-import com.trainlab.dto.recovery.RecoveryCodeDto;
+import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.exception.LoginValidationException;
 import com.trainlab.exception.ValidationException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.User;
-import com.trainlab.model.security.RefreshToken;
-import com.trainlab.security.dto.AuthResponseDto;
-import com.trainlab.security.TokenProvider;
+import com.trainlab.dto.auth.AuthResponseDto;
 import com.trainlab.model.security.AuthRefreshToken;
-import com.trainlab.principal.UserPrincipal;
-import com.trainlab.security.model.AccessToken;
 import com.trainlab.service.AuthService;
 import com.trainlab.service.UserService;
-import com.trainlab.service.recovery.RecoveryCodeService;
+import com.trainlab.service.token.TokenService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,35 +22,27 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
+import static com.trainlab.util.ValidationUtil.isRequestValid;
+
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "AuthenticationController", description = "Authentication")
 @RequestMapping(value = "/api/v1/auth")
 public class AuthenticationControllerImpl implements AuthenticationController {
-    private final TokenProvider tokenProvider;
     private final UserService userService;
     private final AuthService authService;
-    private  final UserMapper userMapper;
-    private final RecoveryCodeService recoveryCodeService;
+    private final UserMapper userMapper;
+    private final TokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody AuthRequestDto request, BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             throw new LoginValidationException("Invalid login or password");
 
-        User user =  userService.findUserByAuthenticationInfo(request);
+        User user = userService.findUserByAuthenticationInfo(request);
         UserPageDto userPageDto = userMapper.toUserPageDto(user);
-        AccessToken token = tokenProvider.generate(new UserPrincipal(userPageDto.getId(), userPageDto.getRoles()));
-        RefreshToken refreshToken = tokenProvider.generateRefreshToken();
-        authService.createRefreshSession(userPageDto, refreshToken);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                AuthResponseDto.builder()
-                        .token(token)
-                        .refreshToken(refreshToken)
-                        .userPageDto(userPageDto)
-                        .build()
-        );
+        return ResponseEntity.status(HttpStatus.OK).body(tokenService.generateTokensAndCreateSession(userPageDto));
     }
 
     @Override
@@ -72,73 +59,25 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
         User user = userService.create(userCreateDto);
         UserPageDto userPageDto = userMapper.toUserPageDto(user);
-        RefreshToken refreshToken = tokenProvider.generateRefreshToken();
-        authService.createRefreshSession(userPageDto, refreshToken);
-        AccessToken token = tokenProvider.generate(new UserPrincipal(user.getId(), userPageDto.getRoles()));
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    AuthResponseDto.builder()
-                            .token(token)
-                            .refreshToken(refreshToken)
-                            .userPageDto(userMapper.toUserPageDto(user))
-                            .build()
-            );
+        return ResponseEntity.status(HttpStatus.CREATED).body(tokenService.generateTokensAndCreateSession(userPageDto));
     }
 
     @PostMapping("/refresh-token")
     public ResponseEntity<AuthResponseDto> refreshToken(@Valid @RequestBody AuthRefreshToken authRefreshToken,
                                                         BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
-            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-            throw new ValidationException(errorMessage);
-        }
-            UserPageDto user = authService.validateAndRemoveRefreshToken(authRefreshToken);
-            RefreshToken refreshToken = tokenProvider.generateRefreshToken();
-            authService.createRefreshSession(user, refreshToken);
-            AccessToken accessToken = tokenProvider.generate(new UserPrincipal(user.getId(), user.getRoles()));
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    AuthResponseDto.builder()
-                            .token(accessToken)
-                            .refreshToken(refreshToken)
-                            .userPageDto(user)
-                            .build()
-            );
-    }
-
-    @Override
-    @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@Valid @RequestBody EmailRequestDto emailRequestDto) {
-        recoveryCodeService.resetPassword(emailRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).body("The code has been successfully sent. Check your email");
-    }
-
-    @PostMapping("/reset-password/verify")
-    public ResponseEntity<AuthResponseDto> verifyCode(@Valid @RequestBody RecoveryCodeDto recoveryCodeDto,
-                                             BindingResult bindingResult) {
         isRequestValid(bindingResult);
-        UserPageDto userPageDto = recoveryCodeService.verifyCode(recoveryCodeDto);
-        RefreshToken refreshToken = tokenProvider.generateRefreshToken();
-        authService.createRefreshSession(userPageDto, refreshToken);
-        AccessToken token = tokenProvider.generate(new UserPrincipal(userPageDto.getId(), userPageDto.getRoles()));
+        UserPageDto userPageDto = authService.validateAndRemoveRefreshToken(authRefreshToken);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                        AuthResponseDto.builder()
-                                .token(token)
-                                .refreshToken(refreshToken)
-                                .userPageDto(userPageDto)
-                                .build()
-                );
+        return ResponseEntity.status(HttpStatus.OK).body(tokenService.generateTokensAndCreateSession(userPageDto));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<HttpStatus> logout(@Valid @RequestBody AuthRefreshToken authRefreshToken,
                                              BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
-            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-            throw new ValidationException(errorMessage);
-        }
+        isRequestValid(bindingResult);
 
         authService.deleteRefreshSession(authRefreshToken);
         SecurityContextHolder.clearContext();
@@ -146,12 +85,5 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 HttpStatus.OK
         );
-    }
-
-    private void isRequestValid(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-            throw new ValidationException(errorMessage);
-        }
     }
 }

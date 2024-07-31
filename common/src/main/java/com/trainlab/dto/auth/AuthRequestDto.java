@@ -1,4 +1,4 @@
-package com.trainlab.dto;
+package com.trainlab.dto.auth;
 
 import com.trainlab.validation.Email;
 import com.trainlab.validation.ValidPassword;
@@ -22,11 +22,11 @@ public class AuthRequestDto {
     @Email
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
             type = "string", description = "User Email")
-    private String userEmail;
+    private String email;
 
     @NotBlank(groups = {Group1.class})
     @ValidPassword
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
             type = "string", description = "User password")
-    private String userPassword;
+    private String password;
 }

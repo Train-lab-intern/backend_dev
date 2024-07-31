@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.trainlab.Enum.eSpecialty;
 import com.trainlab.Enum.eUserLevel;
 import com.trainlab.dto.*;
+import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.exception.LoginValidationException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.exception.UsernameGenerationException;
@@ -14,9 +15,9 @@ import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.User;
 import com.trainlab.model.security.RefreshToken;
 import com.trainlab.security.TokenProvider;
-import com.trainlab.security.dto.AuthResponseDto;
-import com.trainlab.security.model.AccessToken;
-import com.trainlab.principal.UserPrincipal;
+import com.trainlab.dto.auth.AuthResponseDto;
+import com.trainlab.model.security.AccessToken;
+import com.trainlab.security.principal.UserPrincipal;
 import com.trainlab.service.AuthService;
 import com.trainlab.service.UserService;
 import org.junit.jupiter.api.*;
@@ -36,7 +37,6 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -127,8 +127,8 @@ public class AuthenticationControllerTest {
         @BeforeAll
         void setUp() {
             authRequestDto = AuthRequestDto.builder()
-                    .userEmail("vladthedevj6@gmail.com")
-                    .userPassword("123456Wq").build();
+                    .email("vladthedevj6@gmail.com")
+                    .password("123456Wq").build();
         }
 
         @ParameterizedTest(name = ARGUMENTS_PLACEHOLDER)
@@ -153,16 +153,16 @@ public class AuthenticationControllerTest {
         // Parameters of UserCreateDto in registration method can be changed over time (DRY)
         static Stream<Arguments> loginUserInvalidParams() {
             return Stream.of(
-                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword(" ").build()),
-                    Arguments.of(AuthRequestDto.builder().userEmail(" ").userPassword("123456qW").build()),
-                    Arguments.of(AuthRequestDto.builder().userEmail(" ").userPassword(" ").build()),
-                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("1234qW").build()),
-                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("987654321").build()),
-                    Arguments.of(AuthRequestDto.builder().userEmail("vladthedevj6@gmail.com").userPassword("ABCDEFGH").build()),
-                    Arguments.of(AuthRequestDto.builder().userEmail("myemail@com").userPassword("123456qW").build()),
-                    Arguments.of(AuthRequestDto.builder().userEmail("myemail%$^@domain").userPassword("123456qW").build()),
-                    Arguments.of(AuthRequestDto.builder().userEmail("myemail@192.168.1.1").userPassword("123456qW").build()),
-                    Arguments.of(AuthRequestDto.builder().userEmail(".myemail@1gmail.com").userPassword("123456qW").build())
+                    Arguments.of(AuthRequestDto.builder().email("vladthedevj6@gmail.com").password(" ").build()),
+                    Arguments.of(AuthRequestDto.builder().email(" ").password("123456qW").build()),
+                    Arguments.of(AuthRequestDto.builder().email(" ").password(" ").build()),
+                    Arguments.of(AuthRequestDto.builder().email("vladthedevj6@gmail.com").password("1234qW").build()),
+                    Arguments.of(AuthRequestDto.builder().email("vladthedevj6@gmail.com").password("987654321").build()),
+                    Arguments.of(AuthRequestDto.builder().email("vladthedevj6@gmail.com").password("ABCDEFGH").build()),
+                    Arguments.of(AuthRequestDto.builder().email("myemail@com").password("123456qW").build()),
+                    Arguments.of(AuthRequestDto.builder().email("myemail%$^@domain").password("123456qW").build()),
+                    Arguments.of(AuthRequestDto.builder().email("myemail@192.168.1.1").password("123456qW").build()),
+                    Arguments.of(AuthRequestDto.builder().email(".myemail@1gmail.com").password("123456qW").build())
             );
         }
 
