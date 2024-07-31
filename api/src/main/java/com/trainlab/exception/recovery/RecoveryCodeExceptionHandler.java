@@ -19,13 +19,37 @@ import java.util.List;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RecoveryCodeExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = RateLimitExceededException.class)
+    @ExceptionHandler(RateLimitExceededException.class)
     public ResponseEntity<Object> handleRateLimitExceededException(RateLimitExceededException ex) {
         List<String> details = new ArrayList<>();
         details.add(Arrays.toString(ex.getStackTrace()));
         ApiError err = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.TOO_MANY_REQUESTS,
+                ex.getMessage(),
+                details);
+        return ResponseEntityBuilder.build(err);
+    }
+
+    @ExceptionHandler(IllegalRecoveryCodeException.class)
+    public ResponseEntity<Object> handleIllegalRecoveryCodeException(IllegalRecoveryCodeException ex) {
+        List<String> details = new ArrayList<>();
+        details.add(Arrays.toString(ex.getStackTrace()));
+        ApiError err = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                details);
+        return ResponseEntityBuilder.build(err);
+    }
+
+    @ExceptionHandler(RecoveryCodeExpiredException.class)
+    public ResponseEntity<Object> handleRecoveryCodeExpiredException(RecoveryCodeExpiredException ex) {
+        List<String> details = new ArrayList<>();
+        details.add(Arrays.toString(ex.getStackTrace()));
+        ApiError err = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.REQUEST_TIMEOUT,
                 ex.getMessage(),
                 details);
         return ResponseEntityBuilder.build(err);

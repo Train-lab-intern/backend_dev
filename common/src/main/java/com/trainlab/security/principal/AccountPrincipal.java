@@ -1,4 +1,4 @@
-package com.trainlab.principal;
+package com.trainlab.security.principal;
 
 import com.trainlab.dto.RoleDto;
 import com.trainlab.model.Role;

@@ -1,9 +1,8 @@
-package com.trainlab.security.dto;
+package com.trainlab.dto.auth;
 
-import com.trainlab.dto.UserDto;
 import com.trainlab.dto.UserPageDto;
+import com.trainlab.model.security.AccessToken;
 import com.trainlab.model.security.RefreshToken;
-import com.trainlab.security.model.AccessToken;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 

@@ -1,5 +1,6 @@
 package com.trainlab.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -69,6 +70,22 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError apiError = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.UNAUTHORIZED,
+                ex.getMessage(),
+                details);
+
+        return ResponseEntityBuilder.build(apiError);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Object> handleTokenNotFoundException(
+            EntityNotFoundException ex
+    ) {
+        List<String> details = new ArrayList<>();
+        details.add(Arrays.toString(ex.getStackTrace()));
+
+        ApiError apiError = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND,
                 ex.getMessage(),
                 details);
 

@@ -4,10 +4,8 @@ import com.trainlab.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.concurrent.TimeUnit;
 
 @Data
 @NoArgsConstructor
@@ -32,7 +30,8 @@ public class RecoveryCode {
 
     @Column(name = "expired_at", nullable = false)
     private OffsetDateTime expiredAt;
-    @OneToOne
-    @JoinColumn(name = "user_id")
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
 }

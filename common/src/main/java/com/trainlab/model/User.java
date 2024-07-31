@@ -2,7 +2,6 @@ package com.trainlab.model;
 
 import com.trainlab.Enum.eSpecialty;
 import com.trainlab.Enum.eUserLevel;
-import com.trainlab.model.recovery.RecoveryCode;
 import com.trainlab.model.testapi.UserTestResult;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;

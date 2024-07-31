@@ -1,5 +1,6 @@
 package com.trainlab.service.recovery;
 
+import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.dto.UserPageDto;
 import com.trainlab.dto.recovery.EmailRequestDto;
 import com.trainlab.dto.recovery.RecoveryCodeDto;
@@ -12,8 +13,8 @@ import com.trainlab.model.recovery.RecoveryCode;
 import com.trainlab.repository.recovery.RecoveryCodeRepository;
 import com.trainlab.repository.UserRepository;
 import com.trainlab.service.email.EmailService;
+import com.trainlab.util.password.CustomPasswordEncoder;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.ManyToOne;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,13 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class RecoveryCodeServiceImpl implements RecoveryCodeService {
+public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
 
     private static final Integer CODE_TIME_TO_LIVE = 5;
     private final RecoveryCodeRepository recoveryCodeRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
+    private final CustomPasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
     @Override
@@ -51,15 +53,15 @@ public class RecoveryCodeServiceImpl implements RecoveryCodeService {
                 createAndSendRecoveryCode(user);
             } else {
                 LocalTime localTime = getTimeUntilNextRequest(oldRecoveryCode.getExpiredAt());
-                String timeUntilNextRequest = String.format("%s:%s", localTime.getMinute(), localTime.getSecond());
-                throw new RateLimitExceededException("You have exceeded the rate limit. Please try again in " + timeUntilNextRequest);
+                String timeUntilNextRequest = String.format("%s:%s", localTime.getMinute(), toCorrectSeconds(localTime.getSecond()));
+                throw new RateLimitExceededException("Too many requests. Please try again in " + timeUntilNextRequest);
             }
         } else
             createAndSendRecoveryCode(user);
     }
 
     @Override
-    public UserPageDto verifyCode(RecoveryCodeDto requestRecoveryCode) {
+    public void verifyCode(RecoveryCodeDto requestRecoveryCode) {
         User user = userRepository.findByAuthenticationInfoEmail(requestRecoveryCode.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("User couldn't be found"));
 
@@ -75,6 +77,16 @@ public class RecoveryCodeServiceImpl implements RecoveryCodeService {
         }
 
         recoveryCodeRepository.delete(recoveryCode);
+    }
+
+    @Override
+    public UserPageDto changePassword(AuthRequestDto auth) {
+        User user = userRepository.findByAuthenticationInfoEmail(auth.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("User couldn't be found"));
+
+        String encodedPassword = passwordEncoder.encodePassword(auth.getPassword());
+        user.getAuthenticationInfo().setUserPassword(encodedPassword);
+        userRepository.saveAndFlush(user);
 
         return userMapper.toUserPageDto(user);
     }
@@ -97,5 +109,9 @@ public class RecoveryCodeServiceImpl implements RecoveryCodeService {
         OffsetDateTime timeUntilExpiration = expiredAt
                 .minusSeconds(OffsetDateTime.now(ZoneId.of("Europe/Minsk")).toEpochSecond());
         return timeUntilExpiration.toLocalTime();
+    }
+
+    private String toCorrectSeconds(int seconds) {
+        return seconds < 10 ? "0" + seconds : String.valueOf(seconds);
     }
 }
