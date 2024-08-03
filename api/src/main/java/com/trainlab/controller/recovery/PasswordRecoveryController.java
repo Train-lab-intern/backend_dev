@@ -1,5 +1,6 @@
 package com.trainlab.controller.recovery;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.dto.auth.AuthResponseDto;
 import com.trainlab.dto.recovery.EmailRequestDto;
@@ -60,7 +61,7 @@ public interface PasswordRecoveryController {
             }
     )
     ResponseEntity<String> verifyCode(@Valid @RequestBody RecoveryCodeDto recoveryCodeDto,
-                                      BindingResult bindingResult);
+                                      BindingResult bindingResult) throws JsonProcessingException;
 
     @Operation(
             summary = "Create a new password after verifying recovery code",

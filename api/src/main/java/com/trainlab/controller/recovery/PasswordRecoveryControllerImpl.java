@@ -1,5 +1,7 @@
 package com.trainlab.controller.recovery;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trainlab.dto.UserPageDto;
 import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.dto.recovery.EmailRequestDto;
@@ -26,6 +28,8 @@ public class PasswordRecoveryControllerImpl implements PasswordRecoveryControlle
     private final PasswordRecoveryService passwordRecoveryService;
     private final TokenService tokenService;
 
+    private final ObjectMapper objectMapper;
+
     @Override
     @PostMapping
     public ResponseEntity<String> resetPassword(@Valid @RequestBody EmailRequestDto emailRequestDto,
@@ -38,7 +42,7 @@ public class PasswordRecoveryControllerImpl implements PasswordRecoveryControlle
     @Override
     @PostMapping("/verify")
     public ResponseEntity<String> verifyCode(@Valid @RequestBody RecoveryCodeDto recoveryCodeDto,
-                                             BindingResult bindingResult) {
+                                             BindingResult bindingResult) throws JsonProcessingException {
         isRequestValid(bindingResult);
         passwordRecoveryService.verifyCode(recoveryCodeDto);
         return ResponseEntity.status(HttpStatus.OK).body("Verified successfully");
