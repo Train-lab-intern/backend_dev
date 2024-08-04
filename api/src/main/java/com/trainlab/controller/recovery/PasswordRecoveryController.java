@@ -1,8 +1,10 @@
 package com.trainlab.controller.recovery;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.dto.auth.AuthResponseDto;
 import com.trainlab.dto.recovery.EmailRequestDto;
+import com.trainlab.dto.recovery.PasswordRecoveryMessage;
 import com.trainlab.dto.recovery.RecoveryCodeDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,7 +35,7 @@ public interface PasswordRecoveryController {
                     )
             }
     )
-    ResponseEntity<String> resetPassword(@Valid @RequestBody EmailRequestDto emailRequestDto,
+    ResponseEntity<PasswordRecoveryMessage> resetPassword(@Valid @RequestBody EmailRequestDto emailRequestDto,
                                          BindingResult bindingResult);
 
     @Operation(
@@ -43,7 +45,7 @@ public interface PasswordRecoveryController {
                     @ApiResponse(
                             responseCode = "OK",
                             description = "Verified successfully",
-                            content = @Content(mediaType = "text/plain")
+                            content = @Content(mediaType = "application/json")
                     ),
                     @ApiResponse(
                             responseCode = "NOT_FOUND",
@@ -59,8 +61,8 @@ public interface PasswordRecoveryController {
                     )
             }
     )
-    ResponseEntity<String> verifyCode(@Valid @RequestBody RecoveryCodeDto recoveryCodeDto,
-                                      BindingResult bindingResult);
+    ResponseEntity<PasswordRecoveryMessage> verifyCode(@Valid @RequestBody RecoveryCodeDto recoveryCodeDto,
+                                                       BindingResult bindingResult) throws JsonProcessingException;
 
     @Operation(
             summary = "Create a new password after verifying recovery code",
