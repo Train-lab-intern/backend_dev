@@ -1,12 +1,11 @@
 package com.trainlab.controller.recovery;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trainlab.dto.UserPageDto;
 import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.dto.recovery.EmailRequestDto;
 import com.trainlab.dto.recovery.RecoveryCodeDto;
 import com.trainlab.dto.auth.AuthResponseDto;
+import com.trainlab.dto.recovery.PasswordRecoveryMessage;
 import com.trainlab.service.recovery.PasswordRecoveryService;
 import com.trainlab.service.token.TokenService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,24 +27,26 @@ public class PasswordRecoveryControllerImpl implements PasswordRecoveryControlle
     private final PasswordRecoveryService passwordRecoveryService;
     private final TokenService tokenService;
 
-    private final ObjectMapper objectMapper;
-
     @Override
     @PostMapping
-    public ResponseEntity<String> resetPassword(@Valid @RequestBody EmailRequestDto emailRequestDto,
-                                                BindingResult bindingResult) {
+    public ResponseEntity<PasswordRecoveryMessage> resetPassword(@Valid @RequestBody EmailRequestDto emailRequestDto,
+                                                                 BindingResult bindingResult) {
         isRequestValid(bindingResult);
         passwordRecoveryService.resetPassword(emailRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).body("The code has been successfully sent. Check your email");
+        return ResponseEntity.status(HttpStatus.OK).body(PasswordRecoveryMessage.builder()
+                .message("The code has been successfully sent. Check your email")
+                .build());
     }
 
     @Override
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyCode(@Valid @RequestBody RecoveryCodeDto recoveryCodeDto,
-                                             BindingResult bindingResult) throws JsonProcessingException {
+    public ResponseEntity<PasswordRecoveryMessage> verifyCode(@Valid @RequestBody RecoveryCodeDto recoveryCodeDto,
+                                             BindingResult bindingResult) {
         isRequestValid(bindingResult);
         passwordRecoveryService.verifyCode(recoveryCodeDto);
-        return ResponseEntity.status(HttpStatus.OK).body("Verified successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(PasswordRecoveryMessage.builder()
+                .message("Verified successfully")
+                .build());
     }
 
     @Override
