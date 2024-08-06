@@ -1,4 +1,4 @@
-package com.trainlab.service;
+package com.trainlab.service.email;
 
 public interface EmailService {
 

@@ -1,6 +1,5 @@
-package com.trainlab.service.impl;
+package com.trainlab.service.email;
 
-import com.trainlab.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,14 +9,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
+    private static final String FROM_EMAIL = "it.roast.trainlab@gmail.com";
     public final JavaMailSender emailSender;
-    private final SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+    private final SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-    public void sendEmail(String address, String subject, String message){
-        simpleMailMessage.setTo(address);
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(message);
-        emailSender.send(simpleMailMessage);
+    private void sendEmail(String toAddress, String subject, String message) {
+        mailMessage.setTo(toAddress);
+        mailMessage.setFrom(FROM_EMAIL);
+        mailMessage.setSubject(subject);
+        mailMessage.setText(message);
+        emailSender.send(mailMessage);
     }
 
     @Override
@@ -31,10 +32,10 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendNewPassword(String toAddress, String newPassword) {
+    public void sendNewPassword(String toAddress, String code) {
         String emailSubject = "Вы забыли пароль";
-        String message = "Вы захотели изменить пароль, потому что старый забыли.\n" +
-                "Вот ваш новый пароль, пожалуйста, не забывайте!\n" + newPassword +
+        String message = "Вы захотели изменить пароль, потому что забыли старый.\n" +
+                "Вот ваш код подтверждения!\n" + code +
                 "\nС наилучшими пожеланиями,\nКоманда Trainlab";
 
         sendEmail(toAddress, emailSubject, message);

@@ -8,7 +8,7 @@ import com.trainlab.model.Role;
 import com.trainlab.model.User;
 import com.trainlab.repository.RoleRepository;
 import com.trainlab.repository.UserRepository;
-import com.trainlab.service.EmailService;
+import com.trainlab.service.email.EmailService;
 import com.trainlab.util.password.CustomPasswordEncoder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

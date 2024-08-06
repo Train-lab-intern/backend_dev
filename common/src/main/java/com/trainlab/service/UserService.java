@@ -1,7 +1,7 @@
 package com.trainlab.service;
 
 import com.trainlab.dto.*;
-import com.trainlab.exception.UsernameGenerationException;
+import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.model.User;
 
 
@@ -19,8 +19,6 @@ public interface UserService {
     UserPageDto update(UserPageUpdateDto userUpdateDto, Long id);
 
     User findUserByAuthenticationInfo(AuthRequestDto authRequestDto);
-
-    void resetPassword(ResetPasswordDto resetPasswordDto);
     void changePassword(Long userId, UserUpdateDto userUpdateDto);
     UserStatsDTO getAllUserStats(Long userId);
 }

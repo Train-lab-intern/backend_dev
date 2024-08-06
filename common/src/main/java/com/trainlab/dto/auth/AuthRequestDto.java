@@ -1,4 +1,4 @@
-package com.trainlab.dto;
+package com.trainlab.dto.auth;
 
 import com.trainlab.validation.Email;
 import com.trainlab.validation.ValidPassword;
@@ -15,18 +15,18 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @GroupSequence(value = {Group1.class, AuthRequestDto.class})
 @Builder
-@Schema(description = "User auth request.")
+@Schema(description = "User auth request")
 public class AuthRequestDto {
 
-   @NotBlank(groups = {Group1.class})
+    @NotBlank(groups = {Group1.class})
     @Email
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
             type = "string", description = "User Email")
-    private String userEmail;
+    private String email;
 
     @NotBlank(groups = {Group1.class})
     @ValidPassword
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
             type = "string", description = "User password")
-    private String userPassword;
+    private String password;
 }

@@ -2,6 +2,7 @@ package com.trainlab.service.impl;
 
 import com.trainlab.Enum.eSpecialty;
 import com.trainlab.dto.*;
+import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.exception.IllegalRequestException;
 import com.trainlab.exception.ObjectNotFoundException;
 import com.trainlab.mapper.UserMapper;
@@ -9,11 +10,9 @@ import com.trainlab.model.Role;
 import com.trainlab.model.User;
 import com.trainlab.model.testapi.UserStats;
 import com.trainlab.model.testapi.UserTestResult;
-import com.trainlab.repository.RoleRepository;
-import com.trainlab.repository.UserRepository;
-import com.trainlab.repository.UserStatsRepository;
-import com.trainlab.repository.UserTestResultRepository;
-import com.trainlab.service.EmailService;
+import com.trainlab.repository.*;
+import com.trainlab.repository.recovery.RecoveryCodeRepository;
+import com.trainlab.service.email.EmailService;
 import com.trainlab.service.UserService;
 import com.trainlab.util.UsernameGenerator;
 import com.trainlab.util.password.CustomPasswordEncoder;
@@ -22,7 +21,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
@@ -46,13 +44,14 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final UserStatsRepository userStatsRepository;
     private final UserTestResultRepository userTestResultRepository;
+    private final RecoveryCodeRepository recoveryCodeRepository;
 
     @Override
     public User create(UserCreateDto userCreateDto) {
         User user = userMapper.toEntity(userCreateDto);
 
-        checkIsEmailExist(user);
-        setEncodedPassword(user);
+        isEmailExist(user.getAuthenticationInfo().getEmail());
+        encodePassword(user);
         setDefaultRole(user);
 
         user.setGeneratedName("user-");
@@ -62,14 +61,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.saveAndFlush(user);
     }
 
-    private void checkIsEmailExist(User user) {
-        Optional<User> userByEmail = userRepository.findByAuthenticationInfoEmail(
-                user.getAuthenticationInfo().getEmail()
-        );
-        if (userByEmail.isPresent())
+    private void isEmailExist(String email) {
+        userRepository.findByAuthenticationInfoEmail(email).ifPresent(user -> {
             throw new IllegalRequestException("User with this email is already exists");
+        });
     }
 
+    private void encodePassword(User user) {
+        String encodedPassword = passwordEncoder.encodePassword(user.getAuthenticationInfo().getUserPassword());
+        user.getAuthenticationInfo().setUserPassword(encodedPassword);
+    }
+
+    // повторяющийся
     private  void  checkEmail(String email){
         Optional<User> userByEmail = userRepository.findByAuthenticationInfoEmail(
                 email
@@ -78,15 +81,9 @@ public class UserServiceImpl implements UserService {
             throw new IllegalRequestException("User with this email is already exists");
     }
 
-    private void setEncodedPassword(User user) {
-        String encodedPassword = passwordEncoder.encodePassword(user.getAuthenticationInfo().getUserPassword());
-        user.getAuthenticationInfo().setUserPassword(encodedPassword);
-    }
-
     private void setDefaultRole(User user) {
         Role userRole = roleRepository.findByRoleName(DEFAULT_ROLE).orElseThrow(
-                () -> new EntityNotFoundException("This role doesn't exist")
-        );
+                () -> new EntityNotFoundException("This role doesn't exist"));
 
         if (user.getRoles() == null)
             user.setRoles(new ArrayList<>());
@@ -97,11 +94,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByAuthenticationInfo(AuthRequestDto authRequestDto) {
         User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(authRequestDto
-                .getUserEmail().toLowerCase())
+                .getEmail().toLowerCase())
                 .orElseThrow(() -> new ObjectNotFoundException("Invalid login or password"));
 
         boolean isPasswordMatches = passwordEncoder.matches(
-                authRequestDto.getUserPassword(),
+                authRequestDto.getPassword(),
                 user.getAuthenticationInfo().getUserPassword()
         );
 
@@ -164,18 +161,6 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(user);
         return userMapper.toUserPageDto(user);
     }
-    @Override
-    public void resetPassword(ResetPasswordDto resetPasswordDto) {
-        User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(resetPasswordDto.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("User could not be found"));
-        String toAdress = resetPasswordDto.getEmail();
-        String newPassword = generator.generateRandomPassword(8);
-        String encodedPassword = passwordEncoder.encodePassword(newPassword);
-        user.getAuthenticationInfo().setUserPassword(encodedPassword);
-
-        userRepository.saveAndFlush(user);
-        emailService.sendNewPassword(toAdress, newPassword);
-    }
 
     @Override
     public void changePassword(Long id,UserUpdateDto userUpdateDto) {
@@ -229,7 +214,6 @@ public class UserServiceImpl implements UserService {
                         .collect(Collectors.toList())
                 )
                 .build();
-
     }
 }
 

@@ -12,7 +12,7 @@ public class RandomValuesGenerator {
         return UUID.randomUUID().toString();
     }
 
-    public String generateRandomPassword(int len)    {
+    public String generateRandomCode(int len)    {
         final String upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         final String lowerCase = "abcdefghijklmnopqrstuvwxyz";
         final String digits = "0123456789";

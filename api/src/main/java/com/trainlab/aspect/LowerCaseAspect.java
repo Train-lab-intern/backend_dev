@@ -1,6 +1,6 @@
 package com.trainlab.aspect;
 
-import com.trainlab.dto.AuthRequestDto;
+import com.trainlab.dto.auth.AuthRequestDto;
 import com.trainlab.dto.UserCreateDto;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class LowerCaseAspect {
 
     private static String userEmail;
-    @Pointcut(value = "execution(org.springframework.http.ResponseEntity<com.trainlab.security.dto.AuthResponseDto> com.trainlab.controller.AuthenticationController.loginUser(com.trainlab.dto.AuthRequestDto,..))")
+    @Pointcut(value = "execution(org.springframework.http.ResponseEntity<com.trainlab.dto.auth.AuthResponseDto> com.trainlab.controller.AuthenticationController.loginUser(com.trainlab.dto.auth.AuthRequestDto,..))")
     public void isLoginUser() {
     }
 
@@ -33,8 +33,8 @@ public class LowerCaseAspect {
             "&& args(authRequestDto,..)")
     public void toLowerCase(AuthRequestDto authRequestDto) {
         if (authRequestDto != null) {
-            userEmail = authRequestDto.getUserEmail();
-            authRequestDto.setUserEmail(userEmail);
+            userEmail = authRequestDto.getEmail();
+            authRequestDto.setEmail(userEmail);
         }
     }
 }
