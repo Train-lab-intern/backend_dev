@@ -38,7 +38,7 @@ public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
     @Override
     public void resetPassword(EmailRequestDto emailRequestDto) {
         User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(emailRequestDto.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("User could not be found"));
+                .orElseThrow(() -> new EntityNotFoundException("User couldn't be found"));
 
         Optional<RecoveryCode> code = recoveryCodeRepository.findRecoveryCodeByUser(user);
         if (code.isPresent()) {
@@ -62,7 +62,7 @@ public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
 
     @Override
     public void verifyCode(RecoveryCodeDto requestRecoveryCode) {
-        User user = userRepository.findByAuthenticationInfoEmail(requestRecoveryCode.getEmail())
+        User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(requestRecoveryCode.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("User couldn't be found"));
 
         RecoveryCode recoveryCode = recoveryCodeRepository.findRecoveryCodeByUser(user)
@@ -81,7 +81,7 @@ public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
 
     @Override
     public UserPageDto changePassword(AuthRequestDto auth) {
-        User user = userRepository.findByAuthenticationInfoEmail(auth.getEmail())
+        User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(auth.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("User couldn't be found"));
 
         String encodedPassword = passwordEncoder.encodePassword(auth.getPassword());
