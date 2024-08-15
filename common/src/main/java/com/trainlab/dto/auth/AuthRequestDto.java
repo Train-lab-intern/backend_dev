@@ -1,5 +1,6 @@
 package com.trainlab.dto.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.trainlab.validation.Email;
 import com.trainlab.validation.ValidPassword;
 import com.trainlab.validation.groups.Group1;
@@ -29,4 +30,9 @@ public class AuthRequestDto {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
             type = "string", description = "User password")
     private String password;
+
+    @JsonIgnore
+    public boolean isFieldsBlank() {
+        return email.isBlank() || password.isBlank();
+    }
 }
