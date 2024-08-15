@@ -2,6 +2,7 @@ package com.trainlab.controller;
 
 import com.trainlab.dto.*;
 import com.trainlab.dto.auth.AuthRequestDto;
+import com.trainlab.exception.LoginEmptyFieldsValidationException;
 import com.trainlab.exception.LoginValidationException;
 import com.trainlab.exception.ValidationException;
 import com.trainlab.mapper.UserMapper;
@@ -36,8 +37,12 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody AuthRequestDto request, BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
+            if (request.isFieldsBlank() || request.getEmail().isBlank() || request.getPassword().isBlank())
+                throw new LoginEmptyFieldsValidationException("Invalid login or password");
+
             throw new LoginValidationException("Invalid login or password");
+        }
 
         User user = userService.findUserByAuthenticationInfo(request);
         UserPageDto userPageDto = userMapper.toUserPageDto(user);

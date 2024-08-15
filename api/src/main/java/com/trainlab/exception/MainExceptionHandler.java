@@ -25,7 +25,7 @@ public class MainExceptionHandler extends ResponseEntityExceptionHandler {
         details.add(Arrays.toString(ex.getStackTrace()));
         ApiError err = new ApiError(
                 LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.UNAUTHORIZED,
                 ex.getMessage(),
                 details);
         return ResponseEntityBuilder.build(err);
