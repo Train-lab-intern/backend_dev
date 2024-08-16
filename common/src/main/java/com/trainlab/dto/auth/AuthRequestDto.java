@@ -19,13 +19,13 @@ import org.springframework.validation.annotation.Validated;
 @Schema(description = "User auth request")
 public class AuthRequestDto {
 
-    @NotBlank(groups = {Group1.class})
+    @NotBlank(groups = {Group1.class}, message = "The email field is required")
     @Email
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "trainlab@gmail.com",
             type = "string", description = "User Email")
     private String email;
 
-    @NotBlank(groups = {Group1.class})
+    @NotBlank(groups = {Group1.class}, message = "The password field is required")
     @ValidPassword
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "123456qW",
             type = "string", description = "User password")
@@ -33,6 +33,6 @@ public class AuthRequestDto {
 
     @JsonIgnore
     public boolean isFieldsBlank() {
-        return email.isBlank() || password.isBlank();
+        return email.isBlank() && password.isBlank();
     }
 }

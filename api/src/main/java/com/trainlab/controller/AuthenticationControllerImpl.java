@@ -38,9 +38,12 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody AuthRequestDto request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            if (request.isFieldsBlank() || request.getEmail().isBlank() || request.getPassword().isBlank())
-                throw new LoginEmptyFieldsValidationException("Invalid login or password");
-
+            if (request.isFieldsBlank())
+                throw new LoginEmptyFieldsValidationException("Email and password fields are required");
+            if (request.getEmail().isBlank() || request.getPassword().isBlank()) {
+                String error = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+                throw new LoginEmptyFieldsValidationException(error);
+            }
             throw new LoginValidationException("Invalid login or password");
         }
 
