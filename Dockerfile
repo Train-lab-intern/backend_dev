@@ -1,27 +1,34 @@
-# Image to build the project
-FROM maven:3.8.4-openjdk-17 AS builder
+FROM alpine:3.20.3 AS base
 
-# Copy source code
-COPY api /backend_dev/api
-COPY common /backend_dev/common
-COPY pom.xml /backend_dev/pom.xml
+RUN apk add --no-cache wget bash maven openjdk17
 
-# Building the Maven project
-WORKDIR /backend_dev
+FROM base AS build
+
+WORKDIR /app/it-roast
+COPY . .
+
 RUN mvn clean package -DskipTests
 
-# Image for api module
-FROM openjdk:17 AS api
-COPY --from=builder /backend_dev/api/target/*.jar /backend_dev/api.jar
+FROM openjdk:17-alpine AS runtime
+WORKDIR /app/it-roast
+COPY --from=build /app/it-roast/target/*.jar it-roast.jar
+ENTRYPOINT ["java", "-jar", "it-roast.jar"]
+EXPOSE 8080
+
+# Copy source code
+#COPY common /backend_dev/common
+
+# Building the Maven project
+#RUN mvn clean package -DskipTests
 
 # Image for common module
-FROM openjdk:17 AS common
-COPY --from=builder /backend_dev/common/target/*.jar /backend_dev/common.jar
+#FROM openjdk:17 AS common
+#COPY --from=builder /backend_dev/common/target/*.jar /backend_dev/common.jar
 
 # Image for combining modules
-FROM openjdk:17
-COPY --from=api /backend_dev /backend_dev
-COPY --from=common /backend_dev /backend_dev
-WORKDIR /backend_dev
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "api.jar"]
+#FROM openjdk:17
+#COPY --from=common /backend_dev /backend_dev
+#WORKDIR /backend_dev
+#EXPOSE 8080
+#ENTRYPOINT ["common.jar"]
+#CMD ["java", "-jar"]
