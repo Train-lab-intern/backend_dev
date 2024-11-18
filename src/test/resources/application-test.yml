@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    embedded-database-connection: h2
+    generate-unique-name: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+    show_sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+  flyway:
+    enabled: false
+    org:
+      hibernate:
+        sql: info
+        debug: trace
+
+logging:
+  level:
+    org:
+      hibernate:
+        sql: info
