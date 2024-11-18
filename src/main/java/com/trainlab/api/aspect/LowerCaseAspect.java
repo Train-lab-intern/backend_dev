@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class LowerCaseAspect {
-
     private static String userEmail;
     @Pointcut(value = "execution(org.springframework.http.ResponseEntity<com.trainlab.dto.auth.AuthResponseDto> com.trainlab.api.controller.AuthenticationController.loginUser(com.trainlab.dto.auth.AuthRequestDto,..))")
     public void isLoginUser() {
