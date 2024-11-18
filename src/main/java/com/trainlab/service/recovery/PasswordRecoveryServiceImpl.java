@@ -7,6 +7,7 @@ import com.trainlab.dto.recovery.RecoveryCodeDto;
 import com.trainlab.exception.recovery.IllegalRecoveryCodeException;
 import com.trainlab.exception.recovery.RateLimitExceededException;
 import com.trainlab.exception.recovery.RecoveryCodeExpiredException;
+import com.trainlab.exception.recovery.UserNotFoundException;
 import com.trainlab.mapper.UserMapper;
 import com.trainlab.model.User;
 import com.trainlab.model.recovery.RecoveryCode;
@@ -38,7 +39,7 @@ public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
     @Override
     public void resetPassword(EmailRequestDto emailRequestDto) {
         User user = userRepository.findByAuthenticationInfoEmailAndIsDeletedFalse(emailRequestDto.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("User couldn't be found"));
+                .orElseThrow(() -> new UserNotFoundException("User couldn't be found"));
 
         Optional<RecoveryCode> code = recoveryCodeRepository.findRecoveryCodeByUser(user);
         if (code.isPresent()) {
