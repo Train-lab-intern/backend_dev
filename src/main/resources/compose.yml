@@ -14,8 +14,8 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../../..
+      dockerfile: ../../../Dockerfile
     ports:
       - "8888:8080"
     environment:
